@@ -37,8 +37,8 @@ import com.intellij.xdebugger.frame.XValuePlace
 import com.intellij.xdebugger.frame.presentation.XValuePresentation
 import com.jetbrains.dap.protocol.DapConnectionClosedException
 import com.jetbrains.dap.protocol.DapRequestFailedException
-import com.jetbrains.dap.protocol.RequestCancelledByPeerException
 import com.jetbrains.dap.protocol.ExceptionDetails
+import com.jetbrains.dap.protocol.RequestCancelledByPeerException
 import com.jetbrains.dap.protocol.StopReason
 import com.jetbrains.dap.protocol.StoppedEventArguments
 import com.jetbrains.rider.test.annotations.Subsystem

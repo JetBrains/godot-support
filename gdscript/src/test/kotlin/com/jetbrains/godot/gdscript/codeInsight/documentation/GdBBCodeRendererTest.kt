@@ -4,19 +4,16 @@ import com.intellij.openapi.util.text.HtmlChunk
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import gdscript.codeInsight.documentation.GdDocHtml
 import gdscript.codeInsight.documentation.GdBBCodeRenderer
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import gdscript.codeInsight.documentation.GdDocHtml
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 /** Covers the Godot BBCode subset supported by [GdBBCodeRenderer.renderToHtml]. */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Documentation"])
-@RunWith(JUnit4::class)
 class GdBBCodeRendererTest {
 
     @Test
@@ -127,26 +124,26 @@ class GdBBCodeRendererTest {
     @Test
     fun testBulletListAfterTextHasNoGap() {
         val parsed = GdDocHtml.paragraph("Steps:\n- first item\n- second item").toString()
-        assertFalse(parsed, parsed.contains("<br><ul") || parsed.contains("<br/><ul"))
-        assertTrue(parsed, parsed.contains("Steps:<ul style=\"margin-top: 0; padding-top: 0;\">"))
+        assertFalse(parsed.contains("<br><ul") || parsed.contains("<br/><ul"), parsed)
+        assertTrue(parsed.contains("Steps:<ul style=\"margin-top: 0; padding-top: 0;\">"), parsed)
     }
 
     /** All text and all lists share one content block, so each line has the same indent. */
     @Test
     fun testTextAndBulletListsShareOneContentBlock() {
         val parsed = GdDocHtml.paragraph("Steps:\n- first item\nMore steps:\n- second item").toString()
-        assertTrue(parsed, parsed.startsWith("<div class=\"content\">Steps:<ul"))
-        assertTrue(parsed, parsed.contains("</ul>More steps:<ul"))
-        assertTrue(parsed, parsed.endsWith("</ul></div>"))
-        assertFalse(parsed, parsed.contains("<p"))
+        assertTrue(parsed.startsWith("<div class=\"content\">Steps:<ul"), parsed)
+        assertTrue(parsed.contains("</ul>More steps:<ul"), parsed)
+        assertTrue(parsed.endsWith("</ul></div>"), parsed)
+        assertFalse(parsed.contains("<p"), parsed)
     }
 
     /** A second marker belongs to the text of the bullet, so only the first one goes away. */
     @Test
     fun testBulletListStripsOneMarkerOnly() {
         val parsed = GdDocHtml.paragraph("- * double marker\n* - double marker").toString()
-        assertTrue(parsed, parsed.contains("<li>* double marker</li>"))
-        assertTrue(parsed, parsed.contains("<li>- double marker</li>"))
+        assertTrue(parsed.contains("<li>* double marker</li>"), parsed)
+        assertTrue(parsed.contains("<li>- double marker</li>"), parsed)
     }
 
     /**
@@ -171,9 +168,9 @@ class GdBBCodeRendererTest {
             "Bad types: [Array[], [Array[int], [Array[Array[int]]], [Dictionary[String, int]]."
         )
 
-        assertTrue(parsed, parsed.contains("psi_element://Array\""))
-        assertTrue(parsed, parsed.contains("psi_element://int\""))
-        assertTrue(parsed, parsed.contains("psi_element://Dictionary\""))
+        assertTrue(parsed.contains("psi_element://Array\""), parsed)
+        assertTrue(parsed.contains("psi_element://int\""), parsed)
+        assertTrue(parsed.contains("psi_element://Dictionary\""), parsed)
     }
 
     /** `[br]` is a line break. The free-reference rule must not turn it into a link. */

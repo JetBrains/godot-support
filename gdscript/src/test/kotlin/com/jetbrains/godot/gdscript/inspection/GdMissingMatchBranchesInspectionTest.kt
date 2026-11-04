@@ -36,7 +36,7 @@ import project.psi.util.ProjectAutoloadUtil
 @ChecklistItems(["GDScript/Inspections"])
 @TestApplication
 class GdMissingMatchBranchesInspectionTest {
-    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/highlighting")
 
     @BeforeEach
     fun enableMissingMatchBranchesInspection() {

@@ -1,15 +1,19 @@
 package com.jetbrains.godot.gdscript.findUsages
 
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.findUsages.symbolUsages
 import com.jetbrains.godot.findUsages.text
-import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdMethodDeclTl
-import kotlin.io.path.pathString
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
 
 /**
  * Find Usages of a GDScript method runs through the PolySymbol of the declaration - see
@@ -18,21 +22,24 @@ import kotlin.io.path.pathString
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Find usages"])
-class MethodFindUsagesTest : BasePlatformTestCase() {
+@TestApplication
+class MethodFindUsagesTest {
 
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/findUsages/method").pathString
-    }
+    private val gd: GdFixture by gdLightFixture("gdscript/findUsages/method")
 
+    @Test
     fun testCallListed() {
-        myFixture.configureByFile("main.gd")
-        val method = PsiTreeUtil.findChildrenOfType(myFixture.file, GdMethodDeclTl::class.java)
-            .firstOrNull { it.getName() == "helper" }
-            ?.methodIdNmi
-        assertNotNull("the script must declare the method", method)
+        gd.fixture.configureByFile("main.gd")
+        val offset = runReadActionBlocking {
+            val method = PsiTreeUtil.findChildrenOfType(gd.fixture.file, GdMethodDeclTl::class.java)
+                .firstOrNull { it.getName() == "helper" }
+                ?.methodIdNmi
+            assertNotNull(method, "the script must declare the method")
+            method!!.textOffset
+        }
 
-        val usages = myFixture.symbolUsages(method!!.textOffset)
-        assertEquals(usages.joinToString("\n") { it.text }, 1, usages.size)
+        val usages = runReadActionBlocking { gd.fixture.symbolUsages(offset) }
+        assertEquals(1, usages.size, usages.joinToString("\n") { it.text })
         assertEquals("helper", usages.single().text)
     }
 }

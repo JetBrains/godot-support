@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Completion"])
 @TestApplication
 class GdCompletionTest {
-    private val gd: GdSdkFixture by gdSdkFixture("completion")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/completion")
 
     @Test
     fun testCompleteClassMembers() = gd.doLookupTest(

@@ -6,11 +6,9 @@ import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdDocXmlMerger
 import gdscript.embeddedDocs.GdDocXmlSplitter
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -22,7 +20,6 @@ import java.nio.file.Path
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Documentation"])
-@RunWith(JUnit4::class)
 class GdDocXmlMergerFixtureTest {
 
     private val target = """
@@ -41,22 +38,22 @@ class GdDocXmlMergerFixtureTest {
     fun testCopiesTheProseOfTheExtractedFixtureOntoTheTargetStructure() {
         val merged = GdDocXmlMerger.merge(target, fixtureDocument("Node")) { }
 
-        assertTrue(merged, merged.contains("Base class for all scene objects."))
-        assertTrue(merged, merged.contains("Nodes are Godot's building blocks."))
-        assertTrue(merged, merged.contains("Adds a child [param node]."))
-        assertTrue(merged, merged.contains("The name of the node."))
-        assertTrue(merged, merged.contains("Inherits the process mode from the parent node."))
-        assertTrue(merged, merged.contains("Nodes and scenes"))
-        assertTrue(merged, merged.contains("keywords=\"entity, actor\""))
+        assertTrue(merged.contains("Base class for all scene objects."), merged)
+        assertTrue(merged.contains("Nodes are Godot's building blocks."), merged)
+        assertTrue(merged.contains("Adds a child [param node]."), merged)
+        assertTrue(merged.contains("The name of the node."), merged)
+        assertTrue(merged.contains("Inherits the process mode from the parent node."), merged)
+        assertTrue(merged.contains("Nodes and scenes"), merged)
+        assertTrue(merged.contains("keywords=\"entity, actor\""), merged)
     }
 
     @Test
     fun testKeepsTheTargetStructureAndAddsNoMember() {
         val merged = GdDocXmlMerger.merge(target, fixtureDocument("Node")) { }
 
-        assertEquals("The target keeps one method.", 1, merged.split("<method ").size - 1)
-        assertEquals("The target keeps one member.", 1, merged.split("<member ").size - 1)
-        assertTrue("The source signal must stay out of the target.", !merged.contains("<signal"))
+        assertEquals(1, merged.split("<method ").size - 1, "The target keeps one method.")
+        assertEquals(1, merged.split("<member ").size - 1, "The target keeps one member.")
+        assertTrue(!merged.contains("<signal"), "The source signal must stay out of the target.")
     }
 
     private fun fixtureDocument(className: String): String {

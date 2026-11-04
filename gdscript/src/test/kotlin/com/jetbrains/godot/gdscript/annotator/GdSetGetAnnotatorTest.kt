@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Highlighting"])
 @TestApplication
 class GdSetGetAnnotatorTest {
-    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/highlighting")
 
     // Multiple highlights can share the exact same range at a get=/set= accessor (e.g. this
     // annotator's own "method does not exist" ERROR co-exists with its silent color annotation, and

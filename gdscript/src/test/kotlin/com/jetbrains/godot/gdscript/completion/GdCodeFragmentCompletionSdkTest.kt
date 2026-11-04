@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["Debug/GDScript/Completion in Evaluate window"])
 @TestApplication
 class GdCodeFragmentCompletionSdkTest {
-    private val gd: GdSdkFixture by gdSdkFixture("completion")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/completion")
 
     @BeforeEach
     fun disableAutoInsert() {

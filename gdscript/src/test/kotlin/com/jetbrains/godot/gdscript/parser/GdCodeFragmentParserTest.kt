@@ -1,30 +1,28 @@
 package com.jetbrains.godot.gdscript.parser
 
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.psi.impl.DebugUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.PlatformTestUtil
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.godot.gdscript.util.gdFragment
-import com.jetbrains.godot.getBaseTestDataPath
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import kotlin.io.path.pathString
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["Debug/GDScript/Evaluation"])
-@RunWith(JUnit4::class)
-class GdCodeFragmentParserTest : BasePlatformTestCase() {
-
-    override fun getTestDataPath(): String =
-        getBaseTestDataPath().resolve("testData/gdscript").pathString
+@TestApplication
+class GdCodeFragmentParserTest {
+    private val gd: GdFixture by gdLightFixture("gdscript/parser/codeFragment")
 
     private fun doParseTest(text: String) {
-        val fragment = myFixture.gdFragment(text)
-        assertSameLinesWithFile(
-            "$testDataPath/parser/codeFragment/${getTestName(true)}.txt",
-            DebugUtil.psiToString(fragment, true)
+        val fragment = gd.fixture.gdFragment(text)
+        PlatformTestUtil.assertSameLinesWithFile(
+            "${gd.testDataPath}/${gd.testName}.txt",
+            runReadActionBlocking { DebugUtil.psiToString(fragment, true) }
         )
     }
 

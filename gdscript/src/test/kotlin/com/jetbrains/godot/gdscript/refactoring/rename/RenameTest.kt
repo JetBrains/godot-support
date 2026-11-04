@@ -1,22 +1,28 @@
 package com.jetbrains.godot.gdscript.refactoring.rename
 
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.polySymbols.testFramework.renameSymbolAtCaret
 import com.intellij.psi.PsiDocumentManager
-import com.jetbrains.godot.gdscript.resolve.ResolveTestBase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.intellij.testFramework.common.timeoutRunBlocking
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdResolveFixture
+import com.jetbrains.godot.gdscript.gdResolveFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import kotlin.io.path.pathString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Rename"])
-class RenameTest : ResolveTestBase() {
+@TestApplication
+class RenameTest {
+    private val gd: GdResolveFixture by gdResolveFixture("gdscript/refactoring")
 
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/refactoring").pathString
-    }
-
+    @Test
     fun testRenameVariable() {
         val code = """
             |func in_the_outer_wrong():
@@ -29,23 +35,27 @@ class RenameTest : ResolveTestBase() {
         """.trimMargin()
 
         // Configure the file from text and perform rename at caret
-        myFixture.configureByText("rename_var.gd", code)
-        myFixture.renameSymbolAtCaret("renamed_A1Instance")
-
-        // Commit and run highlighting to simulate IDE analysis (and warm caches)
-        PsiDocumentManager.getInstance(project).commitAllDocuments()
-        myFixture.doHighlighting() // forces resolve/indices/inspections
+        gd.fixture.configureByText("rename_var.gd", code)
+        timeoutRunBlocking {
+            withContext(Dispatchers.EDT) {
+                gd.fixture.renameSymbolAtCaret("renamed_A1Instance")
+                // Commit to simulate IDE analysis (and warm caches)
+                PsiDocumentManager.getInstance(gd.project).commitAllDocuments()
+            }
+        }
+        gd.fixture.doHighlighting() // forces resolve/indices/inspections
 
         // Verify the text was updated accordingly
-        val updated = myFixture.file.text
+        val updated = gd.fixture.file.text
         assertTrue(updated.contains("var renamed_A1Instance := A1.new()"))
         assertTrue(updated.contains("renamed_A1Instance.ppa1()"))
 
         // Dump resolves and assert there are no unresolved references
-        val dump = dumpResolvesWithInlineMarkers(myFixture.file)
-        assertGold(dump)
+        val dump = runReadActionBlocking { gd.dumpResolvesWithInlineMarkers(gd.fixture.file) }
+        gd.assertGold(dump)
     }
 
+    @Test
     fun testRenameVariableShortName() {
         val code = """
         |    func _ready() -> void:
@@ -53,14 +63,17 @@ class RenameTest : ResolveTestBase() {
 	    |        print(test_long<caret>_name)
         """.trimMargin()
 
-        myFixture.configureByText("rename_var_short.gd", code)
-        myFixture.renameSymbolAtCaret("test_name")
+        gd.fixture.configureByText("rename_var_short.gd", code)
+        timeoutRunBlocking {
+            withContext(Dispatchers.EDT) {
+                gd.fixture.renameSymbolAtCaret("test_name")
+                PsiDocumentManager.getInstance(gd.project).commitAllDocuments()
+            }
+        }
+        gd.fixture.doHighlighting()
 
-        PsiDocumentManager.getInstance(project).commitAllDocuments()
-        myFixture.doHighlighting()
-
-        val updated = myFixture.file.text
-        assertTrue("expected 'var test_name := 1' but got:\n$updated", updated.contains("var test_name := 1"))
-        assertTrue("expected 'print(test_name)' but got:\n$updated", updated.contains("print(test_name)"))
+        val updated = gd.fixture.file.text
+        assertTrue(updated.contains("var test_name := 1"), "expected 'var test_name := 1' but got:\n$updated")
+        assertTrue(updated.contains("print(test_name)"), "expected 'print(test_name)' but got:\n$updated")
     }
 }

@@ -31,6 +31,7 @@ import kotlinx.coroutines.withContext
 import org.jetbrains.concurrency.Promise
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -47,6 +48,7 @@ import java.lang.reflect.Proxy
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["Debug/GDScript/Evaluation"])
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestApplication
 class GdDapEvaluatorTest {
     private val tempPath = tempPathFixture()

@@ -13,12 +13,12 @@ import com.intellij.platform.dap.xdebugger.DefaultDapXDebuggerPresentationFactor
 import com.intellij.testFramework.common.timeoutRunBlocking
 import com.intellij.testFramework.junit5.RegistryKey
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.dap.protocol.DapRequestFailedException
-import com.jetbrains.dap.protocol.Message
 import com.intellij.xdebugger.XDebugSession
 import com.intellij.xdebugger.XExpression
 import com.intellij.xdebugger.frame.XNamedValue
 import com.intellij.xdebugger.frame.XSuspendContext
+import com.jetbrains.dap.protocol.DapRequestFailedException
+import com.jetbrains.dap.protocol.Message
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants

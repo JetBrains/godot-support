@@ -1,31 +1,26 @@
 package com.jetbrains.godot.gdscript.xml
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.sdk.xml.GdSdkXmlParser
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.pathString
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/SDK"])
-@RunWith(JUnit4::class)
-class GdSdkXmlParserTest : BasePlatformTestCase() {
+class GdSdkXmlParserTest {
 
-    companion object {
-        const val TEST_DATA_PATH = "testData/gdscript/sdk/"
-        const val SDK_VERSION = "4.5.0"
-    }
-
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve(TEST_DATA_PATH).resolve(SDK_VERSION).pathString
-    }
+    private val testDataPath: String =
+        getBaseTestDataPath(GdSdkXmlParserTest::class.java).resolve(TEST_DATA_PATH).resolve(SDK_VERSION).pathString
 
     @Test
     fun testParseNodeXml() {
@@ -34,7 +29,7 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
 
         // class
         val clazz = GdSdkXmlParser.parseClass(path)
-        assertNotNull("GdSdkXmlParser failed to parse the class $className", clazz)
+        assertNotNull(clazz, "GdSdkXmlParser failed to parse the class $className")
 
         assertEquals(className, clazz!!.name)
         assertEquals("Object", clazz.inherits)
@@ -58,7 +53,7 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
         val addChildMethod = methods.find { it.name == "add_child" }
         assertNotNull(addChildMethod)
         assertEquals("void", addChildMethod!!.returnType.name)
-        assertSize(3, addChildMethod.parameters)
+        assertEquals(3, addChildMethod.parameters.size)
         assertEquals("node", addChildMethod.parameters[0].name)
         assertEquals("Node", addChildMethod.parameters[0].type.name)
         assertNull(addChildMethod.parameters[0].type.enumName)
@@ -86,7 +81,7 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
         // tutorials
         val tutorials = clazz.tutorials
         assertNotNull(tutorials)
-        assertSize(2, tutorials!!)
+        assertEquals(2, tutorials!!.size)
         assertTrue(tutorials.any { it.name == "Nodes and scenes" })
         val tutorial = tutorials.find { it.name == "All Demos" }
         assertNotNull(tutorial)
@@ -100,37 +95,37 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
 
         // class
         val clazz = GdSdkXmlParser.parseClass(path)
-        assertNotNull("GdSdkXmlParser failed to parse the class $className", clazz)
+        assertNotNull(clazz, "GdSdkXmlParser failed to parse the class $className")
 
         assertEquals(className, clazz!!.name)
-        assertEmpty(clazz.inherits)
+        assertTrue(clazz.inherits.isNullOrEmpty())
 
         // constructors
-        assertEmpty(clazz.constructors)
+        assertTrue(clazz.constructors.isEmpty())
 
         // methods
         val methods = clazz.methods
-        assertNotEmpty(methods)
+        assertTrue(methods.isNotEmpty())
         assertTrue(methods.any { it.name == "range" })
         assertTrue(methods.any { it.name == "len" })
 
         val convertMethod = methods.find { it.name == "convert" }
         assertNotNull(convertMethod)
         assertEquals("Variant", convertMethod!!.returnType.name)
-        assertSize(2, convertMethod.parameters)
+        assertEquals(2, convertMethod.parameters.size)
         assertEquals("what", convertMethod.parameters[0].name)
         assertEquals("Variant", convertMethod.parameters[0].type.name)
-        assertEmpty(convertMethod.parameters[0].type.enumName)
+        assertTrue(convertMethod.parameters[0].type.enumName.isNullOrEmpty())
         assertEquals("type", convertMethod.parameters[1].name)
         assertEquals("int", convertMethod.parameters[1].type.name)
         assertEquals("Variant.Type", convertMethod.parameters[1].type.enumName)
 
         // properties
-        assertEmpty(clazz.properties)
+        assertTrue(clazz.properties.isEmpty())
 
         // constants
         val constants = clazz.constants
-        assertNotEmpty(constants)
+        assertTrue(constants.isNotEmpty())
         assertTrue(constants.any { it.name == "PI" })
         assertTrue(constants.any { it.name == "TAU" })
         assertTrue(constants.any { it.name == "INF" })
@@ -141,7 +136,7 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
         assertEquals("inf", infConstant!!.value)
 
         // enums
-        assertEmpty(clazz.enums)
+        assertTrue(clazz.enums.isEmpty())
 
         // operations
         val operations = GdSdkXmlParser.parseOperations(path)
@@ -150,22 +145,22 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
         // annotations
         val annotations = GdSdkXmlParser.parseAnnotations(path)
         assertNotNull(annotations)
-        assertNotEmpty(annotations)
-        assertTrue(annotations!!.any { it.name == "tool" })
+        assertTrue(annotations!!.isNotEmpty())
+        assertTrue(annotations.any { it.name == "tool" })
 
         val onreadyAnnotation = annotations.find { it.name == "onready" }
         assertNotNull(onreadyAnnotation)
-        assertEmpty(onreadyAnnotation!!.parameters)
+        assertTrue(onreadyAnnotation!!.parameters.isEmpty())
         assertFalse(onreadyAnnotation.isVariadic)
 
         val exportCustomAnnotation = annotations.find { it.name == "export_custom" }
         assertNotNull(exportCustomAnnotation)
-        assertSize(3, exportCustomAnnotation!!.parameters)
+        assertEquals(3, exportCustomAnnotation!!.parameters.size)
         assertEquals("hint", exportCustomAnnotation.parameters[0].name)
         assertEquals("int", exportCustomAnnotation.parameters[0].type.name)
         assertEquals("PropertyHint", exportCustomAnnotation.parameters[0].type.enumName)
         assertFalse(exportCustomAnnotation.parameters[0].type.isBitField)
-        assertEmpty(exportCustomAnnotation.parameters[0].default)
+        assertTrue(exportCustomAnnotation.parameters[0].default.isNullOrEmpty())
         assertEquals("usage", exportCustomAnnotation.parameters[2].name)
         assertEquals("int", exportCustomAnnotation.parameters[2].type.name)
         assertEquals("PropertyUsageFlags", exportCustomAnnotation.parameters[2].type.enumName)
@@ -228,10 +223,10 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
 
         // class
         val clazz = GdSdkXmlParser.parseClass(path)
-        assertNotNull("GdSdkXmlParser failed to parse the class $className", clazz)
+        assertNotNull(clazz, "GdSdkXmlParser failed to parse the class $className")
 
         assertEquals(className, clazz!!.name)
-        assertEmpty(clazz.inherits)
+        assertTrue(clazz.inherits.isNullOrEmpty())
 
         // constructors
         val constructors = clazz.constructors
@@ -284,7 +279,7 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
         // annotations
         val annotations = GdSdkXmlParser.parseAnnotations(path)
         assertNotNull(annotations)
-        assertEmpty(annotations!!)
+        assertTrue(annotations!!.isEmpty())
     }
 
     @Test
@@ -294,13 +289,13 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
 
         // class
         val clazz = GdSdkXmlParser.parseClass(path)
-        assertNotNull("GdSdkXmlParser failed to parse the class $className", clazz)
+        assertNotNull(clazz, "GdSdkXmlParser failed to parse the class $className")
 
         assertEquals(className, clazz!!.name)
 
         // properties
         val properties = clazz.properties
-        assertNotEmpty(properties)
+        assertTrue(properties.isNotEmpty())
         val mouseFilterProperty = properties.find { it.name == "mouse_filter"}
         assertNotNull(mouseFilterProperty)
         assertEquals("int", mouseFilterProperty!!.type.name)
@@ -311,7 +306,7 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
 
         // theme items
         val themeItems = clazz.themeItems
-        assertNotEmpty(themeItems)
+        assertTrue(themeItems.isNotEmpty())
         val fontItem = themeItems.find { it.name == "font"}
         assertNotNull(fontItem)
         assertEquals("font", fontItem!!.dataType)
@@ -323,5 +318,10 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
         assertEquals("color", fontColorItem!!.dataType)
         assertEquals("Color", fontColorItem.type)
         assertEquals("Color(1, 1, 1, 1)", fontColorItem.default)
+    }
+
+    companion object {
+        const val TEST_DATA_PATH = "testData/gdscript/sdk/"
+        const val SDK_VERSION = "4.5.0"
     }
 }

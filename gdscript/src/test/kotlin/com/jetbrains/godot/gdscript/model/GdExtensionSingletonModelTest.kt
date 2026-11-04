@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test
 @TestApplication
 class GdExtensionSingletonModelTest {
     private val gd: GdModelFixture by gdModelFixture(
+        "gdscript",
         // Kept apart from the shared gdextensions test data, so the expectations of the other model tests are unaffected.
         DEFAULT_MODEL_SDK_DIRECTORIES + "sdk/singletons"
     )

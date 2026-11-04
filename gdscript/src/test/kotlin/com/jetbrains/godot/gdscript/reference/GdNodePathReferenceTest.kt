@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Resolve and navigation", "GDScript/Node paths"])
 @TestApplication
 class GdNodePathReferenceTest {
-    private val gd: GdSdkFixture by gdSdkFixture("completion")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/completion")
 
     @Test
     fun testResolveDollarNodeToTscnNode() = doResolveTest("\$<caret>Plain") { node ->

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Type inference"])
 @TestApplication
 class GdForInferenceTest {
-    private val gd: GdModelFixture by gdModelFixture()
+    private val gd: GdModelFixture by gdModelFixture("gdscript")
 
     @Test
     fun testDictionaryKeyInference() {

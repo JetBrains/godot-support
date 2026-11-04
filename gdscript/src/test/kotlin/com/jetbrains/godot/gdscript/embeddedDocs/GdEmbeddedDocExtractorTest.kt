@@ -5,14 +5,13 @@ import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdDocXmlSplitter
 import gdscript.embeddedDocs.GdEmbeddedDocExtractor
-import org.junit.Assert.assertArrayEquals
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
-import org.junit.Assume.assumeTrue
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Assumptions.assumeTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 import java.io.ByteArrayOutputStream
 import java.nio.file.Files
 import java.util.concurrent.atomic.AtomicInteger
@@ -20,7 +19,6 @@ import java.util.zip.DeflaterOutputStream
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Documentation"])
-@RunWith(JUnit4::class)
 class GdEmbeddedDocExtractorTest {
     private val document = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<class name=\"Node\"></class>\n".toByteArray()
 
@@ -138,11 +136,12 @@ class GdEmbeddedDocExtractorTest {
     }
 
     @Test
+    @EnabledIfEnvironmentVariable(named = "GODOT_BINARY_PATH", matches = ".+")
     fun testRealGodotBinaryWhenAvailable() {
         val configuredPath = System.getenv("GODOT_BINARY_PATH")
         when (val outcome = GodotBinaryFromEnvironment.resolve(configuredPath)) {
             GodotBinaryFromEnvironment.Outcome.NotConfigured ->
-                assumeTrue("Set GODOT_BINARY_PATH to run the real Godot binary extraction test.", false)
+                assumeTrue(false, "Set GODOT_BINARY_PATH to run the real Godot binary extraction test.")
             is GodotBinaryFromEnvironment.Outcome.Invalid -> fail(outcome.message)
             is GodotBinaryFromEnvironment.Outcome.Ready -> {
                 val binary = outcome.binary
@@ -150,12 +149,12 @@ class GdEmbeddedDocExtractorTest {
                 val splitResults = result.streams.map { GdDocXmlSplitter.split(it.bytes) }
                 val documents = splitResults.flatMap { it.documents }
 
-                assertTrue("The real binary must contain more than 500 class documents.", documents.size > 500)
+                assertTrue(documents.size > 500, "The real binary must contain more than 500 class documents.")
                 assertEquals(0, splitResults.sumOf { it.conflicts.size })
                 assertEquals(0, splitResults.sumOf { it.malformedDocuments.size })
-                assertTrue("Every document must have a class root element.", documents.all { document ->
+                assertTrue(documents.all { document ->
                     GdDocXmlSplitter.split(document.content).documents.singleOrNull()?.className == document.className
-                })
+                }, "Every document must have a class root element.")
             }
         }
     }

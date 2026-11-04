@@ -1,7 +1,7 @@
 package com.jetbrains.godot.gdscript.dap
 
-import com.intellij.platform.dap.xdebugger.DefaultDapXSuspendContext
 import com.intellij.platform.dap.xdebugger.DefaultDapXStackFrame
+import com.intellij.platform.dap.xdebugger.DefaultDapXSuspendContext
 import com.intellij.testFramework.common.timeoutRunBlocking
 import com.intellij.testFramework.junit5.TestApplication
 import com.intellij.testFramework.junit5.fixture.projectFixture

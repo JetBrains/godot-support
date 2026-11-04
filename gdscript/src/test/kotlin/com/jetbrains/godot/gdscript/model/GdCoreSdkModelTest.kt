@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/SDK"])
 @TestApplication
 class GdCoreSdkModelTest {
-    private val gd: GdModelFixture by gdModelFixture()
+    private val gd: GdModelFixture by gdModelFixture("gdscript")
 
     companion object{
         const val Node2D = "Node2D"

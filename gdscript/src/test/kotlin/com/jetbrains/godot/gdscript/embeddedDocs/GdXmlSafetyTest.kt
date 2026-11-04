@@ -4,10 +4,10 @@ import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.newHardenedDocumentBuilderFactory
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Test
 import org.w3c.dom.Document
 import org.xml.sax.ErrorHandler
 import org.xml.sax.SAXParseException
@@ -27,7 +27,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 class GdXmlSafetyTest {
     private val temporaryRoots = mutableListOf<Path>()
 
-    @After
+    @AfterEach
     fun removeTemporaryRoots() {
         for (root in temporaryRoots.asReversed()) {
             Files.walk(root).use { paths ->

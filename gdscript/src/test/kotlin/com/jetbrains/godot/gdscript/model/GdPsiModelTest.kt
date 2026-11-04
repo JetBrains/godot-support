@@ -31,7 +31,7 @@ import project.psi.util.ProjectAutoloadUtil
 @ChecklistItems(["GDScript/Resolve and navigation"])
 @TestApplication
 class GdPsiModelTest {
-    private val gd: GdModelFixture by gdModelFixture()
+    private val gd: GdModelFixture by gdModelFixture("gdscript")
 
     companion object {
         const val MyClass = "MyClass"

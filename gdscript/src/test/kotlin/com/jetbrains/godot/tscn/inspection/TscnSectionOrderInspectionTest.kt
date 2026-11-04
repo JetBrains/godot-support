@@ -1,55 +1,49 @@
-// Path: dotnet/Plugins/godot-support/gdscript/src/test/kotlin/com/jetbrains/godot/tscn/inspection/TscnSectionOrderInspectionTest.kt
-
 package com.jetbrains.godot.tscn.inspection
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import tscn.inspection.TscnSectionOrderInspection
-import kotlin.io.path.pathString
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["Scenes and resources/Inspections"])
-@RunWith(JUnit4::class)
-class TscnSectionOrderInspectionTest : BasePlatformTestCase() {
+@TestApplication
+class TscnSectionOrderInspectionTest {
 
-    override fun setUp() {
-        super.setUp()
-        myFixture.enableInspections(TscnSectionOrderInspection::class.java)
+    private val gd: GdFixture by gdLightFixture("tscn/inspection")
+
+    @BeforeEach
+    fun enableInspection() {
+        gd.fixture.enableInspections(TscnSectionOrderInspection::class.java)
     }
 
     @Test
     fun testConnectionBeforeNode() {
-        myFixture.testHighlighting("${getTestName(false)}.tscn")
+        gd.fixture.testHighlighting("ConnectionBeforeNode.tscn")
     }
 
     @Test
     fun testCorrectHeaderOrder() {
-        myFixture.testHighlighting("${getTestName(false)}.tscn")
+        gd.fixture.testHighlighting("CorrectHeaderOrder.tscn")
     }
 
     @Test
     fun testExtResourceBeforeGdScene() {
-        myFixture.testHighlighting("${getTestName(false)}.tscn")
+        gd.fixture.testHighlighting("ExtResourceBeforeGdScene.tscn")
     }
 
     @Test
     fun testMultipleOutOfOrderSections() {
-        myFixture.testHighlighting("${getTestName(false)}.tscn")
+        gd.fixture.testHighlighting("MultipleOutOfOrderSections.tscn")
     }
 
     @Test
     fun testNodeBeforeSubResource() {
-        myFixture.testHighlighting("${getTestName(false)}.tscn")
+        gd.fixture.testHighlighting("NodeBeforeSubResource.tscn")
     }
-
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/tscn/inspection").pathString
-    }
-
 }

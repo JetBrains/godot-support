@@ -5,14 +5,15 @@ import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.lang.LanguageFormatting
 import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.actionSystem.IdeActions.ACTION_EDITOR_BACKSPACE
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.editor.LogicalPosition
 import com.intellij.openapi.editor.ex.EditorSettingsExternalizable
 import com.intellij.psi.PsiFile
-import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.intellij.psi.codeStyle.CommonCodeStyleSettings
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.intellij.testFramework.common.timeoutRunBlocking
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import com.jetbrains.rider.test.annotations.Subsystem
@@ -20,74 +21,75 @@ import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.formatter.GdFormattingModelBuilder
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import kotlin.io.path.pathString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 /** Infrastructure copied from PyEditingTest */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Typing"])
-@RunWith(JUnit4::class)
-class GdEditingTest : BasePlatformTestCase() {
-    override fun setUp() {
-        super.setUp()
+@TestApplication
+class GdEditingTest {
+    private val gd: GdFixture by gdLightFixture("gdscript/editing")
+
+    @BeforeEach
+    fun registerFormatter() {
         LanguageFormatting.INSTANCE.addExplicitExtension(
-            GdLanguage, GdFormattingModelBuilder(), testRootDisposable
+            GdLanguage, GdFormattingModelBuilder(), gd.testRootDisposable
         )
     }
 
-    override fun getTestDataPath(): String =
-        getBaseTestDataPath().resolve("testData/gdscript").pathString
-
-    fun getCodeStyleSettings(): CodeStyleSettings = CodeStyle.getSettings(myFixture.project)
-
-    fun getCommonCodeStyleSettings(): CommonCodeStyleSettings = getCodeStyleSettings().getCommonSettings(GdLanguage)
-
-    fun getGdCodeStyleSettings(): GdCodeStyleSettings = getCodeStyleSettings().getCustomSettings(GdCodeStyleSettings::class.java)
+    fun getGdCodeStyleSettings(): GdCodeStyleSettings =
+        CodeStyle.getSettings(gd.project).getCustomSettings(GdCodeStyleSettings::class.java)
 
     private fun doEnterTest() {
-        val testName = "editing/" + getTestName(true)
-        myFixture.configureByFile("$testName.gd")
-        myFixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
-        myFixture.checkResultByFile("${testName}_after.gd")
+        val testName = gd.testName
+        gd.fixture.configureByFile("$testName.gd")
+        gd.fixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
+        gd.fixture.checkResultByFile("${testName}_after.gd")
     }
 
     private fun doBackspaceTest() {
-        val testName = "editing/" + getTestName(true)
-        myFixture.configureByFile("$testName.gd")
-        myFixture.performEditorAction(ACTION_EDITOR_BACKSPACE)
-        myFixture.checkResultByFile("${testName}_after.gd")
+        val testName = gd.testName
+        gd.fixture.configureByFile("$testName.gd")
+        gd.fixture.performEditorAction(ACTION_EDITOR_BACKSPACE)
+        gd.fixture.checkResultByFile("${testName}_after.gd")
     }
 
     private fun doTypingTest(character: Char) {
-        val testName = "editing/" + getTestName(true)
-        myFixture.configureByFile("$testName.gd")
-        myFixture.type(character)
-        myFixture.checkResultByFile("${testName}_after.gd")
+        val testName = gd.testName
+        gd.fixture.configureByFile("$testName.gd")
+        gd.fixture.type(character)
+        gd.fixture.checkResultByFile("${testName}_after.gd")
     }
 
     private fun doTypingTest(text: String) {
-        val testName = "editing/" + getTestName(true)
-        myFixture.configureByFile("$testName.gd")
-        myFixture.type(text)
-        myFixture.checkResultByFile("${testName}_after.gd")
+        val testName = gd.testName
+        gd.fixture.configureByFile("$testName.gd")
+        gd.fixture.type(text)
+        gd.fixture.checkResultByFile("${testName}_after.gd")
     }
 
     // Kept for the few multi-assertion tests below that exercise several offset/char pairs in one method.
     private fun doTestTyping(text: String, offset: Int, character: Char): String {
-        val file: PsiFile = myFixture.configureByText(GdFileType, text)
-        myFixture.getEditor().getCaretModel().moveToOffset(offset)
-        myFixture.type(character)
-        return myFixture.getDocument(file).getText()
+        val file: PsiFile = gd.fixture.configureByText(GdFileType, text)
+        timeoutRunBlocking {
+            withContext(Dispatchers.EDT) {
+                gd.fixture.getEditor().getCaretModel().moveToOffset(offset)
+                gd.fixture.type(character)
+            }
+        }
+        return gd.fixture.getDocument(file).getText()
     }
 
     // Kept for testRawStringAutomaticClosingQuotesRemoval (multi-step backspace).
     private fun doTestBackspace(before: String, after: String) {
-        myFixture.configureByText("test.gd", before)
-        myFixture.performEditorAction(ACTION_EDITOR_BACKSPACE)
-        myFixture.checkResult(after)
+        gd.fixture.configureByText("test.gd", before)
+        gd.fixture.performEditorAction(ACTION_EDITOR_BACKSPACE)
+        gd.fixture.checkResult(after)
     }
 
     /**
@@ -96,14 +98,20 @@ class GdEditingTest : BasePlatformTestCase() {
      * @param action what button to click (const from [IdeActions])
      */
     fun pressButton(action: String) {
-        CommandProcessor.getInstance().executeCommand(myFixture.getProject(), Runnable { myFixture.performEditorAction(action) }, "", null)
+        timeoutRunBlocking {
+            withContext(Dispatchers.EDT) {
+                CommandProcessor.getInstance().executeCommand(gd.fixture.getProject(), Runnable { gd.fixture.performEditorAction(action) }, "", null)
+            }
+        }
     }
 
     private fun doTestBackspace(fileName: String?, pos: LogicalPosition) {
-        myFixture.configureByFile("editing/$fileName.gd")
-        myFixture.getEditor().getCaretModel().moveToLogicalPosition(pos)
+        gd.fixture.configureByFile("$fileName.gd")
+        timeoutRunBlocking {
+            withContext(Dispatchers.EDT) { gd.fixture.getEditor().getCaretModel().moveToLogicalPosition(pos) }
+        }
         pressButton(ACTION_EDITOR_BACKSPACE)
-        myFixture.checkResultByFile("editing/${fileName}_after.gd", true)
+        gd.fixture.checkResultByFile("${fileName}_after.gd", true)
     }
 
     @Test
@@ -116,7 +124,7 @@ class GdEditingTest : BasePlatformTestCase() {
     fun testPairedQuotesInRawString() = doTypingTest('\'')  // PY-263
 
     @Test
-    @Ignore("TODO: requires lexer error-recovery for unclosed strings")
+    @Disabled("TODO: requires lexer error-recovery for unclosed strings")
     fun testQuotesInString() = doTypingTest('"')  // PY-5041
 
     @Test
@@ -146,7 +154,7 @@ class GdEditingTest : BasePlatformTestCase() {
     fun testAutoCloseTriple() = doTypingTest('"')  // PY-1779
 
     @Test
-    @Ignore("[quotes]")
+    @Disabled("[quotes]")
     fun testAutoRemoveTriple() {  // PY-1779
         doTestBackspace("closedTripleQuoteBackspace", LogicalPosition(0, 11))
     }
@@ -177,13 +185,13 @@ class GdEditingTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("[quotes]")
+    @Disabled("[quotes]")
     fun testRawStringAutomaticClosingQuotesRemoval() {  // PY-35461
         doTestBackspace("var s = r'<caret>'", "var s = r")
         doTestBackspace("var s = r'''<caret>'''", "var s = r")
     }
 
-    @Ignore("[parsing] [triplequotes]")
+    @Disabled("[parsing] [triplequotes]")
     @Test
     fun testEnterInTripleQuotedRawStringRightBeforeClosingQuotes() = doEnterTest()  // PY-32873
 
@@ -206,19 +214,21 @@ class GdEditingTest : BasePlatformTestCase() {
     fun testBackspaceDeindent() = doBackspaceTest()
 
     @Test
-    fun testGreedyBackspace() {  // PY-254
+    fun testGreedyBackspace() = timeoutRunBlocking { // PY-254
         val settings = EditorSettingsExternalizable.getInstance()
         val oldVSpaceValue = settings.isVirtualSpace
         try {
             settings.isVirtualSpace = true
             doTestBackspace("greedyBackspace", LogicalPosition(4, 8))
         } finally {
-            settings.isVirtualSpace = oldVSpaceValue
+            withContext(Dispatchers.EDT) {
+                settings.isVirtualSpace = oldVSpaceValue
+            }
         }
     }
 
     @Test
-    @Ignore("[smart-backspace]")
+    @Disabled("[smart-backspace]")
     fun testUnindentBackspace() {  // PY-853
         doTestBackspace("unindentBackspace", LogicalPosition(1, 1))
     }
@@ -230,7 +240,7 @@ class GdEditingTest : BasePlatformTestCase() {
 
     // --- Comments ---
 
-    @Ignore("[comment-continuation]")
+    @Disabled("[comment-continuation]")
     @Test
     fun testEnterInLineComment() = doEnterTest()  // PY-1739
 
@@ -284,7 +294,7 @@ class GdEditingTest : BasePlatformTestCase() {
     @Test
     fun testEnterEscapedQuote() = doEnterTest()
 
-    @Ignore("[parsing] - the result is not parsed correctly")
+    @Disabled("[parsing] - the result is not parsed correctly")
     @Test
     fun testEnterEscapedBackslash() = doEnterTest()
 
@@ -337,7 +347,7 @@ class GdEditingTest : BasePlatformTestCase() {
     @Test
     fun testEnterInMatch() = doEnterTest()
 
-    @Ignore("[backslash]")
+    @Disabled("[backslash]")
     @Test
     fun testEnterBeforeString() = doEnterTest()  // PY-3673
 
@@ -369,7 +379,7 @@ class GdEditingTest : BasePlatformTestCase() {
     @Test
     fun testDedentAfterLastStatement() = doEnterTest()
 
-    @Ignore("[backslash]")
+    @Disabled("[backslash]")
     @Test
     fun testEnterInStatement() = doEnterTest()
 
@@ -400,23 +410,23 @@ class GdEditingTest : BasePlatformTestCase() {
     @Test
     fun testEnterInIdentifier() = doEnterTest()
 
-    @Ignore("[backslash]")
+    @Disabled("[backslash]")
     @Test
     fun testParenthesizedInIf() = doEnterTest()
 
-    @Ignore("[backslash]")
+    @Disabled("[backslash]")
     @Test
     fun testEnterAfterFuncKeywordInFunction() = doEnterTest()
 
-    @Ignore("[backslash]")
+    @Disabled("[backslash]")
     @Test
     fun testEnterBeforeColonInFunction() = doEnterTest()
 
-    @Ignore("[backslash]")
+    @Disabled("[backslash]")
     @Test
     fun testEnterBeforeArrowInFunction() = doEnterTest()  // PY-15469
 
-    @Ignore("[backslash]")
+    @Disabled("[backslash]")
     @Test
     fun testEnterAfterArrowInFunction() = doEnterTest()  // PY-15469
 
@@ -450,38 +460,38 @@ class GdEditingTest : BasePlatformTestCase() {
 
     // --- Enter in incomplete literals (PY-10972) ---
 
-    @Ignore("Requires [parser] changes")
+    @Disabled("Requires [parser] changes")
     @Test
     fun testEnterInIncompleteListLiteral() {  // PY-10972
         doTypingTest("\n\"baz\"")
     }
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testEnterInIncompleteListLiteral_Aligned() {  // PY-10972
         doTypingTest("\n\"baz\"")
     }
 
-    @Ignore("Requires [parser] changes")
+    @Disabled("Requires [parser] changes")
     @Test
     fun testEnterInIncompleteDictLiteral() {  // PY-10972
         doTypingTest("\n\"baz\"")
     }
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testEnterInIncompleteDictLiteral_Aligned() {  // PY-10972
         doTypingTest("\n\"baz\"")
     }
 
-    @Ignore("Requires [parser] changes")
+    @Disabled("Requires [parser] changes")
     @Test
     fun testEnterInIncompleteNestedListLiteral() {  // PY-10972
         doTypingTest("\n\"baz\"")
     }
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testEnterInIncompleteNestedListLiteral_Aligned() {  // PY-10972
         doTypingTest("\n\"baz\"")
     }
@@ -493,15 +503,15 @@ class GdEditingTest : BasePlatformTestCase() {
         val savedValue = CodeInsightSettings.getInstance().TAB_EXITS_BRACKETS_AND_QUOTES
         CodeInsightSettings.getInstance().TAB_EXITS_BRACKETS_AND_QUOTES = true
         try {
-            myFixture.configureByText(
+            gd.fixture.configureByText(
                 "tabOutFromStringLiteral.gd",
                 "func some():\n\tprint<caret>"
             )
-            myFixture.type("(\"")
-            myFixture.performEditorAction(IdeActions.ACTION_BRACE_OR_QUOTE_OUT)
-            myFixture.checkResult("func some():\n\tprint(\"\"<caret>)")
-            myFixture.performEditorAction(IdeActions.ACTION_BRACE_OR_QUOTE_OUT)
-            myFixture.checkResult("func some():\n\tprint(\"\")<caret>")
+            gd.fixture.type("(\"")
+            gd.fixture.performEditorAction(IdeActions.ACTION_BRACE_OR_QUOTE_OUT)
+            gd.fixture.checkResult("func some():\n\tprint(\"\"<caret>)")
+            gd.fixture.performEditorAction(IdeActions.ACTION_BRACE_OR_QUOTE_OUT)
+            gd.fixture.checkResult("func some():\n\tprint(\"\")<caret>")
         } finally {
             CodeInsightSettings.getInstance().TAB_EXITS_BRACKETS_AND_QUOTES = savedValue
         }
@@ -510,7 +520,7 @@ class GdEditingTest : BasePlatformTestCase() {
     // --- Overtype colons ---
 
     @Test
-    @Ignore("[colon-overtype]")
+    @Disabled("[colon-overtype]")
     fun testOvertypeColon() = doTypingTest(":")
 
     @Test
@@ -538,7 +548,7 @@ class GdEditingTest : BasePlatformTestCase() {
         doTypingTest('\n')
     }
 
-    @Ignore("[backslash]")
+    @Disabled("[backslash]")
     @Test
     fun testNoBackslashOnEnterInGroupPattern() {  // PY-49080
         doTypingTest('\n')
@@ -550,18 +560,18 @@ class GdEditingTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testNoBackslashOnEnterInArrayPattern_Aligned() {  // PY-49080
         doEnterTest()
     }
 
-    @Ignore("Requires [parser] changes - no way to know we are in dict decl with current parser error handling")
+    @Disabled("Requires [parser] changes - no way to know we are in dict decl with current parser error handling")
     @Test
     fun testEnterInDictKey() {
         doEnterTest()
     }
 
-    @Ignore("Requires [parser] changes - no way to know we are in dict decl with current parser error handling")
+    @Disabled("Requires [parser] changes - no way to know we are in dict decl with current parser error handling")
     @Test
     fun testEnterInIncompleteDictKey() {
         doEnterTest()
@@ -573,7 +583,7 @@ class GdEditingTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testNoBackslashOnEnterInDictPattern_Aligned() {  // PY-49080
         doTypingTest('\n')
     }
@@ -584,7 +594,7 @@ class GdEditingTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testNoBackslashOnEnterInStringLiteralInsideArrayPattern_Aligned() {  // PY-49080
         doTypingTest('\n')
     }
@@ -596,7 +606,7 @@ class GdEditingTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testNoBackslashOnEnterInStringLiteralInsideDictPattern_Aligned() {  // PY-49080
         doTypingTest('\n')
     }
@@ -605,14 +615,14 @@ class GdEditingTest : BasePlatformTestCase() {
     fun testBackslashOnEnterInTopLevelStringLiteralPattern() = doEnterTest()  // PY-49080
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testBackslashOnEnterInTopLevelStringLiteralPattern_Aligned() = doEnterTest()  // PY-49080
 
     // --- Parenthesized `with` Enter (PY-42200) ---
 
     // --- Parenthesise on Enter (`PARENTHESISE_ON_ENTER`) ---
 
-    @Ignore("[parenthesise]")
+    @Disabled("[parenthesise]")
     @Test
     fun testParenthesiseBinaryExpression() {
         getGdCodeStyleSettings().PARENTHESISE_ON_ENTER = true
@@ -620,13 +630,13 @@ class GdEditingTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testParenthesiseBinaryExpression_Aligned() {
         getGdCodeStyleSettings().PARENTHESISE_ON_ENTER = true
         doEnterTest()
     }
 
-    @Ignore("[parenthesise]")
+    @Disabled("[parenthesise]")
     @Test
     fun testParenthesiseCallChain() {
         getGdCodeStyleSettings().PARENTHESISE_ON_ENTER = true
@@ -634,13 +644,13 @@ class GdEditingTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testParenthesiseCallChain_Aligned() {
         getGdCodeStyleSettings().PARENTHESISE_ON_ENTER = true
         doEnterTest()
     }
 
-    @Ignore("[parenthesise]")
+    @Disabled("[parenthesise]")
     @Test
     fun testParenthesiseConditionalExpression() {
         getGdCodeStyleSettings().PARENTHESISE_ON_ENTER = true
@@ -648,7 +658,7 @@ class GdEditingTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testParenthesiseConditionalExpression_Aligned() {
         getGdCodeStyleSettings().PARENTHESISE_ON_ENTER = true
         doEnterTest()
@@ -666,7 +676,7 @@ class GdEditingTest : BasePlatformTestCase() {
         doEnterTest()
     }
 
-    @Ignore("[backslash]")
+    @Disabled("[backslash]")
     @Test
     fun testParenthesiseArrayPattern() {
         getGdCodeStyleSettings().PARENTHESISE_ON_ENTER = true
@@ -674,13 +684,13 @@ class GdEditingTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     fun testParenthesiseArrayPattern_Aligned() {
         getGdCodeStyleSettings().PARENTHESISE_ON_ENTER = true
         doEnterTest()
     }
 
-    @Ignore("[parenthesise]")
+    @Disabled("[parenthesise]")
     @Test
     fun testParenthesiseAttributeAccessInCallChain() {
         getGdCodeStyleSettings().PARENTHESISE_ON_ENTER = true
@@ -745,7 +755,7 @@ class GdEditingTest : BasePlatformTestCase() {
 
     // --- Section D: ## doc-comments ---
 
-    @Ignore("[comment-continuation]")
+    @Disabled("[comment-continuation]")
     @Test
     fun testEnterContinuesDocCommentOnNonBlankLine() = doEnterTest()
 
@@ -753,7 +763,7 @@ class GdEditingTest : BasePlatformTestCase() {
     @Test
     fun testEnterDoesNotContinueDocCommentOnBareMarker() = doEnterTest()
 
-    @Ignore("[comment-continuation]")
+    @Disabled("[comment-continuation]")
     @Test
     fun testEnterAfterDocCommentBlockBeforeFunc() = doEnterTest()
 
@@ -772,9 +782,9 @@ class GdEditingTest : BasePlatformTestCase() {
 
     @Test
     fun testTabAtStartOfEmptyLineInsertsTab() {
-        myFixture.configureByText("a.gd", "func main():\n<caret>\n\tpass")
+        gd.fixture.configureByText("a.gd", "func main():\n<caret>\n\tpass")
         pressButton(IdeActions.ACTION_EDITOR_TAB)
-        myFixture.checkResult("func main():\n\t<caret>\n\tpass")
+        gd.fixture.checkResult("func main():\n\t<caret>\n\tpass")
     }
 
     @Test
@@ -833,7 +843,7 @@ class GdEditingTest : BasePlatformTestCase() {
     @Test
     fun testEnterAfterBareRegionDoesNotContinueComment() = doEnterTest()
 
-    @Ignore("[comment-continuation]")
+    @Disabled("[comment-continuation]")
     @Test
     fun testEnterInsideRegionBodyContinuesRegularComments() = doEnterTest()
 
@@ -853,7 +863,7 @@ class GdEditingTest : BasePlatformTestCase() {
     @Test
     fun testEnterAfterEnumMemberCommaPreservesIndent() = doEnterTest()
 
-    @Ignore("[trailing-comma]")
+    @Disabled("[trailing-comma]")
     @Test
     fun testEnterAfterLastEnumMemberInsertsTrailingComma() = doEnterTest()
 
@@ -884,7 +894,7 @@ class GdEditingTest : BasePlatformTestCase() {
     @Test
     fun testEnterAfterLuaDictKeyEquals() = doEnterTest()
 
-    @Ignore("Requires [parser] changes")
+    @Disabled("Requires [parser] changes")
     @Test
     fun testEnterInIncompleteLuaStyleDictKey() {
         doTypingTest("\n")
@@ -895,11 +905,11 @@ class GdEditingTest : BasePlatformTestCase() {
 
     // --- Section T: is not / not in operator-pair Enter ---
 
-    @Ignore("[backslash]")
+    @Disabled("[backslash]")
     @Test
     fun testEnterAfterIsNotKeywordSplitsWithBackslash() = doEnterTest()
 
-    @Ignore("[backslash]")
+    @Disabled("[backslash]")
     @Test
     fun testEnterAfterNotInKeywordSplitsWithBackslash() = doEnterTest()
 }

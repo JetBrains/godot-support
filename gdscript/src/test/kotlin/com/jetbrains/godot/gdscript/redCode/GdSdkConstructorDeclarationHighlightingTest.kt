@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Highlighting"])
 @TestApplication
 class GdSdkConstructorDeclarationHighlightingTest {
-    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/highlighting")
 
     @Test
     fun testNavigatingToSdkConstructorDoesNotBreakIdentifierHighlighting() {

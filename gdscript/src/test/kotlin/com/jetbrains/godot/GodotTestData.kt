@@ -1,10 +1,7 @@
 package com.jetbrains.godot
 
 import com.intellij.openapi.application.PathManager
-import junit.framework.TestCase
 import java.nio.file.Path
-
-fun TestCase.getBaseTestDataPath(): Path = getBaseTestDataPath(javaClass)
 
 fun getBaseTestDataPath(contextClass: Class<*>): Path {
 

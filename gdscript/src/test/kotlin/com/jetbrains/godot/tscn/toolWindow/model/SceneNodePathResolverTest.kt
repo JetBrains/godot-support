@@ -1,15 +1,16 @@
 package com.jetbrains.godot.tscn.toolWindow.model
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import tscn.toolWindow.model.SceneNodePathResolver
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["Scenes and resources/Scene tree tool window"])
-class SceneNodePathResolverTest : BasePlatformTestCase() {
+class SceneNodePathResolverTest {
     private data class Case(
         val start: String,
         val end: String,
@@ -18,6 +19,7 @@ class SceneNodePathResolverTest : BasePlatformTestCase() {
         val expected: String
     )
 
+    @Test
     fun testConstructRelativePath_cases() {
         val cases = listOf(
             Case(start = "", end = ".", dragNode = "Nested1", srcNode = "Root", expected = $$"$Nested1"),
@@ -211,11 +213,12 @@ class SceneNodePathResolverTest : BasePlatformTestCase() {
                     false,
                     SceneNodePathResolver.TargetLanguage.GdScript
                 )
-            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
+            assertions.add(fun() { assertEquals(c.expected, actual, "Case #$i failed: $c") })
         }
         assertAll(assertions)
     }
 
+    @Test
     fun testConstructRelativePathNumberedNode_cases() {
         val cases = listOf(
             Case(
@@ -277,7 +280,7 @@ class SceneNodePathResolverTest : BasePlatformTestCase() {
                 isUnique = false,
                 SceneNodePathResolver.TargetLanguage.GdScript
             )
-            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
+            assertions.add(fun() { assertEquals(c.expected, actual, "Case #$i failed: $c") })
         }
         casesUnique.forEachIndexed { i, c ->
             val actual = SceneNodePathResolver.constructRelativePath(
@@ -285,11 +288,12 @@ class SceneNodePathResolverTest : BasePlatformTestCase() {
                 isUnique = true,
                 SceneNodePathResolver.TargetLanguage.GdScript
             )
-            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
+            assertions.add(fun() { assertEquals(c.expected, actual, "Case #$i failed: $c") })
         }
         assertAll(assertions)
     }
 
+    @Test
     fun testConstructRelativePathNumberedNodeCSPath_cases() {
         val cases = listOf(
             Case(
@@ -351,7 +355,7 @@ class SceneNodePathResolverTest : BasePlatformTestCase() {
                 isUnique = false,
                 SceneNodePathResolver.TargetLanguage.CSharp
             )
-            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
+            assertions.add(fun() { assertEquals(c.expected, actual, "Case #$i failed: $c") })
         }
         casesUnique.forEachIndexed { i, c ->
             val actual = SceneNodePathResolver.constructRelativePath(
@@ -359,11 +363,12 @@ class SceneNodePathResolverTest : BasePlatformTestCase() {
                 isUnique = true,
                 SceneNodePathResolver.TargetLanguage.CSharp
             )
-            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
+            assertions.add(fun() { assertEquals(c.expected, actual, "Case #$i failed: $c") })
         }
         assertAll(assertions)
     }
 
+    @Test
     fun testConstructRelativeCSPath_cases() {
         val cases = listOf(
             Case(
@@ -396,7 +401,7 @@ class SceneNodePathResolverTest : BasePlatformTestCase() {
                 isUnique = false,
                 SceneNodePathResolver.TargetLanguage.CSharp
             )
-            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
+            assertions.add(fun() { assertEquals(c.expected, actual, "Case #$i failed: $c") })
         }
         assertAll(assertions)
     }

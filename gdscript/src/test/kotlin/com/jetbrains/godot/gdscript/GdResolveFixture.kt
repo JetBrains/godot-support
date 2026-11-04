@@ -1,60 +1,65 @@
-package com.jetbrains.godot.gdscript.resolve
+package com.jetbrains.godot.gdscript
 
 import com.intellij.model.Symbol
 import com.intellij.model.psi.PsiSymbolReference
+import com.intellij.polySymbols.testFramework.HybridFixtureContext
 import com.intellij.polySymbols.testFramework.psiSymbolReferences
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.intellij.testFramework.junit5.fixture.TestFixture
+import org.jetbrains.annotations.TestOnly
+import org.junit.jupiter.api.Assertions.assertEquals
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
-import kotlin.io.path.pathString
 import kotlin.io.path.readText
 
 /**
- * A small base for resolve tests that:
- * - sets test data path to testData/gdscript/resolve
+ * Creates a [GdResolveFixture] for the test data directory [testCasePath]. Declare the result as an instance property.
+ */
+@TestOnly
+fun gdResolveFixture(testCasePath: String): TestFixture<GdResolveFixture> =
+    gdLightFixture { GdResolveFixture(it, testCasePath) }
+
+/**
+ * A [GdFixture] for resolve tests that:
+ * - sets test data path to testData/gdscript/resolve (via the [testCasePath] fixture argument)
  * - provides helpers to load files by test name and compare with a golden file
  * - exposes minimal resolve utilities aimed at reference-at-offset scenarios
  * - provides utilities to walk a file, collect all references, and resolve them
  */
-abstract class ResolveTestBase : BasePlatformTestCase() {
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/resolve").pathString
-    }
+open class GdResolveFixture(context: HybridFixtureContext, testCasePath: String) : GdFixture(context, testCasePath) {
 
-    protected fun loadByTestName(): PsiFile = myFixture.configureByFile(getTestName(false) + ".gd")
+    fun loadByTestName(): PsiFile = fixture.configureByFile(getTestName(false) + ".gd")
 
     /**
      * Loads test files for the current test name.
      * If a subdirectory named exactly as the test (e.g., testName/) exists under testData/..., all .gd files from it
      * are loaded (sorted by filename) and returned. Otherwise, falls back to a single file testName.gd.
      */
-    protected fun loadFilesByTestName(): Array<PsiFile> {
-        val basePath = myFixture.testDataPath
+    fun loadFilesByTestName(): Array<PsiFile> {
+        val basePath = fixture.testDataPath
         val testName = getTestName(false)
         val dir = Path.of(basePath, testName)
         if (dir.isDirectory()) {
             val gdFiles = dir.listDirectoryEntries().filter { it.isRegularFile() && it.name.endsWith(".gd") }.sortedBy { it.name }
             if (gdFiles.isNotEmpty()) {
                 val relPaths = gdFiles.map { testName + "/" + it.name }.toTypedArray()
-                return myFixture.configureByFiles(*relPaths)
+                return fixture.configureByFiles(*relPaths)
             }
         }
         return arrayOf(loadByTestName())
     }
 
-    protected fun readGold(): String {
-        val expectedPath = myFixture.getTestDataPath() + "/" + getTestName(false) + ".txt"
+    fun readGold(): String {
+        val expectedPath = fixture.testDataPath + "/" + getTestName(false) + ".txt"
         return Path.of(expectedPath).readText()
     }
 
-    protected fun assertGold(actual: String) {
+    fun assertGold(actual: String) {
         assertEquals(readGold().trim(), actual.trim())
     }
 
@@ -66,7 +71,7 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
      *
      *   1. [`offset] name -> resolved:TargetName
      */
-    protected fun dumpResolvesWithInlineMarkers(file: PsiFile): String {
+    fun dumpResolvesWithInlineMarkers(file: PsiFile): String {
         data class Item(
             val start: Int,
             val end: Int,
@@ -83,7 +88,7 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
                     val baseOffset = element.textRange.startOffset
                     for (ref in refs) {
                         val refStart = baseOffset + ref.rangeInElement.startOffset
-                        val target = kotlin.runCatching { ref.resolveReference() }
+                        val target = runCatching { ref.resolveReference() }
                             .getOrNull()
                             ?.singleOrNull()
                         prelim += Triple(refStart, ref, target)
@@ -93,7 +98,7 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
             }
         })
         val items = mutableListOf<Item>()
-        for ((start, ref, target) in prelim.sortedBy { it.first }) {
+        for ([start, ref, target] in prelim.sortedBy { it.first }) {
             val element = ref.element
             val absStart = start
             val absEnd = element.textRange.startOffset + ref.rangeInElement.endOffset
@@ -126,7 +131,7 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
     /**
      * Dump resolves for multiple files. Each file is separated by a header with its name for stability.
      */
-    protected fun dumpResolvesForFiles(files: Array<PsiFile>): String {
+    fun dumpResolvesForFiles(files: Array<PsiFile>): String {
         val sb = StringBuilder()
         files.sortedBy { it.name }.forEachIndexed { idx, file ->
             if (idx > 0) sb.append("\n\n")
@@ -136,9 +141,9 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
         return sb.toString()
     }
 
-    protected fun loadFilesFromSubdirAsProjectRoot(): Array<PsiFile> {
+    fun loadFilesFromSubdirAsProjectRoot(): Array<PsiFile> {
         val testName = getTestName(false)
-        val dir = myFixture.copyDirectoryToProject(testName, "")
-        return myFixture.configureByFiles(*dir.children.map { it.name }.toTypedArray())
+        val dir = fixture.copyDirectoryToProject(testName, "")
+        return fixture.configureByFiles(*dir.children.map { it.name }.toTypedArray())
     }
 }

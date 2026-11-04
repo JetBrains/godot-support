@@ -1,17 +1,20 @@
 package com.jetbrains.godot.gdscript.parser
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.openapi.application.runReadActionBlocking
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Lexer and parser"])
-@RunWith(JUnit4::class)
-class GdParsingRegressionTest : BasePlatformTestCase() {
+@TestApplication
+class GdParsingRegressionTest {
+    private val gd: GdFixture by gdLightFixture("gdscript/parser")
 
     // Regression: ensure parsing completes for inline lambda with multiple semicolon-separated statements
     @Test // tried to set the timeout, but it always failed to finish in time
@@ -23,8 +26,8 @@ class GdParsingRegressionTest : BasePlatformTestCase() {
             |	error_callback = (func(str): any_errors["err"] = true; error_callback.call(str))
             |""".trimMargin()
 
-        val psi = myFixture.configureByText("sample.gd", code)
+        val psi = gd.fixture.configureByText("sample.gd", code)
         // Access PSI to force full parse tree construction
-        assertNotNull(psi.firstChild)
+        assertNotNull(runReadActionBlocking { psi.firstChild })
     }
 }

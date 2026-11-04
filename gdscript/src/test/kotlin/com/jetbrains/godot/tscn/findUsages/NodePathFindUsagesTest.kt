@@ -20,7 +20,7 @@ import tscn.psi.TscnNodeHeader
 @ChecklistItems(["Scenes and resources/Find usages"])
 @TestApplication
 class NodePathFindUsagesTest {
-    private val gd: GdSdkFixture by gdSdkFixture("completion")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/completion")
 
     /**
      * A scene node carries no PolySymbol declaration of its own, so Find Usages started from its

@@ -1,13 +1,15 @@
 package com.jetbrains.godot.gdscript.library
 
-import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.util.Version
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
@@ -21,9 +23,13 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -41,8 +47,10 @@ import kotlin.time.Duration.Companion.milliseconds
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/SDK"])
-@RunWith(JUnit4::class)
-class GdCoreSdkServiceTest : BasePlatformTestCase() {
+@TestApplication
+class GdCoreSdkServiceTest {
+
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/embeddedDocs")
 
     // A version that no real Godot build uses, so the test cannot disturb a real documentation set.
     private val version: Version = Version.parseVersion("99.7")!!
@@ -52,24 +60,17 @@ class GdCoreSdkServiceTest : BasePlatformTestCase() {
 
     private lateinit var binary: Path
 
-    override fun runInDispatchThread(): Boolean = false
-
-    override fun setUp() {
-        super.setUp()
+    @BeforeEach
+    fun setUp() {
         removeCoreDirectory()
         binary = Files.createTempFile("gd-core-service", ".bin")
         Files.write(binary, ByteArray(512) { 0x55 } + zlib(fixtureBlob()))
     }
 
-    override fun tearDown() {
-        try {
-            Files.deleteIfExists(binary)
-            removeCoreDirectory()
-        } catch (e: Throwable) {
-            addSuppressedException(e)
-        } finally {
-            super.tearDown()
-        }
+    @AfterEach
+    fun tearDown() {
+        Files.deleteIfExists(binary)
+        removeCoreDirectory()
     }
 
     @Test
@@ -78,15 +79,15 @@ class GdCoreSdkServiceTest : BasePlatformTestCase() {
         // service compares an empty list with four files and reports a create event for each one.
         Files.createDirectories(coreSdkDir)
         val vfsDirectory = LocalFileSystem.getInstance().refreshAndFindFileByNioFile(coreSdkDir)
-        assertNotNull("The core directory must enter the VFS.", vfsDirectory)
-        assertEquals("The core directory must start empty.", 0, vfsDirectory!!.children.size)
+        assertNotNull(vfsDirectory, "The core directory must enter the VFS.")
+        assertEquals(0, vfsDirectory!!.children.size, "The core directory must start empty.")
 
         val stamp = GdSdkIntegrityValidator.coreStamp(version, binary)!!
         val running = AtomicReference<Job?>(null)
         val seen = java.util.concurrent.CopyOnWriteArrayList<String>()
         // The VFS path uses '/' on every OS, so it matches the event paths also on Windows.
         val directoryPath = vfsDirectory.path
-        ApplicationManager.getApplication().messageBus.connect(testRootDisposable)
+        ApplicationManager.getApplication().messageBus.connect(gd.testRootDisposable)
             .subscribe(VirtualFileManager.VFS_CHANGES, object : BulkFileListener {
                 override fun after(events: List<VFileEvent>) {
                     // The event arrives while the service makes the new set visible, which is after the
@@ -113,11 +114,11 @@ class GdCoreSdkServiceTest : BasePlatformTestCase() {
             cancelled = true
         }
 
-        assertTrue("The run must be cancelled while the new set becomes visible. Seen events: $seen", cancelled)
-        assertTrue("The write must have happened, or the test misses the window.", Files.exists(coreSdkDir.resolve("Node.xml")))
+        assertTrue(cancelled, "The run must be cancelled while the new set becomes visible. Seen events: $seen")
+        assertTrue(Files.exists(coreSdkDir.resolve("Node.xml")), "The write must have happened, or the test misses the window.")
         assertFalse(
-            "A cancelled run must leave the stamp invalid, so a later run retries.",
             GdSdkIntegrityValidator.hasValidCoreStamp(stampFile, stamp),
+            "A cancelled run must leave the stamp invalid, so a later run retries.",
         )
     }
 
@@ -133,8 +134,8 @@ class GdCoreSdkServiceTest : BasePlatformTestCase() {
         }
 
         // One call writes the set and the stamp. The other waits for the lock and then sees the valid stamp.
-        assertEquals("Exactly one call must write: $results", 1, results.count { it == GdCoreSdkService.Result.WRITTEN })
-        assertEquals("Exactly one call must find the set up to date: $results", 1, results.count { it == GdCoreSdkService.Result.UP_TO_DATE })
+        assertEquals(1, results.count { it == GdCoreSdkService.Result.WRITTEN }, "Exactly one call must write: $results")
+        assertEquals(1, results.count { it == GdCoreSdkService.Result.UP_TO_DATE }, "Exactly one call must find the set up to date: $results")
         assertTrue(GdSdkIntegrityValidator.hasValidCoreStamp(stampFile, stamp))
     }
 
@@ -153,8 +154,8 @@ class GdCoreSdkServiceTest : BasePlatformTestCase() {
             }
 
             assertEquals(GdCoreSdkService.Result.WRITTEN, result)
-            assertTrue("A degraded extraction must delete nothing.", existing.all { Files.exists(it) })
-            assertTrue("The new files must land.", Files.exists(coreSdkDir.resolve("Node.xml")))
+            assertTrue(existing.all { Files.exists(it) }, "A degraded extraction must delete nothing.")
+            assertTrue(Files.exists(coreSdkDir.resolve("Node.xml")), "The new files must land.")
             assertTrue(GdSdkIntegrityValidator.hasValidCoreStamp(stampFile, stamp))
         }
     }
@@ -176,9 +177,9 @@ class GdCoreSdkServiceTest : BasePlatformTestCase() {
                     GdCoreSdkService.getInstance().ensureCoreDocs(version, degraded)
                 }
 
-                assertEquals("The first run must publish what it has.", GdCoreSdkService.Result.WRITTEN, first)
-                assertEquals("The second run must find the stamp valid, so no run repeats the scan.", GdCoreSdkService.Result.UP_TO_DATE, second)
-                assertTrue("The earlier files must stay.", existing.all { Files.exists(it) })
+                assertEquals(GdCoreSdkService.Result.WRITTEN, first, "The first run must publish what it has.")
+                assertEquals(GdCoreSdkService.Result.UP_TO_DATE, second, "The second run must find the stamp valid, so no run repeats the scan.")
+                assertTrue(existing.all { Files.exists(it) }, "The earlier files must stay.")
                 assertTrue(Files.exists(coreSdkDir.resolve("Node.xml")))
             }
         }

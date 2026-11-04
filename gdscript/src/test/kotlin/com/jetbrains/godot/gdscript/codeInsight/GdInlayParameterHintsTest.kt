@@ -1,17 +1,19 @@
 package com.jetbrains.godot.gdscript.codeInsight
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Inlay hints"])
-@RunWith(JUnit4::class)
-class GdInlayParameterHintsTest : BasePlatformTestCase() {
+@TestApplication
+class GdInlayParameterHintsTest {
+
+    private val gd: GdFixture by gdLightFixture("gdscript/codeInsight")
 
     @Test
     fun testInlayHintsForSimpleFunctionCall() {
@@ -22,13 +24,13 @@ class GdInlayParameterHintsTest : BasePlatformTestCase() {
             |func test() -> void:
             |	foo(<hint text="a:"/>1, <hint text="b:"/>"hello")
         """.trimMargin()
-        myFixture.configureByText("test.gd", code)
-        myFixture.testInlays()
+        gd.fixture.configureByText("test.gd", code)
+        gd.fixture.testInlays()
     }
 
     @Test
     fun testInlayHintsForQualifiedMethodCall() {
-        myFixture.addFileToProject("TestInput.gd", """
+        gd.fixture.addFileToProject("TestInput.gd", """
             class_name TestInput
 
             static func get_vector1(negative_x: StringName, positive_x: StringName, negative_y: StringName, positive_y: StringName, deadzone: float = -1.0) -> Vector2:
@@ -39,8 +41,8 @@ class GdInlayParameterHintsTest : BasePlatformTestCase() {
             |func info() -> void:
             |	TestInput.get_vector1(<hint text="negative_x:"/>"0", <hint text="positive_x:"/>"1", <hint text="negative_y:"/>"1", <hint text="positive_y:"/>"1")
         """.trimMargin()
-        myFixture.configureByText("Test.gd", code)
-        myFixture.testInlays()
+        gd.fixture.configureByText("Test.gd", code)
+        gd.fixture.testInlays()
     }
 
     @Test
@@ -52,8 +54,8 @@ class GdInlayParameterHintsTest : BasePlatformTestCase() {
             |func test() -> void:
             |	my_func(<hint text="a:"/>1, <hint text="b:"/>2, 3, 4, 5)
         """.trimMargin()
-        myFixture.configureByText("test.gd", code)
-        myFixture.testInlays()
+        gd.fixture.configureByText("test.gd", code)
+        gd.fixture.testInlays()
     }
 
     @Test
@@ -69,8 +71,8 @@ class GdInlayParameterHintsTest : BasePlatformTestCase() {
             |	func test():
             |		var w2 := WithInit.new(<hint text="a:"/>1)
         """.trimMargin()
-        myFixture.configureByText("test.gd", code)
-        myFixture.testInlays()
+        gd.fixture.configureByText("test.gd", code)
+        gd.fixture.testInlays()
     }
 
 }

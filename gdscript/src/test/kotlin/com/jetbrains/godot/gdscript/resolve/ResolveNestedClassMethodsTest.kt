@@ -1,20 +1,30 @@
 package com.jetbrains.godot.gdscript.resolve
 
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.polySymbols.testFramework.psiSymbolReferences
 import com.intellij.polySymbols.testFramework.resolveToSymbols
 import com.intellij.polySymbols.utils.PolySymbolDeclaredInPsi
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.junit5.TestApplication
 import com.intellij.util.asSafely
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdRefIdRef
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Resolve and navigation"])
-class ResolveNestedClassMethodsTest : BasePlatformTestCase() {
+@TestApplication
+class ResolveNestedClassMethodsTest {
+    private val gd: GdFixture by gdLightFixture("gdscript/resolve")
 
+    @Test
     fun testResolveMethodsOnNestedClasses() {
         val code = """
             |class_name OuterClass
@@ -33,27 +43,28 @@ class ResolveNestedClassMethodsTest : BasePlatformTestCase() {
             |                    pass
         """.trimMargin()
 
-        val file = myFixture.configureByText("NestedResolve.gd", code)
+        val file = gd.fixture.configureByText("NestedResolve.gd", code)
 
-        // Caret at ppa1 and resolve
-        val offsetPpa1 = file.text.indexOf("ppa1") + 2 // inside identifier
-        val elementPpa1 = file.findElementAt(offsetPpa1)!!.parent as GdRefIdRef
-        val declPpa1 = elementPpa1.psiSymbolReferences().resolveToSymbols().firstOrNull()
-            ?.asSafely<PolySymbolDeclaredInPsi>()
-            ?.sourceElement
-        assertNotNull("ppa1 should resolve", declPpa1)
-        assertTrue(declPpa1?.parent is GdMethodDeclTl)
-        assertEquals("ppa1", (declPpa1?.parent as GdMethodDeclTl).getName())
+        runReadActionBlocking {
+            // Caret at ppa1 and resolve
+            val offsetPpa1 = file.text.indexOf("ppa1") + 2 // inside identifier
+            val elementPpa1 = file.findElementAt(offsetPpa1)!!.parent as GdRefIdRef
+            val declPpa1 = elementPpa1.psiSymbolReferences().resolveToSymbols().firstOrNull()
+                ?.asSafely<PolySymbolDeclaredInPsi>()
+                ?.sourceElement
+            assertNotNull(declPpa1, "ppa1 should resolve")
+            assertTrue(declPpa1?.parent is GdMethodDeclTl)
+            assertEquals("ppa1", (declPpa1?.parent as GdMethodDeclTl).getName())
 
-        // Caret at pp and resolve
-        val offsetPp = file.text.indexOf("pp()") + 1
-        val elementPp = file.findElementAt(offsetPp)!!.parent as GdRefIdRef
-        val declPp = elementPp.psiSymbolReferences().resolveToSymbols().firstOrNull()
-            ?.asSafely<PolySymbolDeclaredInPsi>()
-            ?.sourceElement
-        assertNotNull("pp should resolve", declPp)
-        assertTrue(declPp?.parent is GdMethodDeclTl)
-        assertEquals("pp", (declPp?.parent as GdMethodDeclTl).getName())
+            // Caret at pp and resolve
+            val offsetPp = file.text.indexOf("pp()") + 1
+            val elementPp = file.findElementAt(offsetPp)!!.parent as GdRefIdRef
+            val declPp = elementPp.psiSymbolReferences().resolveToSymbols().firstOrNull()
+                ?.asSafely<PolySymbolDeclaredInPsi>()
+                ?.sourceElement
+            assertNotNull(declPp, "pp should resolve")
+            assertTrue(declPp?.parent is GdMethodDeclTl)
+            assertEquals("pp", (declPp?.parent as GdMethodDeclTl).getName())
+        }
     }
-
 }

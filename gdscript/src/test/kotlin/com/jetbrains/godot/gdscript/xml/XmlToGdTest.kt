@@ -2,16 +2,19 @@ package com.jetbrains.godot.gdscript.xml
 
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
+import com.jetbrains.godot.gdscript.getGdTestDataPath
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.sdk.xml.GdSdkData
 import gdscript.polySymbols.sdk.xml.XmlToGd
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.pathString
@@ -20,22 +23,23 @@ import kotlin.io.path.writeText
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/SDK"])
-@RunWith(JUnit4::class)
-class XmlToGdTest : BasePlatformTestCase() {
+@TestApplication
+class XmlToGdTest {
+
+    private val gd: GdFixture by gdLightFixture("gdscript/sdk")
 
     private val converter = XmlToGd()
 
     companion object {
-        const val TEST_DATA_PATH = "testData/gdscript/sdk/"
         const val SDK_VERSION = "4.5.0"
     }
 
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve(TEST_DATA_PATH).pathString
+    private fun getTestDataPath(): String {
+        return Path.of(getGdTestDataPath(XmlToGdTest::class.java)).resolve("gdscript/sdk").pathString
     }
 
-    fun getXmlTestDataPath(): String {
-        return getBaseTestDataPath().resolve(TEST_DATA_PATH).resolve(SDK_VERSION).pathString
+    private fun getXmlTestDataPath(): String {
+        return Path.of(getTestDataPath()).resolve(SDK_VERSION).pathString
     }
 
     @Test
@@ -144,7 +148,7 @@ class XmlToGdTest : BasePlatformTestCase() {
                 "#endregion Annotations\n\n",
             actual,
         )
-        val file = myFixture.configureByText("Example.gd", actual)
+        val file = gd.fixture.configureByText("Example.gd", actual)
         assertNull(PsiTreeUtil.findChildOfType(file, PsiErrorElement::class.java))
     }
 
@@ -167,19 +171,19 @@ class XmlToGdTest : BasePlatformTestCase() {
 
     private fun doTest(xmlFileName: String, gdFileName: String) {
         // Get the XML file from the test data directory
-        val xmlFile = Path.of(getXmlTestDataPath(),xmlFileName)
-        assertTrue("XML file does not exist: $xmlFile", xmlFile.exists())
+        val xmlFile = Path.of(getXmlTestDataPath(), xmlFileName)
+        assertTrue(xmlFile.exists(), "XML file does not exist: $xmlFile")
 
         // Convert the XML to GD
         val actualGd = converter.convert(xmlFile)
 
         // Get the expected GD content from the gold file
-        val goldFile = Path.of(testDataPath, gdFileName)
+        val goldFile = Path.of(getTestDataPath(), gdFileName)
         if (!goldFile.exists()) {
             goldFile.writeText(actualGd)
-            fail("Gold file did not exist and was created: $goldFile")
+            throw AssertionError("Gold file did not exist and was created: $goldFile")
         }
         val expectedGd = goldFile.readText()
-        assertEquals("Generated GD content does not match the gold file", actualGd, expectedGd)
+        assertEquals(actualGd, expectedGd, "Generated GD content does not match the gold file")
     }
 }

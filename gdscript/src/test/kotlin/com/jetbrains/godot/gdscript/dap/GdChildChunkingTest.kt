@@ -9,8 +9,8 @@ import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdArrayReader
 import gdscript.dap.remote.GdChildChunking
 import gdscript.dap.remote.GdChildRange
-import gdscript.dap.remote.GdNodeDescriptor
 import gdscript.dap.remote.GdDapExpressions
+import gdscript.dap.remote.GdNodeDescriptor
 import org.junit.jupiter.api.Assertions.assertAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse

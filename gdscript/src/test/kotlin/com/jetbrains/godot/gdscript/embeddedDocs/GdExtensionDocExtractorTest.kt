@@ -1,6 +1,8 @@
 package com.jetbrains.godot.gdscript.embeddedDocs
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
@@ -8,11 +10,10 @@ import gdscript.embeddedDocs.GdExtensionDocExtractor
 import gdscript.embeddedDocs.GdExtensionManifestParser
 import gdscript.library.GdSdkPathManager
 import kotlinx.coroutines.runBlocking
-import org.junit.Rule
-import org.junit.Test
-import org.junit.rules.TemporaryFolder
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import java.io.ByteArrayOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -20,22 +21,23 @@ import java.util.zip.DeflaterOutputStream
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/GDExtensions"])
-@RunWith(JUnit4::class)
-class GdExtensionDocExtractorTest : BasePlatformTestCase() {
+@TestApplication
+class GdExtensionDocExtractorTest {
 
-    @JvmField
-    @Rule
-    val manifestRootFolder = TemporaryFolder()
+    private val gd: GdFixture by gdLightFixture("gdscript/embeddedDocs")
+
+    @TempDir
+    lateinit var manifestRootFolder: Path
 
     @Test
     fun testExtractsBlobDocumentation() = runBlocking {
-        val root = manifestRootFolder.root.toPath()
+        val root = manifestRootFolder
         val manifest = root.resolve("extension.gdextension")
         val binary = root.resolve("libextension.so")
         Files.writeString(manifest, manifestText)
         Files.write(binary, ByteArray(512) { 0x55 } + zlib(classXml("BlobClass", "from blob").toByteArray()))
 
-        val result = GdExtensionDocExtractor.extractBlobDocs(manifest, project, features, projectBasePath = root)
+        val result = GdExtensionDocExtractor.extractBlobDocs(manifest, gd.project, features, projectBasePath = root)
 
         assertEquals(GdExtensionDocExtractor.Result.Extracted, result)
         val directory = blobDocsDir(manifest)
@@ -47,7 +49,7 @@ class GdExtensionDocExtractorTest : BasePlatformTestCase() {
         Files.write(secondBinary, ByteArray(512) { 0x55 } + zlib(classXml("SecondClass", "second blob").toByteArray()))
         assertEquals(
             GdExtensionDocExtractor.Result.Extracted,
-            GdExtensionDocExtractor.extractBlobDocs(secondManifest, project, features, projectBasePath = root),
+            GdExtensionDocExtractor.extractBlobDocs(secondManifest, gd.project, features, projectBasePath = root),
         )
         val secondDirectory = blobDocsDir(secondManifest)
         assertFalse(directory == secondDirectory)
@@ -60,15 +62,15 @@ class GdExtensionDocExtractorTest : BasePlatformTestCase() {
         val emptyDirectory = blobDocsDir(emptyManifest)
         deleteRecursively(emptyDirectory)
 
-        val emptyResult = GdExtensionDocExtractor.extractBlobDocs(emptyManifest, project, features, projectBasePath = root)
+        val emptyResult = GdExtensionDocExtractor.extractBlobDocs(emptyManifest, gd.project, features, projectBasePath = root)
 
         assertEquals(GdExtensionDocExtractor.Result.NotFound, emptyResult)
         assertFalse(Files.exists(emptyDirectory))
     }
 
     private fun blobDocsDir(manifest: Path): Path {
-        val manifestId = GdExtensionDocExtractor.manifestId(manifest, manifestRootFolder.root.toPath())
-        return GdSdkPathManager.getProjectExtensionBlobDocsDir(project, manifestId)!!
+        val manifestId = GdExtensionDocExtractor.manifestId(manifest, manifestRootFolder)
+        return GdSdkPathManager.getProjectExtensionBlobDocsDir(gd.project, manifestId)!!
     }
 
     private fun classXml(name: String, description: String): String =

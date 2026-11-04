@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Resolve and navigation"])
 @TestApplication
 class GdSuperGotoDeclarationTest {
-    private val gd: GdSdkFixture by gdSdkFixture("reference")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/reference")
 
     @Test
     fun testBareSuperCallInOverriddenVirtual() =
