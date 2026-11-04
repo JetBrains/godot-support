@@ -1,43 +1,54 @@
 package com.jetbrains.godot.gdscript.refactoring
 
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.runReadActionBlocking
+import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.common.timeoutRunBlocking
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Rename"])
-@RunWith(JUnit4::class)
-class GdRenamePsiFileProcessorSearchTest : BasePlatformTestCase() {
+@TestApplication
+class GdRenamePsiFileProcessorSearchTest {
+
+    private val gd: GdFixture by gdLightFixture("gdscript/refactoring")
 
     @Test
     fun testReferencesSearchFindsExtendsAndTypeHintUsagesOfClassName() {
-        myFixture.addFileToProject(
+        gd.fixture.addFileToProject(
             "base.gd", """
             class_name Base
         """.trimIndent()
         )
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "user.gd", """
             class Sub extends Base:
                 var x: Base
         """.trimIndent()
         )
-        val baseFile = myFixture.findFileInTempDir("base.gd")
-        val basePsiFile = com.intellij.psi.PsiManager.getInstance(project).findFile(baseFile) as GdFile
-        val classNameNmi = PsiTreeUtil.getStubChildOfType(basePsiFile, GdClassNaming::class.java)?.classNameNmi
-        assertNotNull("expected a class_name declaration in base.gd", classNameNmi)
+        val baseFile = gd.fixture.findFileInTempDir("base.gd")
+        val basePsiFile = runReadActionBlocking { PsiManager.getInstance(gd.project).findFile(baseFile) as GdFile }
+        val classNameNmi = timeoutRunBlocking {
+            withContext(Dispatchers.EDT) { PsiTreeUtil.getStubChildOfType(basePsiFile, GdClassNaming::class.java)?.classNameNmi }
+        }
+        assertNotNull(classNameNmi, "expected a class_name declaration in base.gd")
 
-        val references = runReadActionBlocking { ReferencesSearch.search(classNameNmi!!, GlobalSearchScope.allScope(project)).findAll() }
-        assertEquals("expected references from both 'extends Base' and 'var x: Base': $references", 2, references.size)
+        val references = runReadActionBlocking { ReferencesSearch.search(classNameNmi!!, GlobalSearchScope.allScope(gd.project)).findAll() }
+        assertEquals(2, references.size, "expected references from both 'extends Base' and 'var x: Base': $references")
     }
 }

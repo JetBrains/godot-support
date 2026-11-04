@@ -1,25 +1,26 @@
 package com.jetbrains.godot.gdscript.inspection
 
 import com.intellij.application.options.CodeStyle
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.inspection.GdWhitespaceLocalInspectionTool
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import kotlin.io.path.pathString
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Inspections"])
-@RunWith(JUnit4::class)
-class GdWhitespaceLocalInspectionTest : BasePlatformTestCase() {
+@TestApplication
+class GdWhitespaceLocalInspectionTest {
+    private val gd: GdFixture by gdLightFixture("gdscript/inspection")
 
-    override fun setUp() {
-        super.setUp()
-        myFixture.enableInspections(GdWhitespaceLocalInspectionTool::class.java)
+    @BeforeEach
+    fun enableWhitespaceInspection() {
+        gd.fixture.enableInspections(GdWhitespaceLocalInspectionTool::class.java)
     }
 
     /**
@@ -33,15 +34,15 @@ class GdWhitespaceLocalInspectionTest : BasePlatformTestCase() {
      */
     @Test
     fun testFixIndentsDoesNotThrowIndexOutOfBounds() {
-        myFixture.configureByFile("${getTestName(false)}.gd")
-        CodeStyle.getSettings(myFixture.file).getIndentOptionsByFile(myFixture.file).apply {
+        gd.fixture.configureByFile("FixIndentsDoesNotThrowIndexOutOfBounds.gd")
+        CodeStyle.getSettings(gd.fixture.file).getIndentOptionsByFile(gd.fixture.file).apply {
             USE_TAB_CHARACTER = true
             TAB_SIZE = 4
         }
-        val fixes = myFixture.getAllQuickFixes()
-        assertNotEmpty(fixes)
+        val fixes = gd.fixture.getAllQuickFixes()
+        assertTrue(fixes.isNotEmpty())
         // Applying the fix must not throw IndexOutOfBoundsException
-        myFixture.launchAction(fixes.first())
+        gd.fixture.launchAction(fixes.first())
     }
 
     /**
@@ -52,14 +53,10 @@ class GdWhitespaceLocalInspectionTest : BasePlatformTestCase() {
      */
     @Test
     fun testFixIndentsKeepsTabsByDefault() {
-        myFixture.configureByFile("${getTestName(false)}.gd")
-        val fixes = myFixture.getAllQuickFixes()
-        assertNotEmpty(fixes)
-        myFixture.launchAction(fixes.first())
-        myFixture.checkResultByFile("${getTestName(false)}_after.gd")
-    }
-
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/inspection").pathString
+        gd.fixture.configureByFile("FixIndentsKeepsTabsByDefault.gd")
+        val fixes = gd.fixture.getAllQuickFixes()
+        assertTrue(fixes.isNotEmpty())
+        gd.fixture.launchAction(fixes.first())
+        gd.fixture.checkResultByFile("FixIndentsKeepsTabsByDefault_after.gd")
     }
 }

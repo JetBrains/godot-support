@@ -2,7 +2,11 @@ package com.jetbrains.godot.gdscript.formatter
 
 import com.intellij.application.options.CodeStyle
 import com.intellij.formatting.WrapType
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.polySymbols.testFramework.HybridFixture
+import com.intellij.polySymbols.testFramework.HybridTestMode
+import com.intellij.polySymbols.testFramework.hybridFixture
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.codeStyle.CodeStyleManager
@@ -10,7 +14,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiUtilCore
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.junit5.TestApplication
 import com.intellij.util.LocalTimeCounter
 import com.jetbrains.godot.getBaseTestDataPath
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
@@ -20,10 +24,11 @@ import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdStmt
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import kotlin.io.path.pathString
 
 // Setup inspired by PythonCommonFormatterTest.
@@ -31,24 +36,28 @@ import kotlin.io.path.pathString
 // TODO: FormatterTestCase base class does not add anything so interesting0
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Formatting"])
-@RunWith(JUnit4::class)
-class GdFormattingTest : BasePlatformTestCase() {
-    override fun getTestDataPath(): String =
-        getBaseTestDataPath().resolve("testData/gdscript").pathString
+@TestApplication
+class GdFormattingTest {
+    // BasePlatform mode keeps one light project open across all tests (like the original BasePlatformTestCase),
+    // instead of spinning up a fresh heavy project per test as the default CodeInsightFixture-mode gdFixture does.
+    private val gd: HybridFixture by hybridFixture(
+        getBaseTestDataPath(GdFormattingTest::class.java).resolve("testData/gdscript/formatter").pathString,
+        HybridTestMode.BasePlatform,
+    )
 
     private fun doTest() {
-        val testPath = "formatter/" + getTestName(true)
-        myFixture.configureByFile("$testPath.gd")
+        val testName = gd.getTestName(true)
+        gd.fixture.configureByFile("$testName.gd")
         WriteCommandAction.runWriteCommandAction(null) {
-            val codeStyleManager = CodeStyleManager.getInstance(myFixture.project)
-            val file = myFixture.file!!
+            val codeStyleManager = CodeStyleManager.getInstance(gd.project)
+            val file = gd.fixture.file!!
             codeStyleManager.reformatText(file, 0, file.fileDocument.textLength)
         }
-        myFixture.checkResultByFile("${testPath}_after.gd")
+        gd.fixture.checkResultByFile("${testName}_after.gd")
     }
 
 
-    fun getCodeStyleSettings(): CodeStyleSettings = CodeStyle.getSettings(myFixture.project)
+    fun getCodeStyleSettings(): CodeStyleSettings = CodeStyle.getSettings(gd.project)
 
     fun getCommonCodeStyleSettings(): CommonCodeStyleSettings = getCodeStyleSettings().getCommonSettings(GdLanguage)
 
@@ -57,81 +66,81 @@ class GdFormattingTest : BasePlatformTestCase() {
 
     // Alignment
 
-    @Ignore("[alignment] [space-only]")
+    @Disabled("[alignment] [space-only]")
     @Test
     fun testNoAlignForMethodArguments() {  // PY-3995
         getCommonCodeStyleSettings().ALIGN_MULTILINE_PARAMETERS_IN_CALLS = false
         doTest()
     }
 
-    @Ignore("[space-only]")
+    @Disabled("[space-only]")
     @Test
     fun testAlignForMethodArguments() {  // PY-3995
         doTest()
     }
 
-    @Ignore("TODO")
+    @Disabled("TODO")
     @Test
     fun testAlignInBinaryExpression() = doTest()
 
-    @Ignore("TODO")
+    @Disabled("TODO")
     @Test
     fun testAlignInBinaryExpressions() = doTest()
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testAlignInCallExpression() = doTest()
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testAlignInParameterList() = doTest()
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testAlignInParenthesizedExpression() = doTest()
 
-    @Ignore("TODO: requires DICT_ALIGNMENT custom setting [space-only]")
+    @Disabled("TODO: requires DICT_ALIGNMENT custom setting [space-only]")
     @Test
     fun testAlignDictLiteralOnValue() {
         // getGdCodeStyleSettings().DICT_ALIGNMENT = DICT_ALIGNMENT_ON_VALUE
         doTest()
     }
 
-    @Ignore("TODO: requires DICT_ALIGNMENT custom setting [space-only]")
+    @Disabled("TODO: requires DICT_ALIGNMENT custom setting [space-only]")
     @Test
     fun testAlignDictLiteralOnColon() {
         // getGdCodeStyleSettings().DICT_ALIGNMENT = DICT_ALIGNMENT_ON_COLON
         doTest()
     }
 
-    @Ignore("TODO: requires DICT_ALIGNMENT custom setting [space-only]")
+    @Disabled("TODO: requires DICT_ALIGNMENT custom setting [space-only]")
     @Test
     fun testAlignDictLiteralOnValueSubscriptionsAndSlices() {
         // getGdCodeStyleSettings().DICT_ALIGNMENT = DICT_ALIGNMENT_ON_VALUE
         doTest()
     }
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testAlignmentInArgumentListWhereFirstArgumentIsEmptyCall() = doTest()
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testAlignmentInListLiteralWhereFirstItemIsEmptyTuple() = doTest()
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testAlignmentOfClosingBraceInDictLiteralWhenNoHangingIndent() = doTest()
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testAlignmentOfClosingParenthesisOfArgumentListWhenNoHangingIndent() = doTest()
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testAlignmentOfClosingParenthesisInNestedFunctionCallsWithSingleArgument() = doTest()
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testAlignmentOfEmptyCollectionLiterals() = doTest()
 
@@ -191,15 +200,15 @@ class GdFormattingTest : BasePlatformTestCase() {
     @Test
     fun testTrailingBlankLinesInEmptyFile() = doTest()
 
-    @Ignore("Blank lines and \\ [postprocessor]")
+    @Disabled("Blank lines and \\ [postprocessor]")
     @Test
     fun testTrailingBlankLinesWithBackslashesAtFileEnd() = doTest()
 
-    @Ignore("Blank lines and \\ [postprocessor]")
+    @Disabled("Blank lines and \\ [postprocessor]")
     @Test
     fun testTrailingBlankLinesWithBackslashesAtFunctionEnd() = doTest()
 
-    @Ignore("Blank lines and \\ [postprocessor]")
+    @Disabled("Blank lines and \\ [postprocessor]")
     @Test
     fun testTrailingBlankLinesWithBackslashesMixed() = doTest()
 
@@ -372,7 +381,7 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testForceNewLineBeforeRightParenInCallArguments() {
         getCommonCodeStyleSettings().CALL_PARAMETERS_RPAREN_ON_NEXT_LINE = true
@@ -417,7 +426,7 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testForceNewLineBeforeRightParenInMethodParameters() {
         getCommonCodeStyleSettings().METHOD_PARAMETERS_RPAREN_ON_NEXT_LINE = true
@@ -488,7 +497,7 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("TODO: requires LIST_WRAPPING + LIST_NEW_LINE_BEFORE_RIGHT_BRACKET custom settings [space-only]")
+    @Disabled("TODO: requires LIST_WRAPPING + LIST_NEW_LINE_BEFORE_RIGHT_BRACKET custom settings [space-only]")
     @Test
     fun testListWrappingLastBracketOnNewLine() {
         getCodeStyleSettings().setRightMargin(GdLanguage, 40)
@@ -497,7 +506,7 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("TODO: requires LIST_WRAPPING + LIST_NEW_LINE_BEFORE_RIGHT_BRACKET + ALIGN_COLLECTIONS_AND_COMPREHENSIONS custom settings")
+    @Disabled("TODO: requires LIST_WRAPPING + LIST_NEW_LINE_BEFORE_RIGHT_BRACKET + ALIGN_COLLECTIONS_AND_COMPREHENSIONS custom settings")
     @Test
     fun testListWrappingDoNotAlign() {
         getCodeStyleSettings().setRightMargin(GdLanguage, 40)
@@ -545,7 +554,7 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("TODO: requires DICT_NEW_LINE_BEFORE_RIGHT_BRACE custom setting [space-only]")
+    @Disabled("TODO: requires DICT_NEW_LINE_BEFORE_RIGHT_BRACE custom setting [space-only]")
     @Test
     fun testForceNewLineBeforeRightBraceInDict() {
         // getGdCodeStyleSettings().DICT_NEW_LINE_BEFORE_RIGHT_BRACE = true
@@ -623,11 +632,11 @@ class GdFormattingTest : BasePlatformTestCase() {
     @Test
     fun testtrailingCommentsInForLoopStaircaseAtEof() = doTest()
 
-    @Ignore("Comment [postprocessor]")
+    @Disabled("Comment [postprocessor]")
     @Test
     fun testTrailingComment() = doTest()
 
-    @Ignore("Comment [postprocessor]")
+    @Disabled("Comment [postprocessor]")
     @Test
     fun testWhitespaceInsertedAfterHashSignInMultilineComment() = doTest()
 
@@ -684,7 +693,7 @@ class GdFormattingTest : BasePlatformTestCase() {
     @Test
     fun testMultilineElifConditionInParentheses() = doTest()
 
-    @Ignore("[wrap] [backslash-insertion]")
+    @Disabled("[wrap] [backslash-insertion]")
     @Test
     fun testWrapBeforeElse() = doTest()
 
@@ -715,7 +724,7 @@ class GdFormattingTest : BasePlatformTestCase() {
     @Test
     fun testSpacesAfterMatchKeyword() = doTest()
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testItemAlignmentInArrayPatterns() = doTest()
 
@@ -728,11 +737,11 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testItemAlignmentInNestedArrayPatterns() = doTest()
 
-    @Ignore("TODO [space-only]")
+    @Disabled("TODO [space-only]")
     @Test
     fun testAlignmentOfDictPatternInMatchStatement() = doTest()
 
@@ -745,7 +754,7 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("[alingment]")
+    @Disabled("[alingment]")
     @Test
     fun testAlternativesAlignmentInOrPatterns() = doTest()
 
@@ -794,35 +803,35 @@ class GdFormattingTest : BasePlatformTestCase() {
     }
 
     // --- Trailing Commas ---
-    @Ignore("[trailing-comma]")
+    @Disabled("[trailing-comma]")
     @Test
     fun testTrailingCommaInArgumentList() {
         // getGdCodeStyleSettings().USE_TRAILING_COMMA_IN_ARGUMENTS_LIST = true
         doTest()
     }
 
-    @Ignore("[trailing-comma]")
+    @Disabled("[trailing-comma]")
     @Test
     fun testTrailingCommaInParameterList() {
         // getGdCodeStyleSettings().USE_TRAILING_COMMA_IN_PARAMETER_LIST = true
         doTest()
     }
 
-    @Ignore("[trailing-comma]")
+    @Disabled("[trailing-comma]")
     @Test
     fun testTrailingCommaInListLiteral() {
         // getGdCodeStyleSettings().USE_TRAILING_COMMA_IN_COLLECTIONS = true
         doTest()
     }
 
-    @Ignore("[trailing-comma]")
+    @Disabled("[trailing-comma]")
     @Test
     fun testTrailingCommaInDictLiteral() {
         // getGdCodeStyleSettings().USE_TRAILING_COMMA_IN_COLLECTIONS = true
         doTest()
     }
 
-    @Ignore("[trailing-comma]")
+    @Disabled("[trailing-comma]")
     @Test
     fun testTrailingCommaMixed() {
         // getGdCodeStyleSettings().USE_TRAILING_COMMA_IN_COLLECTIONS = true
@@ -839,14 +848,14 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("Adding \\ processing [backslash]")
+    @Disabled("Adding \\ processing [backslash]")
     @Test
     fun testWrapInBinaryExpression() {
         getCodeStyleSettings().setRightMargin(GdLanguage, 80)
         doTest()
     }
 
-    @Ignore("[alignment] [space-only] [wrap]")
+    @Disabled("[alignment] [space-only] [wrap]")
     @Test
     fun testWrapOnDotAlignment() = doTest()
 
@@ -892,14 +901,14 @@ class GdFormattingTest : BasePlatformTestCase() {
     @Test
     fun testVariableAnnotations() = doTest()
 
-    @Ignore("[alignment] [space-only]")
+    @Disabled("[alignment] [space-only]")
     @Test
     fun testChainedMethodCallsInParenthesesAlignment() = doTest()
 
     @Test
     fun testChainedMethodCallsInParentheses() = doTest()
 
-    @Ignore("[alignment] [space-only]")
+    @Disabled("[alignment] [space-only]")
     @Test
     fun testChainedAttributeAccessInParenthesesAlignment() = doTest()
 
@@ -908,21 +917,21 @@ class GdFormattingTest : BasePlatformTestCase() {
 
     @Test
     fun testReformatOfSingleElementPossible() {
-        myFixture.configureByFile("formatter/${getTestName(true)}.gd")
-        WriteCommandAction.runWriteCommandAction(myFixture.project) {
-            val elementAtCaret = PsiUtilCore.getElementAtOffset(myFixture.file, myFixture.caretOffset)
+        gd.fixture.configureByFile("${gd.getTestName(true)}.gd")
+        WriteCommandAction.runWriteCommandAction(gd.project) {
+            val elementAtCaret = PsiUtilCore.getElementAtOffset(gd.fixture.file, gd.fixture.caretOffset)
             val statement = PsiTreeUtil.getParentOfType(elementAtCaret, GdStmt::class.java, false)
             assertNotNull(statement)
-            val codeStyleManager = CodeStyleManager.getInstance(myFixture.project)
+            val codeStyleManager = CodeStyleManager.getInstance(gd.project)
             codeStyleManager.reformat(statement!!)
         }
-        myFixture.checkResultByFile("formatter/${getTestName(true)}_after.gd")
+        gd.fixture.checkResultByFile("${gd.getTestName(true)}_after.gd")
     }
 
     @Test
     fun testHangingIndentsInMultilineCallChainInParenthesis() = doTest()
 
-    @Ignore("[alignment] [space-only]")
+    @Disabled("[alignment] [space-only]")
     @Test
     fun testHangingIndentsInMultilineCallChainInSquareBracketsAlignment() = doTest()
 
@@ -951,28 +960,28 @@ class GdFormattingTest : BasePlatformTestCase() {
     @Test
     fun testNoAlignmentForSplitByBackslashesTupleInAssignmentStatement() = doTest()
 
-    @Ignore("TODO: requires DICT_NEW_LINE_AFTER_LEFT_BRACE custom setting")
+    @Disabled("TODO: requires DICT_NEW_LINE_AFTER_LEFT_BRACE custom setting")
     @Test
     fun testNoAlignmentClosingBraceInDictLiteralWhenOpeningBraceIsForcedOnNewLine() {
         // getGdCodeStyleSettings().DICT_NEW_LINE_AFTER_LEFT_BRACE = true
         doTest()
     }
 
-    @Ignore("TODO [alignment] [space-only]")
+    @Disabled("TODO [alignment] [space-only]")
     @Test
     fun testNoAlignmentAfterDictHangingIndentInFunctionCall() {
         getCommonCodeStyleSettings().ALIGN_MULTILINE_PARAMETERS_IN_CALLS = true
         doTest()
     }
 
-    @Ignore("TODO [alignment] [editing]?")
+    @Disabled("TODO [alignment] [editing]?")
     @Test
     fun testNoAlignmentAfterDictHangingIndentInFunctionCallOnTyping() {
         getCommonCodeStyleSettings().ALIGN_MULTILINE_PARAMETERS_IN_CALLS = true
-        val testName = "formatter/${getTestName(true)}"
-        myFixture.configureByFile("$testName.gd")
-        myFixture.type("\n[")
-        myFixture.checkResultByFile("${testName}_after.gd")
+        val testName = gd.getTestName(true)
+        gd.fixture.configureByFile("$testName.gd")
+        gd.fixture.type("\n[")
+        gd.fixture.checkResultByFile("${testName}_after.gd")
     }
 
     @Test
@@ -1125,7 +1134,7 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("[paren-on-new-line]")
+    @Disabled("[paren-on-new-line]")
     @Test
     fun testSignalForceNewLineAfterLeftParen() {
         getCodeStyleSettings().METHOD_PARAMETERS_LPAREN_ON_NEXT_LINE = true
@@ -1139,7 +1148,7 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("[trailing-comma]")
+    @Disabled("[trailing-comma]")
     @Test
     fun testSignalTrailingCommaInParams() {
         // getGdCodeStyleSettings().USE_TRAILING_COMMA_IN_SIGNAL_PARAMETER_LIST = true
@@ -1229,7 +1238,7 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("Nice to have and [alignment]")
+    @Disabled("Nice to have and [alignment]")
     @Test
     fun testLuaStyleDictSingleLineHasSpacesInsideBraces() = doTest()
 
@@ -1305,12 +1314,14 @@ class GdFormattingTest : BasePlatformTestCase() {
             append("    }\n")
         }
 
-        val psiFile = PsiFileFactory.getInstance(myFixture.project)
-            .createFileFromText("a.gd", GdFileType, before, LocalTimeCounter.currentTime(), eventSystemEnabled)
-        WriteCommandAction.runWriteCommandAction(myFixture.project) {
-            CodeStyleManager.getInstance(myFixture.project).reformat(psiFile)
+        val psiFile = runReadActionBlocking {
+            PsiFileFactory.getInstance(gd.project)
+                .createFileFromText("a.gd", GdFileType, before, LocalTimeCounter.currentTime(), eventSystemEnabled)
         }
-        assertEquals(expected, psiFile.text)
+        WriteCommandAction.runWriteCommandAction(gd.project) {
+            CodeStyleManager.getInstance(gd.project).reformat(psiFile)
+        }
+        assertEquals(expected, runReadActionBlocking { psiFile.text })
     }
 
     // --- Special Strings & Node-Path Shorthands ---
@@ -1336,11 +1347,11 @@ class GdFormattingTest : BasePlatformTestCase() {
     @Test
     fun testStringContentsWithGdscriptTokensNotReformatted() = doTest()
 
-    @Ignore("[parsing] of raw triple quoted strings")
+    @Disabled("[parsing] of raw triple quoted strings")
     @Test
     fun testTripleQuotedRawDoubleStringPreserved() = doTest()
 
-    @Ignore("[parsing] of raw triple quoted strings")
+    @Disabled("[parsing] of raw triple quoted strings")
     @Test
     fun testTripleQuotedRawSingleStringPreserved() = doTest()
 
@@ -1395,11 +1406,11 @@ class GdFormattingTest : BasePlatformTestCase() {
     // --- Inline tests ---
 
     private fun doTextTest(before: String, after: String) {
-        myFixture.configureByText("a.gd", before.trimIndent())
+        gd.fixture.configureByText("a.gd", before.trimIndent())
         WriteCommandAction.runWriteCommandAction(null) {
-            CodeStyleManager.getInstance(myFixture.project).reformat(myFixture.file!!)
+            CodeStyleManager.getInstance(gd.project).reformat(gd.fixture.file!!)
         }
-        myFixture.checkResult(after.trimIndent())
+        gd.fixture.checkResult(after.trimIndent())
     }
 
     private fun doTextTestSpaces(before: String, after: String = before) {
@@ -1408,7 +1419,7 @@ class GdFormattingTest : BasePlatformTestCase() {
             INDENT_SIZE = 4
         }
         doTextTest(before, after)
-        assertNull(PsiTreeUtil.findChildOfType(myFixture.file, PsiErrorElement::class.java))
+        assertNull(runReadActionBlocking { PsiTreeUtil.findChildOfType(gd.fixture.file, PsiErrorElement::class.java) })
     }
 
     // RIDER-141707

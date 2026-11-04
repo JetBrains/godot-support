@@ -1,21 +1,24 @@
 package com.jetbrains.godot.gdscript.codeInsight
 
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.testFramework.ParsingTestCase
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import gdscript.GdParserDefinition
 import gdscript.completion.utils.GdEnumCompletionUtil.preview
 import gdscript.psi.GdEnumDeclTl
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Documentation"])
-@RunWith(JUnit4::class)
-class EnumPreviewOrderTest : ParsingTestCase("", "gd", GdParserDefinition()) {
+@TestApplication
+class EnumPreviewOrderTest {
+    private val gd: GdFixture by gdLightFixture("gdscript/parser")
 
     @Test
     fun testEnumOrderPreservedInPreview() {
@@ -27,22 +30,17 @@ class EnumPreviewOrderTest : ParsingTestCase("", "gd", GdParserDefinition()) {
             }
         """.trimIndent()
 
-        val psiFile = createPsiFile("a.gd", content)
-        val enumDecl = PsiTreeUtil.findChildOfType(psiFile, GdEnumDeclTl::class.java)
-        requireNotNull(enumDecl) { "Enum declaration not found in PSI" }
-
-        val previewText = enumDecl.preview()
+        val psiFile = gd.fixture.configureByText("a.gd", content)
+        val previewText = runReadActionBlocking {
+            val enumDecl = PsiTreeUtil.findChildOfType(psiFile, GdEnumDeclTl::class.java)
+            requireNotNull(enumDecl) { "Enum declaration not found in PSI" }
+            enumDecl.preview()
+        }
         val groundIndex = previewText.indexOf("Ground")
         val wallIndex = previewText.indexOf("Wall")
         val emptyIndex = previewText.indexOf("Empty")
 
-        assertTrue("'Ground' should come before 'Wall' in preview: $previewText", groundIndex in 0 until wallIndex)
-        assertTrue("'Wall' should come before 'Empty' in preview: $previewText", wallIndex in 0 until emptyIndex)
+        assertTrue(groundIndex in 0 until wallIndex, "'Ground' should come before 'Wall' in preview: $previewText")
+        assertTrue(wallIndex in 0 until emptyIndex, "'Wall' should come before 'Empty' in preview: $previewText")
     }
-
-    override fun getTestDataPath(): String = ""
-
-    override fun skipSpaces(): Boolean = false
-
-    override fun includeRanges(): Boolean = true
 }

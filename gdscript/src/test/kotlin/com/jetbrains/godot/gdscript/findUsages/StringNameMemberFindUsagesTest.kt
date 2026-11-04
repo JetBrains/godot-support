@@ -1,11 +1,16 @@
 package com.jetbrains.godot.gdscript.findUsages
 
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.polySymbols.testFramework.renameSymbolAtCaret
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.common.timeoutRunBlocking
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.findUsages.symbolUsages
 import com.jetbrains.godot.findUsages.text
+import com.jetbrains.godot.gdscript.GdFixture
 import com.jetbrains.godot.gdscript.GdPolySymbolsTestUtils
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.godot.getBaseTestDataPath
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
@@ -14,7 +19,13 @@ import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdSignalDeclTl
 import gdscript.settings.GdLspConnectionMode
 import gdscript.settings.GdLspSettingsFlowService
-import kotlin.io.path.pathString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 /**
  * Find Usages / Rename of a signal or method that is only named inside a string or StringName
@@ -23,84 +34,92 @@ import kotlin.io.path.pathString
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Find usages"])
-class StringNameMemberFindUsagesTest : BasePlatformTestCase() {
+@TestApplication
+class StringNameMemberFindUsagesTest {
 
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/findUsages/stringNameMember").pathString
-    }
+    private val gd: GdFixture by gdLightFixture("gdscript/findUsages/stringNameMember")
 
-    override fun setUp() {
-        super.setUp()
-        GdLspSettingsFlowService.getInstance(project).setLspConnectionMode(GdLspConnectionMode.Never)
-        myFixture.copyFileToProject("../../project.godot", "project.godot")
+    @BeforeEach
+    fun registerSdk() {
+        GdLspSettingsFlowService.getInstance(gd.project).setLspConnectionMode(GdLspConnectionMode.Never)
+        gd.fixture.copyFileToProject("../../project.godot", "project.godot")
         // Register SDK from the real test-data paths. Temp VFS copies have no nio path.
-        val sdkRoot = getBaseTestDataPath().resolve("testData/gdscript/sdk")
+        val sdkRoot = getBaseTestDataPath(StringNameMemberFindUsagesTest::class.java).resolve("testData/gdscript/sdk")
         GdPolySymbolsTestUtils.registerSdk(
-            project,
+            gd.project,
             listOf(sdkRoot.resolve("gdextensions"), sdkRoot.resolve("4.5.0")),
-            testRootDisposable,
+            gd.testRootDisposable,
         )
     }
 
+    @Test
     fun testConnectSignalFindUsages() {
-        myFixture.configureByFiles("EventBus.gd", "HUD.gd")
-        val signal = PsiTreeUtil.findChildrenOfType(myFixture.file, GdSignalDeclTl::class.java)
+        gd.fixture.configureByFiles("EventBus.gd", "HUD.gd")
+        val signal = PsiTreeUtil.findChildrenOfType(gd.fixture.file, GdSignalDeclTl::class.java)
             .firstOrNull { it.getName() == "battle_state_changed" }
             ?.signalIdNmi
-        assertNotNull("EventBus.gd must declare the signal", signal)
+        assertNotNull(signal, "EventBus.gd must declare the signal")
 
-        val usages = myFixture.symbolUsages(signal!!.textOffset)
-        assertEquals(usages.joinToString("\n") { "${it.file.name}:${it.text}" }, 1, usages.size)
+        val usages = runReadActionBlocking { gd.fixture.symbolUsages(signal!!.textOffset) }
+        assertEquals(1, usages.size, usages.joinToString("\n") { "${it.file.name}:${it.text}" })
         assertEquals("battle_state_changed", usages.single().text)
         assertEquals("HUD.gd", usages.single().file.name)
     }
 
+    @Test
     fun testCallableSelfMethodFindUsages() {
-        myFixture.configureByFiles("EventBus.gd", "HUD.gd")
-        myFixture.configureByFile("HUD.gd")
-        val method = PsiTreeUtil.findChildrenOfType(myFixture.file, GdMethodDeclTl::class.java)
+        gd.fixture.configureByFiles("EventBus.gd", "HUD.gd")
+        gd.fixture.configureByFile("HUD.gd")
+        val method = PsiTreeUtil.findChildrenOfType(gd.fixture.file, GdMethodDeclTl::class.java)
             .firstOrNull { it.getName() == "_on_battle_state_changed" }
             ?.methodIdNmi
-        assertNotNull("HUD.gd must declare the handler", method)
+        assertNotNull(method, "HUD.gd must declare the handler")
 
-        val usages = myFixture.symbolUsages(method!!.textOffset)
-        assertEquals(usages.joinToString("\n") { it.text }, 1, usages.size)
+        val usages = runReadActionBlocking { gd.fixture.symbolUsages(method!!.textOffset) }
+        assertEquals(1, usages.size, usages.joinToString("\n") { it.text })
         assertEquals("_on_battle_state_changed", usages.single().text)
     }
 
+    @Test
     fun testCallableClassStringNameMethodFindUsages() {
-        myFixture.configureByFiles("Node25D.gd", "YSort25D.gd")
-        myFixture.configureByFile("Node25D.gd")
-        val method = PsiTreeUtil.findChildrenOfType(myFixture.file, GdMethodDeclTl::class.java)
+        gd.fixture.configureByFiles("Node25D.gd", "YSort25D.gd")
+        gd.fixture.configureByFile("Node25D.gd")
+        val method = PsiTreeUtil.findChildrenOfType(gd.fixture.file, GdMethodDeclTl::class.java)
             .firstOrNull { it.getName() == "y_sort_slight_xz" }
             ?.methodIdNmi
-        assertNotNull("Node25D.gd must declare the static method", method)
+        assertNotNull(method, "Node25D.gd must declare the static method")
 
-        val usages = myFixture.symbolUsages(method!!.textOffset)
-        assertEquals(usages.joinToString("\n") { "${it.file.name}:${it.text}" }, 1, usages.size)
+        val usages = runReadActionBlocking { gd.fixture.symbolUsages(method!!.textOffset) }
+        assertEquals(1, usages.size, usages.joinToString("\n") { "${it.file.name}:${it.text}" })
         assertEquals("y_sort_slight_xz", usages.single().text)
         assertEquals("YSort25D.gd", usages.single().file.name)
     }
 
-    fun testRenameSignalUpdatesConnectString() {
-        myFixture.configureByFiles("EventBus.gd", "HUD.gd")
-        val offset = myFixture.file.text.indexOf("battle_state_changed")
-        assertTrue("EventBus.gd must declare the signal", offset >= 0)
-        myFixture.editor.caretModel.moveToOffset(offset)
-        myFixture.renameSymbolAtCaret("battle_phase_changed")
+    @Test
+    fun testRenameSignalUpdatesConnectString() = timeoutRunBlocking {
+        gd.fixture.configureByFiles("EventBus.gd", "HUD.gd")
+        val offset = gd.fixture.file.text.indexOf("battle_state_changed")
+        assertTrue(offset >= 0, "EventBus.gd must declare the signal")
+        withContext(Dispatchers.EDT) {
+            gd.fixture.editor.caretModel.moveToOffset(offset)
+            gd.fixture.renameSymbolAtCaret("battle_phase_changed")
+        }
 
-        myFixture.checkResultByFile("EventBus.gd", "EventBus.gd.after", false)
-        myFixture.checkResultByFile("HUD.gd", "HUD.gd.afterSignalRename", false)
+        gd.fixture.checkResultByFile("EventBus.gd", "EventBus.gd.after", false)
+        gd.fixture.checkResultByFile("HUD.gd", "HUD.gd.afterSignalRename", false)
     }
 
-    fun testRenameMethodUpdatesCallableString() {
-        myFixture.configureByFiles("EventBus.gd", "HUD.gd")
-        myFixture.configureByFile("HUD.gd")
-        val methodOffset = myFixture.file.text.indexOf("func _on_battle_state_changed")
+    @Test
+    fun testRenameMethodUpdatesCallableString() = timeoutRunBlocking {
+        gd.fixture.configureByFiles("EventBus.gd", "HUD.gd")
+        gd.fixture.configureByFile("HUD.gd")
+        val methodOffset = gd.fixture.file.text.indexOf("func _on_battle_state_changed")
         assertTrue(methodOffset >= 0)
-        myFixture.editor.caretModel.moveToOffset(methodOffset + "func ".length)
-        myFixture.renameSymbolAtCaret("_on_battle_phase_changed")
+        withContext(Dispatchers.EDT) {
+            gd.fixture.editor.caretModel.moveToOffset(methodOffset + "func ".length)
+            gd.fixture.renameSymbolAtCaret("_on_battle_phase_changed")
+        }
 
-        myFixture.checkResultByFile("HUD.gd", "HUD.gd.afterMethodRename", false)
+        gd.fixture.checkResultByFile("HUD.gd", "HUD.gd.afterMethodRename", false)
     }
 }

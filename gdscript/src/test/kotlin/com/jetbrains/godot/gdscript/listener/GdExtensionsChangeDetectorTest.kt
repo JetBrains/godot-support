@@ -1,19 +1,23 @@
 package com.jetbrains.godot.gdscript.listener
 
 import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.listener.GdExtensionsChangeDetector
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/GDExtensions"])
-@RunWith(JUnit4::class)
-class GdExtensionsChangeDetectorTest : BasePlatformTestCase() {
+@TestApplication
+class GdExtensionsChangeDetectorTest {
+
+    private val gd: GdFixture by gdLightFixture("gdscript")
 
     @Test
     fun testExtensionDeclarationsAreDetected() {
@@ -56,19 +60,19 @@ class GdExtensionsChangeDetectorTest : BasePlatformTestCase() {
      */
     @Test
     fun testFolderEventsInsideTheProjectAreDetected() {
-        val addons = myFixture.tempDirFixture.findOrCreateDir("addons/fusion")
+        val addons = gd.fixture.tempDirFixture.findOrCreateDir("addons/fusion")
         val basePath = addons.parent.parent.path
 
         assertTrue(GdExtensionsChangeDetector.mayChangeExtensions(basePath, VFileDeleteEvent(this, addons)))
 
-        val cache = myFixture.tempDirFixture.findOrCreateDir(".godot/imported")
+        val cache = gd.fixture.tempDirFixture.findOrCreateDir(".godot/imported")
         assertFalse(GdExtensionsChangeDetector.mayChangeExtensions(basePath, VFileDeleteEvent(this, cache)))
     }
 
     @Test
     fun testEventsOutsideTheProjectAreIgnored() {
-        val outside = myFixture.tempDirFixture.findOrCreateDir("outside")
-        val basePath = myFixture.tempDirFixture.findOrCreateDir("project").path
+        val outside = gd.fixture.tempDirFixture.findOrCreateDir("outside")
+        val basePath = gd.fixture.tempDirFixture.findOrCreateDir("project").path
 
         assertFalse(GdExtensionsChangeDetector.mayChangeExtensions(basePath, VFileDeleteEvent(this, outside)))
     }

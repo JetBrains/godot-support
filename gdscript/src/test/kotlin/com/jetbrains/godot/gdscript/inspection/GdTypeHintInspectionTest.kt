@@ -1,92 +1,88 @@
 package com.jetbrains.godot.gdscript.inspection
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.inspection.GdTypeHintInspection
-import gdscript.settings.GdProjectSettingsState
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import kotlin.io.path.pathString
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Inspections"])
-@RunWith(JUnit4::class)
-class GdTypeHintInspectionTest : BasePlatformTestCase() {
+@TestApplication
+class GdTypeHintInspectionTest {
+    private val gd: GdFixture by gdLightFixture("gdscript/inspection")
 
-    override fun setUp() {
-        super.setUp()
-        myFixture.enableInspections(GdTypeHintInspection::class.java)
+    @BeforeEach
+    fun enableTypeHintInspection() {
+        gd.fixture.enableInspections(GdTypeHintInspection::class.java)
     }
 
     @Test
     fun testTypeHintInferred() {
-        myFixture.configureByText("test.gd", """
+        gd.fixture.configureByText("test.gd", """
             <weak_warning descr="Field's return type can be specified as bool">var t = true</weak_warning>
         """.trimIndent())
-        myFixture.testHighlighting(true, false, true)
+        gd.fixture.testHighlighting(true, false, true)
     }
 
     @Test
     fun testTypeHintInferredQuickFixFull() {
-        myFixture.configureByText("test.gd", "<caret>var t = true")
-        myFixture.doHighlighting()
-        val actions = myFixture.availableIntentions
+        gd.fixture.configureByText("test.gd", "<caret>var t = true")
+        gd.fixture.doHighlighting()
+        val actions = gd.fixture.availableIntentions
         val filtered = actions.filter { it.text.contains("type") || it.text.contains(":=)") }
-        assertSize(2, filtered)
+        assertEquals(2, filtered.size)
         // Auto-infer is alphabetically first
         assertEquals("Auto-infer type (:=)", filtered[1].text)
         assertEquals("Specify variable type [bool]", filtered[0].text)
-        
-        myFixture.launchAction(filtered[0])
-        myFixture.checkResult("var t: bool = true")
+
+        gd.fixture.launchAction(filtered[0])
+        gd.fixture.checkResult("var t: bool = true")
     }
 
     @Test
     fun testTypeHintInferredQuickFixShort() {
-        myFixture.configureByText("test.gd", "<caret>var t = true")
-        myFixture.doHighlighting()
-        val actions = myFixture.availableIntentions
+        gd.fixture.configureByText("test.gd", "<caret>var t = true")
+        gd.fixture.doHighlighting()
+        val actions = gd.fixture.availableIntentions
         val filtered = actions.filter { it.text.contains("type") || it.text.contains(":=)") }
-        assertSize(2, filtered)
+        assertEquals(2, filtered.size)
         // Auto-infer is alphabetically first
         assertEquals("Auto-infer type (:=)", filtered[1].text)
         assertEquals("Specify variable type [bool]", filtered[0].text)
-        
-        myFixture.launchAction(filtered[1])
-        myFixture.checkResult("var t := true")
+
+        gd.fixture.launchAction(filtered[1])
+        gd.fixture.checkResult("var t := true")
     }
 
     @Test
     fun testTypeHintInferredQuickFixNanLiteral() {
-        myFixture.configureByText("test.gd", "<caret>var t = NAN")
-        myFixture.doHighlighting()
-        val actions = myFixture.availableIntentions
+        gd.fixture.configureByText("test.gd", "<caret>var t = NAN")
+        gd.fixture.doHighlighting()
+        val actions = gd.fixture.availableIntentions
         val filtered = actions.filter { it.text.contains("type") || it.text.contains(":=)") }
-        assertSize(2, filtered)
+        assertEquals(2, filtered.size)
         assertEquals("Specify variable type [float]", filtered[0].text)
 
-        myFixture.launchAction(filtered[0])
-        myFixture.checkResult("var t: float = NAN")
+        gd.fixture.launchAction(filtered[0])
+        gd.fixture.checkResult("var t: float = NAN")
     }
 
     @Test
     fun testTypeHintInferredQuickFixInfLiteral() {
-        myFixture.configureByText("test.gd", "<caret>var t = INF")
-        myFixture.doHighlighting()
-        val actions = myFixture.availableIntentions
+        gd.fixture.configureByText("test.gd", "<caret>var t = INF")
+        gd.fixture.doHighlighting()
+        val actions = gd.fixture.availableIntentions
         val filtered = actions.filter { it.text.contains("type") || it.text.contains(":=)") }
-        assertSize(2, filtered)
+        assertEquals(2, filtered.size)
         assertEquals("Specify variable type [float]", filtered[0].text)
 
-        myFixture.launchAction(filtered[0])
-        myFixture.checkResult("var t: float = INF")
-    }
-
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/inspection").pathString
+        gd.fixture.launchAction(filtered[0])
+        gd.fixture.checkResult("var t: float = INF")
     }
 }

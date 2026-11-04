@@ -4,7 +4,9 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionProcess
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.psi.util.PsiUtilCore
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
@@ -13,14 +15,18 @@ import gdscript.completion.GdCompletionSource
 import gdscript.lsp.GodotLspCompletionSupport
 import org.eclipse.lsp4j.CompletionItem
 import org.eclipse.lsp4j.CompletionItemKind
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["LSP functionality/Completion deduplication"])
-@RunWith(JUnit4::class)
-class GdCompletionDeduplicationTest : BasePlatformTestCase() {
+@TestApplication
+class GdCompletionDeduplicationTest {
+
+    private val gd: GdFixture by gdLightFixture("gdscript/completion")
 
     private val customizer = GodotLspCompletionSupport()
 
@@ -31,7 +37,7 @@ class GdCompletionDeduplicationTest : BasePlatformTestCase() {
 
     @Test
     fun testNormalizeKey_removesEllipsisParens() {
-        assertEquals("new", GdCompletionDeduplicatingContributor.normalizeKey("new(\u2026)"))
+        assertEquals("new", GdCompletionDeduplicatingContributor.normalizeKey("new(…)"))
     }
 
     @Test
@@ -47,7 +53,7 @@ class GdCompletionDeduplicationTest : BasePlatformTestCase() {
 
     @Test
     fun testLspMethodWithEmptyParens() {
-        myFixture.configureByText("Test.gd", "")
+        gd.fixture.configureByText("Test.gd", "")
         val params = makeParams(0)
 
         val item = CompletionItem("test()").apply {
@@ -56,24 +62,24 @@ class GdCompletionDeduplicationTest : BasePlatformTestCase() {
         }
 
         val lookup = customizer.createLookupElement(params, item)
-        assertNotNull("LSP method lookup should be created", lookup)
+        assertNotNull(lookup, "LSP method lookup should be created")
         // The lookup string is normalized by GodotLspCompletionSupport
         assertEquals("test", lookup?.lookupString)
     }
 
     @Test
     fun testLspConstructorWithEllipsis() {
-        myFixture.configureByText("Test.gd", "")
+        gd.fixture.configureByText("Test.gd", "")
         val params = makeParams(0)
 
         // Godot LSP sends label = "new(…)", insertText = "new("
-        val item = CompletionItem("new(\u2026)").apply {
+        val item = CompletionItem("new(…)").apply {
             kind = CompletionItemKind.Method
             insertText = "new("
         }
 
         val lookup = customizer.createLookupElement(params, item)
-        assertNotNull("LSP constructor lookup should be created", lookup)
+        assertNotNull(lookup, "LSP constructor lookup should be created")
 
         // The lookup string is normalized by GodotLspCompletionSupport
         assertEquals("new", lookup?.lookupString)
@@ -91,7 +97,7 @@ class GdCompletionDeduplicationTest : BasePlatformTestCase() {
     fun testShouldKeep_keepsLspItemWithAnUnseenKey() {
         val seenKeys = mutableSetOf<String>()
         assertTrue(GdCompletionDeduplicatingContributor.shouldKeep(seenKeys, null, "move_toward"))
-        assertTrue(GdCompletionDeduplicatingContributor.shouldKeep(seenKeys, GdCompletionSource.LSP, "new(\u2026)"))
+        assertTrue(GdCompletionDeduplicatingContributor.shouldKeep(seenKeys, GdCompletionSource.LSP, "new(…)"))
     }
 
     @Test
@@ -110,14 +116,14 @@ class GdCompletionDeduplicationTest : BasePlatformTestCase() {
     }
 
     private fun makeParams(caretOffset: Int): CompletionParameters {
-        val position = PsiUtilCore.getElementAtOffset(myFixture.file, caretOffset)
+        val position = PsiUtilCore.getElementAtOffset(gd.fixture.file, caretOffset)
         return CompletionParameters(
             position,
-            myFixture.file,
+            gd.fixture.file,
             CompletionType.BASIC,
             caretOffset,
             1,
-            myFixture.editor,
+            gd.fixture.editor,
             object : CompletionProcess {
                 override fun isAutopopupCompletion(): Boolean = false
             },

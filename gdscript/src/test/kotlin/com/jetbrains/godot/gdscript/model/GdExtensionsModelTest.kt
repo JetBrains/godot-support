@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/GDExtensions"])
 @TestApplication
 class GdExtensionsModelTest {
-    private val gd: GdModelFixture by gdModelFixture()
+    private val gd: GdModelFixture by gdModelFixture("gdscript")
 
     companion object{
         const val RiderLocator = "RiderLocator"

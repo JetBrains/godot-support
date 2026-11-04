@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Resolve and navigation"])
 @TestApplication
 class GdTypeHintReferenceTest {
-    private val gd: GdSdkFixture by gdSdkFixture("reference")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/reference")
 
     @Test
     fun testResolveTypeHintSdkClass() =

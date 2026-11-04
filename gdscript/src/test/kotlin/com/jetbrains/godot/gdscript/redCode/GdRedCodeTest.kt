@@ -1,18 +1,22 @@
 package com.jetbrains.godot.gdscript.redCode
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.openapi.application.runReadActionBlocking
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Red code"])
-@RunWith(JUnit4::class)
-class GdRedCodeTest : BasePlatformTestCase() {
+@TestApplication
+class GdRedCodeTest {
+    private val gd: GdFixture by gdLightFixture("gdscript/redCode")
+
     // Red code should NOT appear for this valid enum and typed variable initialization
     @Test
     fun testEnumHasNoRedCode() {
@@ -47,7 +51,7 @@ class GdRedCodeTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("RIDER-131973 gdscript single line lambda is not recognized")
+    @Disabled("RIDER-131973 gdscript single line lambda is not recognized")
     fun testSingleLineLambda(){
         val code = """
 class Mutex1:
@@ -65,15 +69,14 @@ var stage : BuildStage = BuildStage.NOT_STARTED :
     }
 
     private fun test(code: String) {
-        val psiFile = myFixture.configureByText("a.gd", code)
+        val psiFile = gd.fixture.configureByText("a.gd", code)
 
-        val errors = psiFile.children.flatMap { collectErrors(it) }
+        val (isEmpty, message) = runReadActionBlocking {
+            val errors = psiFile.children.flatMap { collectErrors(it) }
+            errors.isEmpty() to errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange }
+        }
 
         // Ensure there are no PsiErrorElements (no red code)
-        assertTrue(
-            "Did not expect red code; actual errors: " +
-                errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange },
-            errors.isEmpty()
-        )
+        assertTrue(isEmpty, "Did not expect red code; actual errors: $message")
     }
 }

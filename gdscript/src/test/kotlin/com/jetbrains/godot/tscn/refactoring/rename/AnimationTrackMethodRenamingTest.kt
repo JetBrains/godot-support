@@ -1,12 +1,17 @@
 package com.jetbrains.godot.tscn.refactoring.rename
 
+import com.intellij.openapi.application.EDT
 import com.intellij.polySymbols.testFramework.renameSymbolAtCaret
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.intellij.testFramework.common.timeoutRunBlocking
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import kotlin.io.path.pathString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.junit.jupiter.api.Test
 
 /**
  * The scene copies `networking/multiplayer_bomber/bomb.tscn` of the Godot demo projects. Track 1 is
@@ -14,11 +19,10 @@ import kotlin.io.path.pathString
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["Scenes and resources/Rename"])
-class AnimationTrackMethodRenamingTest : BasePlatformTestCase() {
+@TestApplication
+class AnimationTrackMethodRenamingTest {
 
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/tscn/refactoring/rename/animationTrackMethodRenaming").pathString
-    }
+    private val gd: GdFixture by gdLightFixture("tscn/refactoring/rename/animationTrackMethodRenaming")
 
     /**
      * A rename of the method updates the track key that calls it.
@@ -27,11 +31,14 @@ class AnimationTrackMethodRenamingTest : BasePlatformTestCase() {
      * all. Track 2 is a method track on `NodePath("Sprite")`, and that node carries no script, so
      * the same name there points at nothing. The `done` key of track 1 is a different method.
      */
-    fun testRename() {
-        myFixture.configureByFiles("bomb.gd", "bomb.tscn")
-        myFixture.renameSymbolAtCaret("detonate")
-        myFixture.checkResultByFile("bomb.gd", "bomb.gd.after", false)
-        myFixture.checkResultByFile("bomb.tscn", "bomb.tscn.after", false)
+    @Test
+    fun testRename() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            gd.fixture.configureByFiles("bomb.gd", "bomb.tscn")
+            gd.fixture.renameSymbolAtCaret("detonate")
+            gd.fixture.checkResultByFile("bomb.gd", "bomb.gd.after", false)
+            gd.fixture.checkResultByFile("bomb.tscn", "bomb.tscn.after", false)
+        }
     }
 
     /**
@@ -39,10 +46,13 @@ class AnimationTrackMethodRenamingTest : BasePlatformTestCase() {
      * `gdscript.search.GdOwnReferencesSearcher` and writes the new name with
      * `tscn.psi.manipulator.TscnElementManipulator`, which keeps the `&"` prefix of the key.
      */
-    fun testClassicRename() {
-        myFixture.configureByFiles("bomb.gd", "bomb.tscn")
-        myFixture.renameElementAtCaret("detonate")
-        myFixture.checkResultByFile("bomb.gd", "bomb.gd.after", false)
-        myFixture.checkResultByFile("bomb.tscn", "bomb.tscn.after", false)
+    @Test
+    fun testClassicRename() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            gd.fixture.configureByFiles("bomb.gd", "bomb.tscn")
+            gd.fixture.renameElementAtCaret("detonate")
+            gd.fixture.checkResultByFile("bomb.gd", "bomb.gd.after", false)
+            gd.fixture.checkResultByFile("bomb.tscn", "bomb.tscn.after", false)
+        }
     }
 }

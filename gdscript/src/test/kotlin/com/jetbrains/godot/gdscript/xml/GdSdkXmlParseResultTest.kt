@@ -4,12 +4,10 @@ import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.sdk.xml.GdSdkXmlParser
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertSame
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertSame
+import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.writeText
@@ -21,7 +19,6 @@ import kotlin.io.path.writeText
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/SDK"])
-@RunWith(JUnit4::class)
 class GdSdkXmlParseResultTest {
 
     @Test

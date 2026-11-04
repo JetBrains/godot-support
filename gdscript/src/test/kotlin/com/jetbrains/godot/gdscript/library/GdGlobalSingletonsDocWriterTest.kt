@@ -1,6 +1,5 @@
 package com.jetbrains.godot.gdscript.library
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
@@ -8,17 +7,19 @@ import gdscript.GdKeywords
 import gdscript.library.GdGlobalSingletonsDocWriter
 import gdscript.library.GdSingletonInfo
 import gdscript.polySymbols.sdk.xml.GdSdkXmlParser
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.writeText
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/SDK"])
-@RunWith(JUnit4::class)
-class GdGlobalSingletonsDocWriterTest : BasePlatformTestCase() {
+class GdGlobalSingletonsDocWriterTest {
 
     @Test
     fun testParseLineAcceptsSingletonLines() {
@@ -59,17 +60,17 @@ class GdGlobalSingletonsDocWriterTest : BasePlatformTestCase() {
             )
         )
 
-        assertTrue("The generated document has no XML declaration:\n$xml", xml.startsWith("<?xml "))
+        assertTrue(xml.startsWith("<?xml "), "The generated document has no XML declaration:\n$xml")
 
         val path = Files.createTempFile("gd-gdextension-scope", ".xml")
         try {
             path.writeText(xml)
             val classData = GdSdkXmlParser.parseClass(path)
-            assertNotNull("The generated document is not a parseable SDK class file:\n$xml", classData)
+            assertNotNull(classData, "The generated document is not a parseable SDK class file:\n$xml")
             assertEquals(GdKeywords.GDEXTENSION_SCOPE, classData!!.name)
 
             val properties = classData.properties
-            assertSize(2, properties)
+            assertEquals(2, properties.size)
             assertEquals(listOf("EditorOnly", "Fusion"), properties.map { it.name })
             // Self-typed, exactly like @GlobalScope's members: this is what makes the type inferable.
             assertTrue(properties.all { it.name == it.type.name })

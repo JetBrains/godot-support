@@ -2,6 +2,7 @@ package com.jetbrains.godot.gdscript.util
 
 import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.openapi.Disposable
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.util.Disposer
 import com.intellij.psi.PsiElement
 import com.intellij.testFramework.EditorTestUtil
@@ -31,7 +32,7 @@ fun CodeInsightTestFixture.gdContextAt(fileName: String, source: String): PsiEle
     require(caret >= 0) { "no ${EditorTestUtil.CARET_TAG} in the context source of $fileName" }
 
     val file = addFileToProject(fileName, source.removeRange(caret, caret + EditorTestUtil.CARET_TAG.length))
-    return requireNotNull(file.findElementAt(caret)) { "no element at ${EditorTestUtil.CARET_TAG} in $fileName" }
+    return runReadActionBlocking { requireNotNull(file.findElementAt(caret)) { "no element at ${EditorTestUtil.CARET_TAG} in $fileName" } }
 }
 
 /** A lookup that boils down to a single item is otherwise inserted straight away, leaving nothing to inspect. */

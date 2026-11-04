@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Find usages"])
 @TestApplication
 class GdSdkFindUsagesTest {
-    private val gd: GdSdkFixture by gdSdkFixture("refactoring")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/refactoring")
 
     @Test
     @Disabled

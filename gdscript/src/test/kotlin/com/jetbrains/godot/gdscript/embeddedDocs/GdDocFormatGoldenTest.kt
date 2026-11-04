@@ -6,12 +6,10 @@ import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdCoreDocPipeline
 import gdscript.embeddedDocs.GdDocFormat
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -26,7 +24,6 @@ import java.util.zip.DeflaterOutputStream
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Documentation"])
-@RunWith(JUnit4::class)
 class GdDocFormatGoldenTest {
 
     // One row per format version. Keep an old row, because it documents the history.
@@ -37,7 +34,7 @@ class GdDocFormatGoldenTest {
     @Test
     fun testPipelineOutputMatchesTheGoldenHash() {
         val expected = goldenHashes[GdDocFormat.VERSION]
-        assertNotNull("Add a golden hash row for format version ${GdDocFormat.VERSION}.", expected)
+        assertNotNull(expected, "Add a golden hash row for format version ${GdDocFormat.VERSION}.")
 
         val files = build().files.map { it.fileName to it.bytes }
         assertEquals(GdDocFormat.VERSION to expected, GdDocFormat.VERSION to hash(files))
@@ -51,7 +48,7 @@ class GdDocFormatGoldenTest {
             listOf("@GDScript.xml", "Node.xml", "Object.xml", "RefCounted.xml"),
             outcome.files.map { it.fileName },
         )
-        assertTrue("Every file must hold bytes.", outcome.files.all { it.bytes.isNotEmpty() })
+        assertTrue(outcome.files.all { it.bytes.isNotEmpty() }, "Every file must hold bytes.")
         assertEquals(null, outcome.recoveryReport)
     }
 
@@ -63,7 +60,7 @@ class GdDocFormatGoldenTest {
         try {
             Files.write(binary, binaryBytes)
             val outcome = GdCoreDocPipeline.build(binary) { }
-            assertTrue("The pipeline must accept the fixture: $outcome", outcome is GdCoreDocPipeline.Outcome.Ready)
+            assertTrue(outcome is GdCoreDocPipeline.Outcome.Ready, "The pipeline must accept the fixture: $outcome")
             return outcome as GdCoreDocPipeline.Outcome.Ready
         }
         finally {

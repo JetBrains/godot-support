@@ -6,11 +6,11 @@ import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdExtensionManifestParser
 import gdscript.embeddedDocs.GdMacBundleUtils
-import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Assume.assumeNoException
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assumptions.abort
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import java.nio.file.Files
 import java.nio.file.Path
@@ -21,7 +21,7 @@ class GdExtensionManifestParserTest {
     private val linuxDebug = GdExtensionManifestParser.ActiveFeatureTags("linux", "x86_64", debug = true)
     private val temporaryRoots = mutableListOf<Path>()
 
-    @After
+    @AfterEach
     fun removeTemporaryRoots() {
         for (root in temporaryRoots.asReversed()) {
             Files.walk(root).use { paths ->
@@ -109,7 +109,7 @@ class GdExtensionManifestParserTest {
         try {
             Files.createSymbolicLink(root.resolve("linked"), outside)
         } catch (exception: Exception) {
-            assumeNoException(exception)
+            abort<Unit>("Symbolic links are not supported here: ${exception.message}")
         }
         val result = parse(root, "[libraries]\nlinux.debug=\"res://linked/outside.so\"")
         assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, result.assertFailure().reason)
@@ -121,7 +121,7 @@ class GdExtensionManifestParserTest {
         val root = tempRoot()
         for (path in listOf("/outside.so", "C:\\outside.dll", "\\\\server\\share\\outside.dll")) {
             val result = parse(root, "[libraries]\nlinux.debug=\"$path\"")
-            assertEquals(path, GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, result.assertFailure().reason)
+            assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, result.assertFailure().reason, path)
         }
     }
 
@@ -181,7 +181,7 @@ class GdExtensionManifestParserTest {
         try {
             Files.createSymbolicLink(sub.resolve("linked"), outside)
         } catch (exception: Exception) {
-            assumeNoException(exception)
+            abort<Unit>("Symbolic links are not supported here: ${exception.message}")
         }
         val manifestPath = sub.resolve("plugin.gdextension")
         val result = parse(root, "[libraries]\nlinux.debug=\"./linked/outside.so\"", manifestPath = manifestPath)
@@ -203,7 +203,7 @@ class GdExtensionManifestParserTest {
         Files.writeString(framework.resolve("Resources/Info.plist"), plist("actual-name"))
         val binary = Files.createFile(framework.resolve("actual-name"))
         val result = parse(root, "[libraries]\nmacos.debug=\"res://lib.framework\"", macosFeatures())
-        assertTrue(result.toString(), result is GdExtensionManifestParser.Resolution.Success)
+        assertTrue(result is GdExtensionManifestParser.Resolution.Success, result.toString())
         assertEquals(binary, result.assertSuccess().binary)
     }
 
@@ -219,7 +219,7 @@ class GdExtensionManifestParserTest {
 
         val result = parse(root, "[libraries]\nmacos.debug=\"res://lib.framework\"", macosFeatures())
 
-        assertTrue(result.toString(), result is GdExtensionManifestParser.Resolution.Success)
+        assertTrue(result is GdExtensionManifestParser.Resolution.Success, result.toString())
         assertEquals(binary, result.assertSuccess().binary)
     }
 

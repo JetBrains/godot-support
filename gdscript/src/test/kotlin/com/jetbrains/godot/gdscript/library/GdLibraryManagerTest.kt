@@ -4,9 +4,11 @@ import com.intellij.openapi.util.Version
 import com.intellij.openapi.util.io.IoTestUtil
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.testFramework.LoggedErrorProcessor
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.junit5.TestApplication
 import com.intellij.util.system.LowLevelLocalMachineAccess
 import com.intellij.util.system.OS
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
@@ -18,9 +20,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -34,8 +41,10 @@ import kotlin.time.Duration.Companion.milliseconds
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/SDK"])
-@RunWith(JUnit4::class)
-class GdLibraryManagerTest : BasePlatformTestCase() {
+@TestApplication
+class GdLibraryManagerTest {
+
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/highlighting")
 
     // A version that no real Godot build uses, so the test cannot disturb a real documentation set.
     private val version: Version = Version.parseVersion("99.8")!!
@@ -50,10 +59,8 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
     private lateinit var singletonStarted: Path
     private lateinit var singletonRelease: Path
 
-    override fun runInDispatchThread(): Boolean = false
-
-    override fun setUp() {
-        super.setUp()
+    @BeforeEach
+    fun setUp() {
         // A run that crashed earlier can leave a core stamp, and testFailedCoreStepWritesNoStamp checks that none exists.
         Files.deleteIfExists(stampFile)
         removeProjectDocs()
@@ -66,47 +73,42 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
         fakeGodot = createFakeGodot(fakeGodotMode, singletonStarted, singletonRelease)
     }
 
-    override fun tearDown() {
-        try {
-            Files.deleteIfExists(stampFile)
-            if (Files.exists(coreSdkDir)) {
-                Files.walk(coreSdkDir).use { paths ->
-                    paths.sorted(Comparator.reverseOrder()).forEach { Files.deleteIfExists(it) }
-                }
+    @AfterEach
+    fun tearDown() {
+        Files.deleteIfExists(stampFile)
+        if (Files.exists(coreSdkDir)) {
+            Files.walk(coreSdkDir).use { paths ->
+                paths.sorted(Comparator.reverseOrder()).forEach { Files.deleteIfExists(it) }
             }
-            deleteRecursively(projectBasePath)
-            Files.deleteIfExists(fakeGodot)
-            Files.deleteIfExists(fakeGodotMode)
-            Files.deleteIfExists(singletonStarted)
-            Files.deleteIfExists(singletonRelease)
-            removeProjectDocs()
-            LocalFileSystem.getInstance().refreshAndFindFileByNioFile(coreSdkDir)
-        } catch (e: Throwable) {
-            addSuppressedException(e)
-        } finally {
-            super.tearDown()
         }
+        deleteRecursively(projectBasePath)
+        Files.deleteIfExists(fakeGodot)
+        Files.deleteIfExists(fakeGodotMode)
+        Files.deleteIfExists(singletonStarted)
+        Files.deleteIfExists(singletonRelease)
+        removeProjectDocs()
+        LocalFileSystem.getInstance().refreshAndFindFileByNioFile(coreSdkDir)
     }
 
     @Test
     fun testDoctoolRunWritesTheRawStamp() {
         IoTestUtil.assumeUnix() // The fake Godot is a POSIX shell script.
         runBlocking {
-            val extensionsRoot = GdSdkPathManager.getProjectExtensionsRoot(project)!!
-            assertFalse("No extension directory must exist before the first generation.", Files.exists(extensionsRoot))
+            val extensionsRoot = GdSdkPathManager.getProjectExtensionsRoot(gd.project)!!
+            assertFalse(Files.exists(extensionsRoot), "No extension directory must exist before the first generation.")
             Files.writeString(fakeGodotMode, "success")
 
             generate(fakeGodot)
 
-            val rawDir = GdSdkPathManager.getProjectExtensionsRawDir(project)!!
-            assertTrue("The raw directory must exist before Godot starts.", Files.isDirectory(rawDir))
+            val rawDir = GdSdkPathManager.getProjectExtensionsRawDir(gd.project)!!
+            assertTrue(Files.isDirectory(rawDir), "The raw directory must exist before Godot starts.")
             assertTrue(
-                "The first doctool run must write a valid raw directory stamp.",
                 GdSdkIntegrityValidator.hasValidStamp(
-                    GdSdkPathManager.getProjectExtensionsStampFile(project)!!,
+                    GdSdkPathManager.getProjectExtensionsStampFile(gd.project)!!,
                     GdSdkFingerprints.ofExtensionDeclarations(projectBasePath),
                     rawDir,
                 ),
+                "The first doctool run must write a valid raw directory stamp.",
             )
         }
     }
@@ -122,13 +124,13 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
 
         // Valid GDExtension stamps keep the doctool and merge steps out of this test.
         val extensionsStamp = GdSdkFingerprints.ofExtensionDeclarations(projectBasePath)
-        val rawDir = GdSdkPathManager.getProjectExtensionsRawDir(project)!!
-        val extensionsDir = GdSdkPathManager.getProjectExtensionsDir(project)!!
-        val blobRoot = GdSdkPathManager.getProjectExtensionsBlobRoot(project)!!
-        GdSdkIntegrityValidator.writeStamp(GdSdkPathManager.getProjectExtensionsStampFile(project)!!, extensionsStamp, rawDir)
+        val rawDir = GdSdkPathManager.getProjectExtensionsRawDir(gd.project)!!
+        val extensionsDir = GdSdkPathManager.getProjectExtensionsDir(gd.project)!!
+        val blobRoot = GdSdkPathManager.getProjectExtensionsBlobRoot(gd.project)!!
+        GdSdkIntegrityValidator.writeStamp(GdSdkPathManager.getProjectExtensionsStampFile(gd.project)!!, extensionsStamp, rawDir)
         val mergeInput = extensionsStamp + "\n" + GdSdkFingerprints.ofSmallFilesByContent(blobRoot) + "\n" +
             GdSdkFingerprints.ofSmallFilesByContent(rawDir)
-        GdSdkIntegrityValidator.writeStamp(GdSdkPathManager.getProjectExtensionsMergeStampFile(project)!!, mergeInput, extensionsDir)
+        GdSdkIntegrityValidator.writeStamp(GdSdkPathManager.getProjectExtensionsMergeStampFile(gd.project)!!, mergeInput, extensionsDir)
 
         // The executable is gone, so the core step reads no attributes and returns FAILED.
         val missingBinary = Files.createTempFile("gd-library-manager-missing", ".bin")
@@ -137,8 +139,8 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
 
         generate(missingBinary)
 
-        assertFalse("The core step must write no stamp.", Files.exists(stampFile))
-        assertTrue("The core step must keep the earlier set.", Files.exists(coreSdkDir.resolve("Node.xml")))
+        assertFalse(Files.exists(stampFile), "The core step must write no stamp.")
+        assertTrue(Files.exists(coreSdkDir.resolve("Node.xml")), "The core step must keep the earlier set.")
     }
 
     @Test
@@ -150,7 +152,7 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
         val publishedClass = publishedClass()
         assertContainsText("The blob class must be published without Godot.", Files.readString(publishedClass), "blob prose")
         val blobVirtualFile = LocalFileSystem.getInstance().findFileByNioFile(publishedClass)
-        assertNotNull("The blob class must be visible in the VFS.", blobVirtualFile)
+        assertNotNull(blobVirtualFile, "The blob class must be visible in the VFS.")
         assertContainsText(
             "The VFS must contain the blob class.",
             blobVirtualFile!!.contentsToByteArray().decodeToString(),
@@ -182,7 +184,7 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
             installBlobExtension()
             generate(null)
             val blobVirtualFile = LocalFileSystem.getInstance().findFileByNioFile(publishedClass())
-            assertNotNull("The blob class must be visible in the VFS.", blobVirtualFile)
+            assertNotNull(blobVirtualFile, "The blob class must be visible in the VFS.")
             assertContainsText(
                 "The VFS must initially contain the blob class.",
                 blobVirtualFile!!.contentsToByteArray().decodeToString(),
@@ -196,10 +198,10 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
                     while (!Files.exists(singletonStarted)) delay(10.milliseconds)
                 }
 
-                val mergeStampFile = GdSdkPathManager.getProjectExtensionsMergeStampFile(project)!!
-                assertTrue("The merge stamp must exist before the singleton step finishes.", Files.exists(mergeStampFile))
+                val mergeStampFile = GdSdkPathManager.getProjectExtensionsMergeStampFile(gd.project)!!
+                assertTrue(Files.exists(mergeStampFile), "The merge stamp must exist before the singleton step finishes.")
                 val mergedVirtualFile = LocalFileSystem.getInstance().findFileByNioFile(publishedClass())
-                assertNotNull("The merged class must stay visible in the VFS.", mergedVirtualFile)
+                assertNotNull(mergedVirtualFile, "The merged class must stay visible in the VFS.")
                 assertContainsText(
                     "The extension refresh must expose the merge before the singleton step finishes.",
                     mergedVirtualFile!!.contentsToByteArray().decodeToString(),
@@ -222,7 +224,7 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
             generate(fakeGodot)
             assertRawOnlyClassPublished("The successful run must publish the raw-only class.")
 
-            Files.deleteIfExists(GdSdkPathManager.getProjectExtensionsStampFile(project)!!)
+            Files.deleteIfExists(GdSdkPathManager.getProjectExtensionsStampFile(gd.project)!!)
             Files.writeString(fakeGodotMode, "fail")
             val loggedErrors = mutableListOf<String>()
             val processor = object : LoggedErrorProcessor() {
@@ -234,13 +236,13 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
             LoggedErrorProcessor.executeWith(processor).use { generate(fakeGodot) }
 
             val loggedError = loggedErrors.singleOrNull()
-            assertNotNull("A failed doctool run must log exactly one error, but logged: $loggedErrors", loggedError)
+            assertNotNull(loggedError, "A failed doctool run must log exactly one error, but logged: $loggedErrors")
             assertContainsText("The error must name the exit code.", loggedError!!, "The exit code is 7.")
             assertContainsText("The error must hold the command line.", loggedError, "--doctool")
 
             assertContainsText("A failed doctool run must fall back to the blob.", Files.readString(publishedClass()), "blob prose")
-            assertFalse("Partial raw output must not be published.", Files.exists(publishedDir().resolve("Partial.xml")))
-            assertFalse("Stale raw-only output must not survive.", Files.exists(publishedDir().resolve("RawOnly.xml")))
+            assertFalse(Files.exists(publishedDir().resolve("Partial.xml")), "Partial raw output must not be published.")
+            assertFalse(Files.exists(publishedDir().resolve("RawOnly.xml")), "Stale raw-only output must not survive.")
         }
     }
 
@@ -248,17 +250,17 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
     fun testRemovedBlobRemovesItsPublishedClass() = runBlocking {
         installBlobExtension()
         generate(null)
-        assertTrue("The blob class must be published first.", Files.exists(publishedClass()))
+        assertTrue(Files.exists(publishedClass()), "The blob class must be published first.")
 
         // The library keeps its name but no longer holds a documentation blob.
         Files.write(projectBasePath.resolve(LIBRARY_FILE_NAME), ByteArray(513) { 0x55 })
         generate(null)
 
-        assertFalse("A removed blob must remove its published class.", Files.exists(publishedClass()))
+        assertFalse(Files.exists(publishedClass()), "A removed blob must remove its published class.")
     }
 
     private suspend fun generate(godotPath: Path?) = withTimeout(TIMEOUT_MILLIS) {
-        GdLibraryManager.generateSdkIfNeeded(version, project, godotPath, projectBasePath)
+        GdLibraryManager.generateSdkIfNeeded(version, gd.project, godotPath, projectBasePath)
     }
 
     /** Adds a manifest and a library whose documentation blob describes the class `Shared`. */
@@ -267,13 +269,13 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
         Files.write(projectBasePath.resolve(LIBRARY_FILE_NAME), ByteArray(512) { 0x55 } + zlib(blobClassXml().toByteArray()))
     }
 
-    private fun publishedDir(): Path = GdSdkPathManager.getProjectExtensionsDir(project)!!
+    private fun publishedDir(): Path = GdSdkPathManager.getProjectExtensionsDir(gd.project)!!
 
     private fun publishedClass(): Path = publishedDir().resolve("Shared.xml")
 
     /** Fails with [message], the [expected] fragment, and the full [text] when [text] does not hold [expected]. */
     private fun assertContainsText(message: String, text: String, expected: String) {
-        assertTrue("$message\nExpected fragment: $expected\nActual text:\n$text", text.contains(expected))
+        assertTrue(text.contains(expected), "$message\nExpected fragment: $expected\nActual text:\n$text")
     }
 
     /** Fails with [message] and the list of published files when the published directory does not hold `RawOnly.xml`. */
@@ -286,7 +288,7 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
         } else {
             emptyList()
         }
-        fail("$message\nExpected file: $fileName\nPublished files: $published")
+        fail<Unit>("$message\nExpected file: $fileName\nPublished files: $published")
     }
 
     @OptIn(LowLevelLocalMachineAccess::class)
@@ -336,7 +338,7 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
                 echo 'SINGLETON|Engine|Object|0'
             """.trimIndent(),
         )
-        assertTrue("The fake Godot executable must be executable.", executable.toFile().setExecutable(true))
+        assertTrue(executable.toFile().setExecutable(true), "The fake Godot executable must be executable.")
         return executable
     }
 
@@ -345,7 +347,7 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
     }.toByteArray()
 
     private fun removeProjectDocs() {
-        val root = GdSdkPathManager.getProjectExtensionsRoot(project) ?: return
+        val root = GdSdkPathManager.getProjectExtensionsRoot(gd.project) ?: return
         deleteRecursively(root)
         LocalFileSystem.getInstance().refreshAndFindFileByNioFile(root)
     }

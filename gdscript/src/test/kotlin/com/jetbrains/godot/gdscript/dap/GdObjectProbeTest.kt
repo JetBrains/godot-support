@@ -13,19 +13,19 @@ import com.jetbrains.dap.protocol.VariableAttribute
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
+import gdscript.dap.remote.GdDapExpressions
 import gdscript.dap.remote.GdEvalOutcome
+import gdscript.dap.remote.GdLocalExpressions
 import gdscript.dap.remote.GdObjectPresentation
 import gdscript.dap.remote.GdObjectProbe
-import gdscript.dap.remote.GdLocalExpressions
 import gdscript.dap.remote.GdOwnerExpression
-import gdscript.dap.remote.GdDapExpressions
 import gdscript.dap.remote.evaluateStructuredOutcome
-import org.junit.jupiter.api.Assertions.assertAll
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertNotNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
+import org.junit.jupiter.api.Assertions.assertAll
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)

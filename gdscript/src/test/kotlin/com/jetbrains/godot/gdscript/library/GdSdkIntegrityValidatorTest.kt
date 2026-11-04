@@ -1,25 +1,23 @@
 package com.jetbrains.godot.gdscript.library
 
 import com.intellij.openapi.util.Version
-import com.intellij.testFramework.rules.TempDirectory
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdDocFormat
 import gdscript.library.GdSdkIntegrityValidator
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.attribute.FileTime
+import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
 /**
@@ -30,13 +28,13 @@ import kotlin.io.path.writeText
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/SDK"])
-@RunWith(JUnit4::class)
 class GdSdkIntegrityValidatorTest {
-    @JvmField
-    @Rule
-    val tempDir: TempDirectory = TempDirectory()
+    @TempDir
+    lateinit var tempDir: Path
 
     private val version: Version = Version.parseVersion("4.5")!!
+
+    private var directoryCounter = 0
 
     @Test
     fun testCoreStampRecordsTheExecutableSizeAndTime() {
@@ -54,7 +52,7 @@ class GdSdkIntegrityValidatorTest {
 
     @Test
     fun testCoreStampIsNullForAMissingExecutable() {
-        val missing = tempDir.rootPath.resolve("missing.bin")
+        val missing = tempDir.resolve("missing.bin")
 
         assertNull(GdSdkIntegrityValidator.coreStamp(version, missing))
     }
@@ -69,13 +67,13 @@ class GdSdkIntegrityValidatorTest {
         val secondStamp = GdSdkIntegrityValidator.coreStamp(version, second)!!
         assertNotEquals(firstStamp, secondStamp)
 
-        assertFalse("An absent stamp file cannot be valid.", GdSdkIntegrityValidator.hasValidCoreStamp(stampFile, firstStamp))
+        assertFalse(GdSdkIntegrityValidator.hasValidCoreStamp(stampFile, firstStamp), "An absent stamp file cannot be valid.")
 
         GdSdkIntegrityValidator.writeCoreStamp(stampFile, firstStamp)
         assertTrue(GdSdkIntegrityValidator.hasValidCoreStamp(stampFile, firstStamp))
         assertFalse(
-            "A stamp of another executable must force a rewrite.",
             GdSdkIntegrityValidator.hasValidCoreStamp(stampFile, secondStamp),
+            "A stamp of another executable must force a rewrite.",
         )
     }
 
@@ -101,15 +99,18 @@ class GdSdkIntegrityValidatorTest {
         val stamp = GdSdkIntegrityValidator.coreStamp(version, binary)!!
 
         assertFalse(
-            "A legacy stamp must force one rewrite, because it names no executable.",
             GdSdkIntegrityValidator.hasValidCoreStamp(stampFile, stamp),
+            "A legacy stamp must force one rewrite, because it names no executable.",
         )
         GdSdkIntegrityValidator.writeCoreStamp(stampFile, stamp)
         assertTrue(GdSdkIntegrityValidator.hasValidCoreStamp(stampFile, stamp))
     }
 
     private fun binary(content: String): Path =
-        tempDir.newDirectoryPath().resolve("godot.bin").also { it.writeText(content) }
+        newDirectory().resolve("godot.bin").also { it.writeText(content) }
 
-    private fun stampFile(): Path = tempDir.newDirectoryPath().resolve("stamp-4.5.txt")
+    private fun stampFile(): Path = newDirectory().resolve("stamp-4.5.txt")
+
+    private fun newDirectory(): Path =
+        tempDir.resolve("dir-${directoryCounter++}").also { it.createDirectories() }
 }

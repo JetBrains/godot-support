@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Inspections"])
 @TestApplication
 class GdStringMemberUsageInspectionTest {
-    private val gd: GdSdkFixture by gdSdkFixture("inspection")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/inspection")
 
     @BeforeEach
     fun enableStringNameMemberCallInspection() {

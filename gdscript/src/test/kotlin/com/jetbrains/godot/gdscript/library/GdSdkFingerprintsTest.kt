@@ -1,13 +1,15 @@
 package com.jetbrains.godot.gdscript.library
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.library.GdSdkFingerprints
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.attribute.FileTime
@@ -19,14 +21,13 @@ import kotlin.io.path.writeText
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/SDK"])
-@RunWith(JUnit4::class)
-class GdSdkFingerprintsTest : BasePlatformTestCase() {
+class GdSdkFingerprintsTest {
 
     private lateinit var projectPath: Path
     private lateinit var docsDir: Path
 
-    override fun setUp() {
-        super.setUp()
+    @BeforeEach
+    fun setUp() {
         projectPath = Files.createTempDirectory("gd-project")
         projectPath.resolve("project.godot").writeText("config_version=5")
 
@@ -36,15 +37,10 @@ class GdSdkFingerprintsTest : BasePlatformTestCase() {
     }
 
     @OptIn(ExperimentalPathApi::class)
-    override fun tearDown() {
-        try {
-            projectPath.deleteRecursively()
-            docsDir.deleteRecursively()
-        } catch (e: Throwable) {
-            addSuppressedException(e)
-        } finally {
-            super.tearDown()
-        }
+    @AfterEach
+    fun tearDown() {
+        projectPath.deleteRecursively()
+        docsDir.deleteRecursively()
     }
 
     @Test
@@ -57,7 +53,7 @@ class GdSdkFingerprintsTest : BasePlatformTestCase() {
         declaration.writeText("[configuration]\nentry_symbol = \"fusion_init\"\n")
 
         val withExtension = GdSdkFingerprints.ofExtensionDeclarations(projectPath)
-        assertTrue(withExtension, withExtension.contains("fusion.gdextension"))
+        assertTrue(withExtension.contains("fusion.gdextension"), withExtension)
         // Nothing changed in between, so the fingerprint has to be stable.
         assertEquals(withExtension, GdSdkFingerprints.ofExtensionDeclarations(projectPath))
 
@@ -82,7 +78,7 @@ class GdSdkFingerprintsTest : BasePlatformTestCase() {
             .resolve("example.gdextension").writeText("[configuration]\n")
 
         val fingerprint = GdSdkFingerprints.ofExtensionDeclarations(projectPath)
-        assertTrue(fingerprint, fingerprint.contains("example.gdextension"))
+        assertTrue(fingerprint.contains("example.gdextension"), fingerprint)
     }
 
     /** Cloning a repository or switching a branch rewrites the timestamps of files that did not change at all. */

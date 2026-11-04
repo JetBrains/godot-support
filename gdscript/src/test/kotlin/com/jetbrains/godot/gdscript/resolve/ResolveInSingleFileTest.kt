@@ -1,130 +1,165 @@
 package com.jetbrains.godot.gdscript.resolve
 
+import com.intellij.openapi.application.EDT
+import com.intellij.testFramework.common.timeoutRunBlocking
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdResolveFixture
+import com.jetbrains.godot.gdscript.gdResolveFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdConstDeclTl
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Resolve and navigation"])
-@RunWith(JUnit4::class)
-class ResolveInSingleFileTest : ResolveTestBase() {
+@TestApplication
+class ResolveInSingleFileTest {
+    private val gd: GdResolveFixture by gdResolveFixture("gdscript/resolve")
+
     @Test
-    fun testUnresolvableMembersOnNestedClasses() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testUnresolvableMembersOnNestedClasses() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    @Ignore("RIDER-131644 Resolve `super` base class, defined in the same file")
+    @Disabled("RIDER-131644 Resolve `super` base class, defined in the same file")
     fun testResolveSuperClass() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+        val file = gd.loadByTestName()
+        val annotated = gd.dumpResolvesWithInlineMarkers(file)
+        gd.assertGold(annotated)
     }
 
     @Test
-    fun testGdDictionaryLuaStyle() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testGdDictionaryLuaStyle() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    fun testGdDictionaryStringStyle() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testGdDictionaryStringStyle() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    fun testNestedGdDictionary() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testNestedGdDictionary() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    fun testEnum1() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testEnum1() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    fun testUnnamedEnums() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testUnnamedEnums() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    fun testUnnamedEnumsOuterConflicts() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testUnnamedEnumsOuterConflicts() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    @Ignore("RIDER-132087")
+    @Disabled("RIDER-132087")
     fun testExtendsClass() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+        val file = gd.loadByTestName()
+        val annotated = gd.dumpResolvesWithInlineMarkers(file)
+        gd.assertGold(annotated)
     }
 
     @Test
-    fun testNewResolvesToConstructorInit() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testNewResolvesToConstructorInit() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    fun testSelfReferentialConstNoStackOverflow() {
-        val file = loadByTestName()
-        // RIDER-137850 Calling returnType triggers the infinite type-inference chain without the fix
-        file.children.filterIsInstance<GdConstDeclTl>().forEach { it.returnType }
+    fun testSelfReferentialConstNoStackOverflow() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            // RIDER-137850 Calling returnType triggers the infinite type-inference chain without the fix
+            file.children.filterIsInstance<GdConstDeclTl>().forEach { it.returnType }
+        }
     }
 
     @Test
-    fun testResolveSetGet() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testResolveSetGet() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    fun testChainedReferenceBackslash() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testChainedReferenceBackslash() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    fun testLocalScopeDoesNotLeakAcrossMethods() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testLocalScopeDoesNotLeakAcrossMethods() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    fun testLocalScopeEndsAtBlockBoundary() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testLocalScopeEndsAtBlockBoundary() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     @Test
-    fun testForLoopVariableVisibleInBody() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testForLoopVariableVisibleInBody() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 
     /**
@@ -134,9 +169,11 @@ class ResolveInSingleFileTest : ResolveTestBase() {
      * the classic PSI-based resolve would have left it unresolved.
      */
     @Test
-    fun testLocalVariableVisibleBeforeDeclarationInSameSuite() {
-        val file = loadByTestName()
-        val annotated = dumpResolvesWithInlineMarkers(file)
-        assertGold(annotated)
+    fun testLocalVariableVisibleBeforeDeclarationInSameSuite() = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val file = gd.loadByTestName()
+            val annotated = gd.dumpResolvesWithInlineMarkers(file)
+            gd.assertGold(annotated)
+        }
     }
 }

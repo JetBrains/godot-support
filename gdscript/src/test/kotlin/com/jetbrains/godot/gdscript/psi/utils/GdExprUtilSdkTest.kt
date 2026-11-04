@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Type inference"])
 @TestApplication
 class GdExprUtilSdkTest {
-    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/highlighting")
 
     @Test
     fun testTypeAcceptsRejectsUnrelatedSdkTypes() {

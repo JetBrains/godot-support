@@ -2,18 +2,24 @@ package com.jetbrains.godot.tscn.refactoring.rename
 
 import com.intellij.codeInsight.template.impl.TemplateManagerImpl
 import com.intellij.ide.DataManager
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.impl.TestOnlyThreading
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.refactoring.rename.Renamer
 import com.intellij.refactoring.rename.RenamerFactory
 import com.intellij.testFramework.PlatformTestUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.intellij.testFramework.common.timeoutRunBlocking
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import kotlin.io.path.pathString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 /**
  * The in-place rename of a GDScript method, the way the IDE runs it from the editor.
@@ -28,37 +34,41 @@ import kotlin.io.path.pathString
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["Scenes and resources/Rename"])
-class ConnectionMethodInplaceRenamingTest : BasePlatformTestCase() {
+@TestApplication
+class ConnectionMethodInplaceRenamingTest {
 
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/tscn/refactoring/rename/connectionMethodRenaming").pathString
-    }
+    private val gd: GdFixture by gdLightFixture("tscn/refactoring/rename/connectionMethodRenaming")
 
-    fun testInplaceRename() {
-        myFixture.configureByFiles("scene_a.gd", "scene_a.tscn")
-        TemplateManagerImpl.setTemplateTesting(testRootDisposable)
+    @Test
+    fun testInplaceRename() = timeoutRunBlocking {
+        gd.fixture.configureByFiles("scene_a.gd", "scene_a.tscn")
+        TemplateManagerImpl.setTemplateTesting(gd.testRootDisposable)
 
-        val dataContext = DataManager.getInstance().getDataContext(myFixture.editor.contentComponent)
-        val renamers: MutableList<Renamer> = mutableListOf()
-        RenamerFactory.EP_NAME.forEachExtensionSafe { renamers.addAll(it.createRenamers(dataContext)) }
-        assertEquals(renamers.map { it.presentableText }.toString(), 1, renamers.size)
-        renamers.single().performRename()
+        // The whole in-place rename interaction - starting the template and pumping the event queue
+        // until the rename coroutine finishes - runs on the EDT under the write-intent lock.
+        withContext(Dispatchers.EDT) {
+            val dataContext = DataManager.getInstance().getDataContext(gd.fixture.editor.contentComponent)
+            val renamers: MutableList<Renamer> = mutableListOf()
+            RenamerFactory.EP_NAME.forEachExtensionSafe { renamers.addAll(it.createRenamers(dataContext)) }
+            assertEquals(1, renamers.size, renamers.map { it.presentableText }.toString())
+            renamers.single().performRename()
 
-        finishTemplate("_on_goto_scene_b_pressed")
-        awaitRename("_on_goto_scene_pressed")
+            finishTemplate("_on_goto_scene_b_pressed")
+            awaitRename("_on_goto_scene_pressed")
+        }
 
-        myFixture.checkResultByFile("scene_a.gd", "scene_a.gd.after", false)
-        myFixture.checkResultByFile("scene_a.tscn", "scene_a.tscn.after", false)
+        gd.fixture.checkResultByFile("scene_a.gd", "scene_a.gd.after", false)
+        gd.fixture.checkResultByFile("scene_a.tscn", "scene_a.tscn.after", false)
     }
 
     /** Types [newName] into the template of the in-place rename and finishes it. */
     private fun finishTemplate(newName: String) {
-        val state = TemplateManagerImpl.getTemplateState(myFixture.editor)
+        val state = TemplateManagerImpl.getTemplateState(gd.fixture.editor)
                     ?: throw AssertionError("The in-place rename started no template.")
         val range = state.currentVariableRange
                     ?: throw AssertionError("The template has no current variable.")
-        WriteCommandAction.runWriteCommandAction(project) {
-            myFixture.editor.document.replaceString(range.startOffset, range.endOffset, newName)
+        WriteCommandAction.runWriteCommandAction(gd.project) {
+            gd.fixture.editor.document.replaceString(range.startOffset, range.endOffset, newName)
         }
         state.gotoEnd(false)
     }
@@ -69,12 +79,12 @@ class ConnectionMethodInplaceRenamingTest : BasePlatformTestCase() {
      */
     private fun awaitRename(oldName: String) {
         val deadline = System.currentTimeMillis() + 30_000
-        while (System.currentTimeMillis() < deadline && myFixture.editor.document.text.contains(oldName)) {
+        while (System.currentTimeMillis() < deadline && gd.fixture.editor.document.text.contains(oldName)) {
             TestOnlyThreading.releaseTheAcquiredWriteIntentLockThenExecuteActionAndTakeWriteIntentLockBack {
                 PlatformTestUtil.dispatchAllInvocationEventsInIdeEventQueue()
                 Thread.sleep(10)
             }
         }
-        PsiDocumentManager.getInstance(project).commitAllDocuments()
+        PsiDocumentManager.getInstance(gd.project).commitAllDocuments()
     }
 }

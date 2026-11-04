@@ -1,20 +1,27 @@
 package com.jetbrains.godot.gdscript.resolve
 
+import com.intellij.openapi.application.EDT
+import com.intellij.testFramework.PlatformTestUtil.assertSameLinesWithFile
+import com.intellij.testFramework.common.timeoutRunBlocking
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdResolveFixture
+import com.jetbrains.godot.gdscript.gdResolveFixture
 import com.jetbrains.godot.gdscript.util.gdContextAt
 import com.jetbrains.godot.gdscript.util.gdFragment
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["Debug/GDScript/Evaluation"])
-@RunWith(JUnit4::class)
-class GdCodeFragmentResolveTest : ResolveTestBase() {
+@TestApplication
+class GdCodeFragmentResolveTest {
+    private val gd: GdResolveFixture by gdResolveFixture("gdscript/resolve")
 
-    private fun memberContext() = myFixture.gdContextAt(
+    private fun memberContext() = gd.fixture.gdContextAt(
         "context.gd",
         """
         |var health := 100
@@ -24,12 +31,14 @@ class GdCodeFragmentResolveTest : ResolveTestBase() {
         """.trimMargin()
     )
 
-    private fun doFragmentResolveTest(text: String) {
-        val fragment = myFixture.gdFragment(text, memberContext())
-        assertSameLinesWithFile(
-            "$testDataPath/codeFragment/${getTestName(true)}.txt",
-            dumpResolvesWithInlineMarkers(fragment)
-        )
+    private fun doFragmentResolveTest(text: String) = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val fragment = gd.fixture.gdFragment(text, memberContext())
+            assertSameLinesWithFile(
+                "${gd.testDataPath}/codeFragment/${gd.getTestName(true)}.txt",
+                gd.dumpResolvesWithInlineMarkers(fragment)
+            )
+        }
     }
 
     @Test

@@ -49,7 +49,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Documentation"])
 @TestApplication
 class GdDocumentationLinkResolveTest {
-    private val gd: GdSdkFixture by gdSdkFixture("reference")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/reference")
 
     @Test
     fun testResolveSdkTypeAndMembers() {

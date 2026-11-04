@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Highlighting"])
 @TestApplication
 class GdPolySymbolHighlightingCustomizerTest {
-    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/highlighting")
 
     @Test
     fun testSymbolKindColoring() = gd.doHighlightingTest(checkSymbolNames = true, dir = false)

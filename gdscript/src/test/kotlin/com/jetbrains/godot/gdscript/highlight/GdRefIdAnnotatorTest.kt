@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Highlighting"])
 @TestApplication
 class GdRefIdAnnotatorTest {
-    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/highlighting")
 
     @BeforeEach
     fun preserveAnnotatorSeverity() {

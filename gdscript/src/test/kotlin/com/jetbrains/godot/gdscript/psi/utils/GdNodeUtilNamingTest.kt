@@ -4,15 +4,12 @@ import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.utils.GdNodeUtil
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Node paths"])
-@RunWith(JUnit4::class)
 class GdNodeUtilNamingTest {
 
     @Test
@@ -51,9 +48,9 @@ class GdNodeUtilNamingTest {
     }
 
     private fun assertQuoted(name: String, expected: String) =
-        assertEquals("quoteIfNeeded(\"$name\")", expected, GdNodeUtil.quoteIfNeeded(name))
+        assertEquals(expected, GdNodeUtil.quoteIfNeeded(name), "quoteIfNeeded(\"$name\")")
 
     private fun assertIdentifier(name: String, expected: String) =
-        assertEquals("nodeNameToIdentifier(\"$name\")", expected, GdNodeUtil.nodeNameToIdentifier(name))
+        assertEquals(expected, GdNodeUtil.nodeNameToIdentifier(name), "nodeNameToIdentifier(\"$name\")")
 
 }

@@ -20,9 +20,9 @@ import gdscript.dap.remote.GdDapXValue
 import gdscript.dap.remote.GdFrameSourceSelf
 import gdscript.dap.remote.GdOwnerExpression
 import gdscript.dap.remote.GdSelfCheckedFrame
+import gdscript.dap.remote.GdValueKind
 import gdscript.dap.remote.GdWatchContext
 import gdscript.dap.remote.GdWatchPath
-import gdscript.dap.remote.GdValueKind
 import org.jetbrains.concurrency.Promise
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -33,8 +33,8 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
-import java.util.concurrent.TimeUnit
 import java.lang.reflect.Proxy
+import java.util.concurrent.TimeUnit
 import javax.swing.Icon
 
 @Subsystem(SubsystemConstants.GODOT)

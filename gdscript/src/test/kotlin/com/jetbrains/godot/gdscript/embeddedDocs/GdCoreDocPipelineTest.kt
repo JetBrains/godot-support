@@ -4,14 +4,12 @@ import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdCoreDocPipeline
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -27,7 +25,6 @@ import kotlin.io.path.writeText
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Documentation"])
-@RunWith(JUnit4::class)
 class GdCoreDocPipelineTest {
 
     @Test
@@ -118,10 +115,10 @@ class GdCoreDocPipelineTest {
             assertFalse(ready.sweepStale)
             assertNotNull(ready.recoveryReport)
             assertTrue(
-                ready.recoveryReport!!,
-                ready.recoveryReport.contains(
+                ready.recoveryReport!!.contains(
                     "the extractor dropped at least one stream because it exceeded the per-stream cap, so the class set may be incomplete"
-                )
+                ),
+                ready.recoveryReport!!
             )
         }
     }
@@ -151,8 +148,8 @@ class GdCoreDocPipelineTest {
             val ready = ready(GdCoreDocPipeline.build(binary) { })
 
             assertEquals(listOf("@GDScript.xml", "Node.xml", "Object.xml", "RefCounted.xml"), ready.files.map { it.fileName })
-            assertNotNull("The pipeline must report the dropped document.", ready.recoveryReport)
-            assertTrue(ready.recoveryReport!!, ready.recoveryReport!!.contains("dropped a malformed document"))
+            assertNotNull(ready.recoveryReport, "The pipeline must report the dropped document.")
+            assertTrue(ready.recoveryReport!!.contains("dropped a malformed document"), ready.recoveryReport!!)
         }
     }
 
@@ -165,7 +162,7 @@ class GdCoreDocPipelineTest {
 
             val node = ready.files.single { it.fileName == "Node.xml" }
             assertTrue(node.bytes.decodeToString().contains("The brief text of Node."))
-            assertTrue(ready.recoveryReport!!, ready.recoveryReport!!.contains("kept the first variant of class Node"))
+            assertTrue(ready.recoveryReport!!.contains("kept the first variant of class Node"), ready.recoveryReport!!)
         }
     }
 
@@ -177,7 +174,7 @@ class GdCoreDocPipelineTest {
             val ready = ready(GdCoreDocPipeline.build(binary) { })
 
             assertEquals(4, ready.files.size)
-            assertTrue(ready.recoveryReport!!, ready.recoveryReport!!.contains("Bad/Name"))
+            assertTrue(ready.recoveryReport!!.contains("Bad/Name"), ready.recoveryReport!!)
         }
     }
 
@@ -235,7 +232,7 @@ class GdCoreDocPipelineTest {
 
             GdCoreDocPipeline.writeCoreDocs(directory, files("Node"), sweepStale = false)
 
-            assertTrue("The earlier class file must stay.", Files.exists(directory.resolve("Stale.xml")))
+            assertTrue(Files.exists(directory.resolve("Stale.xml")), "The earlier class file must stay.")
             assertTrue(Files.exists(directory.resolve("Node.xml")))
         }
         finally {
@@ -278,12 +275,12 @@ class GdCoreDocPipelineTest {
             "</class>\n"
 
     private fun rejected(outcome: GdCoreDocPipeline.Outcome): GdCoreDocPipeline.Outcome.Rejected {
-        assertTrue("The pipeline must reject the input: $outcome", outcome is GdCoreDocPipeline.Outcome.Rejected)
+        assertTrue(outcome is GdCoreDocPipeline.Outcome.Rejected, "The pipeline must reject the input: $outcome")
         return outcome as GdCoreDocPipeline.Outcome.Rejected
     }
 
     private fun ready(outcome: GdCoreDocPipeline.Outcome): GdCoreDocPipeline.Outcome.Ready {
-        assertTrue("The pipeline must accept the input: $outcome", outcome is GdCoreDocPipeline.Outcome.Ready)
+        assertTrue(outcome is GdCoreDocPipeline.Outcome.Ready, "The pipeline must accept the input: $outcome")
         return outcome as GdCoreDocPipeline.Outcome.Ready
     }
 

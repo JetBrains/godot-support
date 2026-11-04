@@ -1,54 +1,69 @@
 package com.jetbrains.godot.gdscript.psi
 
+import com.intellij.openapi.application.EDT
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.psi.PsiCodeFragment
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.DebugUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.PlatformTestUtil
+import com.intellij.testFramework.common.timeoutRunBlocking
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
+import com.jetbrains.godot.gdscript.getGdTestDataPath
 import com.jetbrains.godot.gdscript.util.configureGdFragment
 import com.jetbrains.godot.gdscript.util.disableSingleItemAutoInsert
 import com.jetbrains.godot.gdscript.util.gdContextAt
 import com.jetbrains.godot.gdscript.util.gdFragment
-import com.jetbrains.godot.getBaseTestDataPath
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdFile
 import gdscript.psi.GdPsiCodeFragment
 import gdscript.psi.GdTypes
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import kotlin.io.path.pathString
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertSame
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["Debug/GDScript/Evaluation"])
-@RunWith(JUnit4::class)
-class GdCodeFragmentLifecycleTest : BasePlatformTestCase() {
+@TestApplication
+class GdCodeFragmentLifecycleTest {
 
-    override fun getTestDataPath(): String =
-        getBaseTestDataPath().resolve("testData/gdscript").pathString
+    private val gd: GdFixture by gdLightFixture("gdscript")
 
-    override fun setUp() {
-        super.setUp()
-        disableSingleItemAutoInsert(testRootDisposable)
+    @BeforeEach
+    fun disableAutoInsert() {
+        disableSingleItemAutoInsert(gd.testRootDisposable)
     }
 
-    private fun someContext(): PsiElement = myFixture.gdContextAt(
-        "context.gd",
-        """
+    private fun someContext(): PsiElement = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            gd.fixture.gdContextAt(
+                "context.gd",
+                """
         |var member := 1
         |
         |func _ready():
         |	<caret>pass
         """.trimMargin()
-    )
+            )
+        }
+    }
 
     /** A reparse has to leave a tree a fresh parse would have produced, so these reuse [com.jetbrains.godot.gdscript.parser.GdCodeFragmentParserTest]'s gold. */
     private fun assertReparsedLikeAFreshParse(fragment: GdPsiCodeFragment, goldFileName: String) {
-        assertSameLinesWithFile(
-            "$testDataPath/parser/codeFragment/$goldFileName.txt",
+        PlatformTestUtil.assertSameLinesWithFile(
+            "${getGdTestDataPath(GdCodeFragmentLifecycleTest::class.java)}/gdscript/parser/codeFragment/$goldFileName.txt",
             DebugUtil.psiToString(fragment, true)
         )
     }
@@ -56,15 +71,15 @@ class GdCodeFragmentLifecycleTest : BasePlatformTestCase() {
     @Test
     fun testContextIsDroppedOnceItBecomesInvalid() {
         val context = someContext()
-        val fragment = myFixture.gdFragment("member", context)
+        val fragment = runReadActionBlocking { gd.fixture.gdFragment("member", context) }
 
-        assertSame(context, fragment.context)
+        assertSame(context, runReadActionBlocking { fragment.context })
 
-        WriteCommandAction.runWriteCommandAction(project) { context.containingFile.delete() }
+        WriteCommandAction.runWriteCommandAction(gd.project) { context.containingFile.delete() }
 
-        assertFalse("Test setup is broken - the context element is still valid", context.isValid)
-        assertNull("An invalidated context must not be handed out", fragment.context)
-        assertNull("The dead element must not be handed out on a second call either", fragment.context)
+        assertFalse(runReadActionBlocking { context.isValid }, "Test setup is broken - the context element is still valid")
+        assertNull(runReadActionBlocking { fragment.context }, "An invalidated context must not be handed out")
+        assertNull(runReadActionBlocking { fragment.context }, "The dead element must not be handed out on a second call either")
 
         // The hot path that forced the raw-PsiElement design must stay usable, too.
         assertTrue(fragment.modificationStamp >= 0)
@@ -74,42 +89,42 @@ class GdCodeFragmentLifecycleTest : BasePlatformTestCase() {
     @Test
     fun testCompletionWithAnInvalidatedContextDoesNotThrow() {
         val context = someContext()
-        myFixture.configureGdFragment("member<caret>", context)
+        gd.fixture.configureGdFragment("member<caret>", context)
 
-        WriteCommandAction.runWriteCommandAction(project) { context.containingFile.delete() }
-        myFixture.completeBasic()
+        WriteCommandAction.runWriteCommandAction(gd.project) { context.containingFile.delete() }
+        gd.fixture.completeBasic()
 
-        assertEquals("member", myFixture.file.text)
+        assertEquals("member", gd.fixture.file.text)
     }
 
     @Test
     fun testHighlightingWithAnInvalidatedContextDoesNotThrow() {
         val context = someContext()
-        myFixture.configureGdFragment("member", context)
+        gd.fixture.configureGdFragment("member", context)
 
-        WriteCommandAction.runWriteCommandAction(project) { context.containingFile.delete() }
-        myFixture.doHighlighting()
+        WriteCommandAction.runWriteCommandAction(gd.project) { context.containingFile.delete() }
+        gd.fixture.doHighlighting()
 
-        assertEquals("member", myFixture.file.text)
+        assertEquals("member", gd.fixture.file.text)
     }
 
     @Test
     fun testCompletionWithoutAContextDoesNotThrow() {
-        myFixture.configureGdFragment("member<caret>")
+        gd.fixture.configureGdFragment("member<caret>")
 
-        myFixture.completeBasic()
+        gd.fixture.completeBasic()
 
-        assertEquals("member", myFixture.file.text)
+        assertEquals("member", gd.fixture.file.text)
     }
 
     /** Completion inserts its dummy identifier into the copy; leaking that into the evaluate window would be visible. */
     @Test
     fun testCompletionLeavesWhatTheUserTypedAlone() {
-        myFixture.configureGdFragment("self.mem<caret>", someContext())
+        gd.fixture.configureGdFragment("self.mem<caret>", someContext())
 
-        myFixture.completeBasic()
+        gd.fixture.completeBasic()
 
-        assertEquals("self.mem", myFixture.file.text)
+        assertEquals("self.mem", gd.fixture.file.text)
     }
 
     /**
@@ -119,23 +134,25 @@ class GdCodeFragmentLifecycleTest : BasePlatformTestCase() {
     @Test
     fun testCopyKeepsFragmentIdentityAndContext() {
         val context = someContext()
-        val fragment = myFixture.gdFragment("self.member", context)
+        val fragment = runReadActionBlocking { gd.fixture.gdFragment("self.member", context) }
 
-        val copy = fragment.copy()
+        val copy = runReadActionBlocking { fragment.copy() }
 
-        val fragmentCopy = assertInstanceOf(copy, GdPsiCodeFragment::class.java)
-        assertInstanceOf(copy, GdFile::class.java)
-        assertInstanceOf(copy, PsiCodeFragment::class.java)
-        assertSame("Copy lost the context element", context, fragmentCopy.context)
-        assertSame("Copy lost the CODE_FRAGMENT content element type", GdTypes.CODE_FRAGMENT, fragmentCopy.contentElementType)
-        assertFalse("Completion copies must not be physical", fragmentCopy.isPhysical)
-        assertSame("Copy does not point back at the original", fragment, fragmentCopy.originalFile)
-        assertEquals(fragment.text, fragmentCopy.text)
+        val fragmentCopy = assertInstanceOf(GdPsiCodeFragment::class.java, copy)
+        assertInstanceOf(GdFile::class.java, copy)
+        runReadActionBlocking {
+            assertInstanceOf(PsiCodeFragment::class.java, copy)
+            assertSame(context, fragmentCopy.context, "Copy lost the context element")
+            assertSame(GdTypes.CODE_FRAGMENT, fragmentCopy.contentElementType, "Copy lost the CODE_FRAGMENT content element type")
+            assertFalse(fragmentCopy.isPhysical, "Completion copies must not be physical")
+            assertSame(fragment, fragmentCopy.originalFile, "Copy does not point back at the original")
+            assertEquals(fragment.text, fragmentCopy.text)
+        }
     }
 
     @Test
     fun testCopyOfAContextLessFragmentHasNoContext() {
-        val copy = myFixture.gdFragment("self.member").copy() as GdPsiCodeFragment
+        val copy = runReadActionBlocking { gd.fixture.gdFragment("self.member").copy() as GdPsiCodeFragment }
 
         assertNull(copy.context)
     }
@@ -151,29 +168,29 @@ class GdCodeFragmentLifecycleTest : BasePlatformTestCase() {
     @Test
     fun testDocumentCommitReparseKeepsTheFragmentIntact() {
         val context = someContext()
-        val fragment = myFixture.gdFragment("self.mem", context)
-        val document = requireNotNull(fragment.viewProvider.document) { "physical fragment has no document" }
+        val fragment = runReadActionBlocking { gd.fixture.gdFragment("self.mem", context) }
+        val document = requireNotNull(runReadActionBlocking { fragment.viewProvider.document }) { "physical fragment has no document" }
 
-        WriteCommandAction.runWriteCommandAction(project) {
+        WriteCommandAction.runWriteCommandAction(gd.project) {
             document.insertString(document.textLength, "ber")
-            PsiDocumentManager.getInstance(project).commitDocument(document)
+            PsiDocumentManager.getInstance(gd.project).commitDocument(document)
         }
 
         assertEquals("self.member", fragment.text)
-        assertTrue("Reparse replaced the fragment PSI", fragment.isValid)
-        assertSame("Reparse lost the context element", context, fragment.context)
-        assertSame(GdTypes.CODE_FRAGMENT, fragment.contentElementType)
+        assertTrue(runReadActionBlocking { fragment.isValid }, "Reparse replaced the fragment PSI")
+        assertSame(context, runReadActionBlocking { fragment.context }, "Reparse lost the context element")
+        assertSame(GdTypes.CODE_FRAGMENT, runReadActionBlocking { fragment.contentElementType })
         assertReparsedLikeAFreshParse(fragment, "selfAttribute")
     }
 
     @Test
     fun testDocumentCommitReparseStillReportsLeftoverInput() {
-        val fragment = myFixture.gdFragment("a")
-        val document = requireNotNull(fragment.viewProvider.document) { "physical fragment has no document" }
+        val fragment = runReadActionBlocking { gd.fixture.gdFragment("a") }
+        val document = requireNotNull(runReadActionBlocking { fragment.viewProvider.document }) { "physical fragment has no document" }
 
-        WriteCommandAction.runWriteCommandAction(project) {
+        WriteCommandAction.runWriteCommandAction(gd.project) {
             document.setText("a\nb")
-            PsiDocumentManager.getInstance(project).commitDocument(document)
+            PsiDocumentManager.getInstance(gd.project).commitDocument(document)
         }
 
         assertEquals("a\nb", fragment.text)

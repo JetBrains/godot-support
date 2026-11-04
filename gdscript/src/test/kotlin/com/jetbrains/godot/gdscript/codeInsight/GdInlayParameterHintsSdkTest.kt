@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Inlay hints"])
 @TestApplication
 class GdInlayParameterHintsSdkTest {
-    private val gd: GdSdkFixture by gdSdkFixture("codeInsight")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/codeInsight")
 
     @Test
     fun testInlayHintsForSdkMethodCall(): Unit = timeoutRunBlocking {

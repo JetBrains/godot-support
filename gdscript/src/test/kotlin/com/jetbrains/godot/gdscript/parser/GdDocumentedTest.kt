@@ -1,8 +1,9 @@
 package com.jetbrains.godot.gdscript.parser
 
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
@@ -10,22 +11,21 @@ import gdscript.psi.GdClassNaming
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdVarDeclSt
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import kotlin.io.path.pathString
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Lexer and parser"])
-@RunWith(JUnit4::class)
-class GdDocumentedTest : BasePlatformTestCase() {
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").pathString
-    }
+@TestApplication
+class GdDocumentedTest {
+    private val gd: GdFixture by gdLightFixture("gdscript/parser/godotTestCases")
 
     @Test
     fun testDocumentationCommentsParsing() {
-        val file = myFixture.configureByFile("documentation_comments.gd")
+        val file = gd.fixture.configureByFile("documentation_comments.gd")
 
         // Test class documentation
         val classNaming = PsiTreeUtil.findChildOfType(file, GdClassNaming::class.java)
@@ -70,7 +70,7 @@ class GdDocumentedTest : BasePlatformTestCase() {
         val xVar = class_variables.find { it.getName() == "x" }
         assertNotNull(xVar)
         assertEquals("This is a brief for var x.", xVar!!.brief())
-        assertEmpty(xVar.tutorials())
+        assertTrue(xVar.tutorials().isEmpty())
 
         assertFalse(xVar.isDeprecated())
         assertFalse(xVar.isExperimental())
@@ -79,9 +79,9 @@ class GdDocumentedTest : BasePlatformTestCase() {
         val local_variables = PsiTreeUtil.findChildrenOfType(documentedFunc, GdVarDeclSt::class.java).toList()
         val yVar = local_variables.find { it.getName() == "y" }
         assertNotNull(yVar)
-        assertEmpty(yVar!!.brief())
-        assertEmpty(yVar.description())
-        assertEmpty(yVar.tutorials())
+        assertTrue(yVar!!.brief().isEmpty())
+        assertTrue(yVar.description().isEmpty())
+        assertTrue(yVar.tutorials().isEmpty())
 
         assertFalse(yVar.isDeprecated())
         assertFalse(yVar.isExperimental())
@@ -90,7 +90,7 @@ class GdDocumentedTest : BasePlatformTestCase() {
         assertNotNull(zVar)
         assertEquals("This is a brief for var z.", zVar!!.brief())
         assertEquals("This is a brief for var z.\n\nThis is a description for var z.", zVar.description())
-        assertEmpty(zVar.tutorials())
+        assertTrue(zVar.tutorials().isEmpty())
 
         assertFalse(zVar.isDeprecated())
         assertFalse(zVar.isExperimental())
@@ -99,7 +99,7 @@ class GdDocumentedTest : BasePlatformTestCase() {
     /** The doc comment is above the annotations of a declaration. */
     @Test
     fun testDocumentationCommentAboveAnnotations() {
-        val file = myFixture.configureByText("annotated.gd", """
+        val file = gd.fixture.configureByText("annotated.gd", """
             extends Node
 
             ## Health doc.

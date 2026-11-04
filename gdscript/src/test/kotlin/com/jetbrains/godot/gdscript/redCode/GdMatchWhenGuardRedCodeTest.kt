@@ -1,13 +1,22 @@
 package com.jetbrains.godot.gdscript.redCode
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.openapi.application.runReadActionBlocking
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Red code"])
-class GdMatchWhenGuardRedCodeTest : BasePlatformTestCase() {
+@TestApplication
+class GdMatchWhenGuardRedCodeTest {
+    private val gd: GdFixture by gdLightFixture("gdscript/redCode")
+
+    @Test
     fun testMatchWhenGuardHasNoRedCode() {
         val code = """
       |func change(setting: String, newValue: Variant, batch_edit = false):
@@ -18,17 +27,20 @@ class GdMatchWhenGuardRedCodeTest : BasePlatformTestCase() {
       |      _apply_lod(newValue)
       |""".trimMargin()
 
-        val psiFile = myFixture.configureByText("a.gd", code)
+        val psiFile = gd.fixture.configureByText("a.gd", code)
 
-        val errors = psiFile.children.flatMap { collectErrors(it) }
+        val (isEmpty, message) = runReadActionBlocking {
+            val errors = psiFile.children.flatMap { collectErrors(it) }
+            errors.isEmpty() to errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange }
+        }
 
         assertTrue(
-            "Did not expect red code for match with a 'when' guard; actual errors: " +
-            errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange },
-            errors.isEmpty()
+            isEmpty,
+            "Did not expect red code for match with a 'when' guard; actual errors: $message"
         )
     }
 
+    @Test
     fun testPatternGuardsExamplesHaveNoRedCode() {
         val code = """
       |func foo(point: Vector2):
@@ -47,14 +59,16 @@ class GdMatchWhenGuardRedCodeTest : BasePlatformTestCase() {
       |      print("Point (%s, %s)" % [x, y])
       |""".trimMargin()
 
-        val psiFile = myFixture.configureByText("guards.gd", code)
+        val psiFile = gd.fixture.configureByText("guards.gd", code)
 
-        val errors = psiFile.children.flatMap { collectErrors(it) }
+        val (isEmpty, message) = runReadActionBlocking {
+            val errors = psiFile.children.flatMap { collectErrors(it) }
+            errors.isEmpty() to errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange }
+        }
 
         assertTrue(
-            "Did not expect red code for match pattern guards examples; actual errors: " +
-            errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange },
-            errors.isEmpty()
+            isEmpty,
+            "Did not expect red code for match pattern guards examples; actual errors: $message"
         )
     }
 }

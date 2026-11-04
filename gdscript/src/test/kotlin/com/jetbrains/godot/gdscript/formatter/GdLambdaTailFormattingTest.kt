@@ -2,6 +2,7 @@ package com.jetbrains.godot.gdscript.formatter
 
 import com.intellij.application.options.CodeStyle
 import com.intellij.lang.LanguageParserDefinitions
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.pom.PomManager
 import com.intellij.pom.event.PomModelEvent
@@ -12,23 +13,26 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.impl.DebugUtil
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdLightFixture
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdStmt
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
-import kotlin.io.path.pathString
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.fail
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Formatting"])
-@RunWith(JUnit4::class)
-class GdLambdaTailFormattingTest : BasePlatformTestCase() {
+@TestApplication
+class GdLambdaTailFormattingTest {
+    private val gd: GdFixture by gdLightFixture("gdscript/formatter")
+
     /**
      * Describes the line after a lambda body that starts with a comma or a closing bracket.
      * [call] and [lambdaLine] match text within the call line and the lambda reference line.
@@ -53,9 +57,6 @@ class GdLambdaTailFormattingTest : BasePlatformTestCase() {
         val hangClosingBrackets: Boolean = true,
         val bracketOnNextLine: Boolean = true,
     )
-
-    override fun getTestDataPath(): String =
-        getBaseTestDataPath().resolve("testData/gdscript/formatter").pathString
 
     @Test
     fun testFirstArgument() = checkMatrix(
@@ -397,22 +398,26 @@ class GdLambdaTailFormattingTest : BasePlatformTestCase() {
                 )
         """.trimIndent() + "\n"
         withSettings(Settings(hangClosingBrackets = false)) {
-            myFixture.configureByText("lambda_tail.gd", source)
-            val file = myFixture.file
-            val document = myFixture.editor.document
-            val replacementFile = PsiFileFactory.getInstance(project)
-                .createFileFromText("replacement.gd", GdLanguage, replacementSource)
-            val statement = PsiTreeUtil.findChildrenOfType(file, GdStmt::class.java).single { it.text.trim() == "pass" }
-            val replacement = PsiTreeUtil.findChildrenOfType(replacementFile, GdStmt::class.java)
-                .single { it.text.startsWith("f(") }
-            WriteCommandAction.runWriteCommandAction(project) {
-                val model = PomManager.getModel(project)
+            gd.fixture.configureByText("lambda_tail.gd", source)
+            val file = gd.fixture.file
+            val document = gd.fixture.editor.document
+            val replacementFile = runReadActionBlocking {
+                PsiFileFactory.getInstance(gd.project)
+                    .createFileFromText("replacement.gd", GdLanguage, replacementSource)
+            }
+            val statement = runReadActionBlocking { PsiTreeUtil.findChildrenOfType(file, GdStmt::class.java).single { it.text.trim() == "pass" } }
+            val replacement = runReadActionBlocking {
+                PsiTreeUtil.findChildrenOfType(replacementFile, GdStmt::class.java)
+                    .single { it.text.startsWith("f(") }
+            }
+            WriteCommandAction.runWriteCommandAction(gd.project) {
+                val model = PomManager.getModel(gd.project)
                 model.runTransaction(object : PomTransactionBase(file) {
                     override fun runInner(): PomModelEvent {
-                        val manager = CodeStyleManager.getInstance(project)
+                        val manager = CodeStyleManager.getInstance(gd.project)
                         manager.performActionWithFormatterDisabled { statement.replace(replacement) }
-                        assertEquals("The document stays unchanged inside the transaction", source, document.text)
-                        assertTrue("The PSI offsets exceed the document length", file.textLength > document.textLength)
+                        assertEquals(source, document.text, "The document stays unchanged inside the transaction")
+                        assertTrue(file.textLength > document.textLength, "The PSI offsets exceed the document length")
                         assertNoParseErrors("transaction input")
                         manager.reformat(file)
                         assertNoParseErrors("transaction output")
@@ -420,7 +425,7 @@ class GdLambdaTailFormattingTest : BasePlatformTestCase() {
                         return PomModelEvent(model, null)
                     }
                 })
-                PsiDocumentManager.getInstance(project).commitAllDocuments()
+                PsiDocumentManager.getInstance(gd.project).commitAllDocuments()
             }
             assertEquals(expected, document.text)
             reformat()
@@ -433,9 +438,9 @@ class GdLambdaTailFormattingTest : BasePlatformTestCase() {
 
     private fun checkFixture(name: String) {
         withSettings(Settings()) {
-            myFixture.configureByFile("$name.gd")
-            checkTwoPasses(myFixture.file.text, name)
-            myFixture.checkResultByFile("${name}_after.gd")
+            gd.fixture.configureByFile("$name.gd")
+            checkTwoPasses(gd.fixture.file.text, name)
+            gd.fixture.checkResultByFile("${name}_after.gd")
         }
     }
 
@@ -460,7 +465,7 @@ class GdLambdaTailFormattingTest : BasePlatformTestCase() {
             }
         }
         for (settings in settingsMatrix) {
-            val label = "${getTestName(false)} $settings"
+            val label = "${gd.getTestName(false)} $settings"
             val input = source.trimIndent().lines().joinToString("\n", postfix = "\n") { line ->
                 // Round partial indents up to whole tabs to keep each input free of mixed indentation.
                 if (settings.tabs) "\t".repeat((line.takeWhile { it == ' ' }.length + 3) / 4) + line.trimStart() else line
@@ -487,14 +492,14 @@ class GdLambdaTailFormattingTest : BasePlatformTestCase() {
         val lastBodyIndex = lines.indexOfFirst { it.trim() == tail.lastBodyLine }
         val tailLine = lines.drop(lastBodyIndex + 1).first { it.isNotBlank() && !it.trimStart().startsWith('#') }
         val token = tailLine.trimStart().first()
-        assertTrue("$label: missing tail line\n$output", token in ",)]}")
+        assertTrue(token in ",)]}", "$label: missing tail line\n$output")
         val expected = when {
             token == ',' -> column(lambdaLine) + if (tail.commaOneIndentRight) 4 else 0
             tail.callLineOutsideExpression -> column(bodyLine)
             else -> minOf(column(callLine), column(bodyLine))
         }
-        assertEquals("$label: tail column\n$output", expected, column(tailLine))
-        assertTrue("$label: tail deeper than body\n$output", column(tailLine) <= column(bodyLine))
+        assertEquals(expected, column(tailLine), "$label: tail column\n$output")
+        assertTrue(column(tailLine) <= column(bodyLine), "$label: tail deeper than body\n$output")
     }
 
     private fun column(line: String): Int = line.takeWhile { it == ' ' || it == '\t' }.fold(0) { column, char ->
@@ -502,42 +507,42 @@ class GdLambdaTailFormattingTest : BasePlatformTestCase() {
     }
 
     private fun checkTwoPasses(source: String, label: String): String {
-        myFixture.configureByText("lambda_tail.gd", source)
+        gd.fixture.configureByText("lambda_tail.gd", source)
         assertNoParseErrors("$label input")
         reformat()
         assertNoParseErrors("$label pass 1")
-        val first = myFixture.file.text
+        val first = gd.fixture.file.text
         reformat()
         assertNoParseErrors("$label pass 2")
-        assertEquals("$label second pass", first, myFixture.file.text)
+        assertEquals(first, gd.fixture.file.text, "$label second pass")
         return first
     }
 
     private fun assertNoParseErrors(label: String) {
-        val errors = PsiTreeUtil.findChildrenOfType(myFixture.file, PsiErrorElement::class.java)
+        val errors = PsiTreeUtil.findChildrenOfType(gd.fixture.file, PsiErrorElement::class.java)
         if (errors.isNotEmpty()) {
-            val lexer = LanguageParserDefinitions.INSTANCE.forLanguage(GdLanguage).createLexer(myFixture.project)
-            lexer.start(myFixture.file.text)
+            val lexer = LanguageParserDefinitions.INSTANCE.forLanguage(GdLanguage).createLexer(gd.fixture.project)
+            lexer.start(gd.fixture.file.text)
             val tokens = buildString {
                 while (lexer.tokenType != null) {
                     appendLine("${lexer.tokenType} (${lexer.tokenStart},${lexer.tokenEnd})")
                     lexer.advance()
                 }
             }
-            fail("$label: ${errors.map { "${it.textRange}: ${it.errorDescription}" }}\n${myFixture.file.text}\n" +
-                 tokens + DebugUtil.psiToString(myFixture.file, true))
+            fail<Unit>("$label: ${errors.map { "${it.textRange}: ${it.errorDescription}" }}\n${gd.fixture.file.text}\n" +
+                 tokens + DebugUtil.psiToString(gd.fixture.file, true))
         }
     }
 
     private fun reformat() {
-        WriteCommandAction.runWriteCommandAction(myFixture.project) {
-            CodeStyleManager.getInstance(myFixture.project).reformatText(myFixture.file, 0, myFixture.editor.document.textLength)
-            PsiDocumentManager.getInstance(myFixture.project).commitAllDocuments()
+        WriteCommandAction.runWriteCommandAction(gd.fixture.project) {
+            CodeStyleManager.getInstance(gd.fixture.project).reformatText(gd.fixture.file, 0, gd.fixture.editor.document.textLength)
+            PsiDocumentManager.getInstance(gd.fixture.project).commitAllDocuments()
         }
     }
 
     private fun withSettings(options: Settings, action: () -> Unit) {
-        val settings = CodeStyle.createTestSettings(CodeStyle.getSettings(myFixture.project))
+        val settings = CodeStyle.createTestSettings(CodeStyle.getSettings(gd.fixture.project))
         settings.getCommonSettings(GdLanguage).apply {
             CALL_PARAMETERS_RPAREN_ON_NEXT_LINE = options.bracketOnNextLine
             indentOptions!!.apply {
@@ -554,6 +559,7 @@ class GdLambdaTailFormattingTest : BasePlatformTestCase() {
             ARRAY_NEW_LINE_BEFORE_RIGHT_BRACKET = options.bracketOnNextLine
             DICT_NEW_LINE_BEFORE_RIGHT_BRACE = options.bracketOnNextLine
         }
-        CodeStyle.doWithTemporarySettings(myFixture.project, settings, Runnable { action() })
+//        runReadActionBlocking { CodeStyle.doWithTemporarySettings(gd.fixture.project, settings, Runnable { action() }) }
+        CodeStyle.doWithTemporarySettings(gd.fixture.project, settings, Runnable { action() })
     }
 }

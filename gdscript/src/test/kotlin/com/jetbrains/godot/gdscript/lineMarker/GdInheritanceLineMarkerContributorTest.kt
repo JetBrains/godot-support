@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test
 @ChecklistItems(["GDScript/Line markers"])
 @TestApplication
 class GdInheritanceLineMarkerContributorTest {
-    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
+    private val gd: GdSdkFixture by gdSdkFixture("gdscript/highlighting")
 
     @Test
     fun testOverrideOfSdkVirtualMethodResolvesToEngineMethod() {
