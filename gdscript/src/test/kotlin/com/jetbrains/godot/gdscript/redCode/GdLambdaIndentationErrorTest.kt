@@ -8,7 +8,7 @@ import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["GDScript/Red code"])
@@ -24,10 +24,9 @@ class GdLambdaIndentationErrorTest {
         return if (nl == -1) 0 else nl + 1
     }
 
-
     //RIDER-129478 Expect indent error at the start of the next line after lambda colon
-    @Disabled("RIDER-129478")
-    fun testindentExpectedAfterLambdaColon() {
+    @Test
+    fun testIndentExpectedAfterLambdaColon() {
         val code = """
             |func stop_counting_on_signal(the_signal):
             |\tthe_signal.connect(func():
@@ -49,12 +48,12 @@ class GdLambdaIndentationErrorTest {
 
         // Check error appears on the same line as 'set_process(false)'
         val lineEnd = code.indexOf('\n', targetStart).let { if (it == -1) code.length else it }
-        val onSameLine = errors.any { it.textRange.startOffset in targetStart until lineEnd }
+        val onSameLine = errors.any { runReadActionBlocking { it.textRange.startOffset } in targetStart until lineEnd }
 
         assertTrue(
             onSameLine,
             "Expected an error on the line of 'set_process(false)'; actual errors: " +
-                    errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange },
+                    errors.joinToString(" | ") { it.errorDescription + "@" + runReadActionBlocking { it.textRange } },
         )
     }
 }
