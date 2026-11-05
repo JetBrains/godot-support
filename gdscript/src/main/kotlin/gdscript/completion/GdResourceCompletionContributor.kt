@@ -5,10 +5,14 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.impl.CamelHumpMatcher
 import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.psi.util.PsiTreeUtil
 import gdscript.completion.utils.GdRefIdCompletionUtil
+import gdscript.completion.utils.GdSignalNameCompletionUtil
+import gdscript.completion.utils.GdSignalNameCompletionUtil.SignalCompletionContext
 import gdscript.completion.utils.GdStringCompletionUtil
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdFile
+import gdscript.psi.GdStringValRef
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdNodeUtil
 
@@ -35,12 +39,28 @@ class GdResourceCompletionContributor : CompletionContributor() {
     }
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
-        val r = result.withPrefixMatcher(CamelHumpMatcher(
-            parameters.position.text.substring(0, parameters.offset - parameters.position.textRange.startOffset),
-            true,
-        ))
+        val r = result.withPrefixMatcher(
+            CamelHumpMatcher(
+                parameters.position.text.substring(0, parameters.offset - parameters.position.textRange.startOffset),
+                true,
+            )
+        )
 
         val position = parameters.position
+        // Signal arguments select their own suggestions before general string completion.
+        if (STRING.accepts(position) || STRING_NAME.accepts(position)) {
+            val string = PsiTreeUtil.getParentOfType(position, GdStringValRef::class.java, false)
+            if (string != null) {
+                when (val context = GdSignalNameCompletionUtil.findSignalCompletionContext(string)) {
+                    SignalCompletionContext.NotSignalArgument -> Unit
+                    SignalCompletionContext.NoSuggestions -> return
+                    is SignalCompletionContext.Signals -> {
+                        GdSignalNameCompletionUtil.addSignals(context.owner, result)
+                        return
+                    }
+                }
+            }
+        }
         if (isQuotedUniqueNodePath(parameters)) {
             GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.quotedUniqueLookups()) }
         } else if (GdRefIdCompletionUtil.DIRECT_REF.accepts(position)) {
@@ -80,9 +100,10 @@ class GdResourceCompletionContributor : CompletionContributor() {
                     GdStringCompletionUtil.addInputs(position, result, context)
                 }
 
-                // TODO: Add group and metadata completion in StringName literals in a follow-up ticket.
-                // Node.add_to_group and Object.get_meta take StringName parameters.
-                GdStringCompletionUtil.InputContext.OTHER -> Unit
+                GdStringCompletionUtil.InputContext.OTHER -> {
+                    GdStringCompletionUtil.addGroups(position, result)
+                    GdStringCompletionUtil.addMetas(position, result)
+                }
             }
         }
     }

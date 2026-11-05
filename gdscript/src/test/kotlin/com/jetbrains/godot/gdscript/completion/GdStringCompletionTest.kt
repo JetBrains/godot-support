@@ -16,6 +16,7 @@ import gdscript.psi.GdStringValRef
 import gdscript.reference.GdResourceReference
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Named.named
@@ -126,6 +127,12 @@ class GdStringCompletionTest {
             val insertedContent = editor.document.text.substringAfter("var s = '").trimEnd('\n')
             assertEquals("jump", insertedContent)
         }
+    }
+
+    @Test
+    fun testStringNameDoubleQuoteGroupsAndMetadata() = doActionTest("var s = &\"<caret>\"") {
+        assertThat(lookupElementStrings!!).contains("enemies", "health")
+        assertFalse(lookupElementStrings!!.any { it.startsWith("res://") })
     }
 
     @ParameterizedTest(name = "{0}")
