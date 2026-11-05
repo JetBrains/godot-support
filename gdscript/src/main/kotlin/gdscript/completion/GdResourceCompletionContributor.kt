@@ -64,7 +64,7 @@ class GdResourceCompletionContributor : CompletionContributor() {
                         result.addElement(
                             GdLookup.create(
                                 it,
-                                priority = GdLookup.BUILT_IN,
+                                priority = GdLookup.REMOTE_DEFINED,
                             )
                         )
                     }
@@ -77,8 +77,7 @@ class GdResourceCompletionContributor : CompletionContributor() {
             when (context) {
                 GdStringCompletionUtil.InputContext.ACTION_ARGUMENT,
                 GdStringCompletionUtil.InputContext.UNRESOLVED_NAME_MATCH -> {
-                    val prefix = position.text.substring(2, parameters.offset - position.textRange.startOffset)
-                    GdStringCompletionUtil.addInputs(position, result.withPrefixMatcher(prefix), context, stringName = true)
+                    GdStringCompletionUtil.addInputs(position, result, context)
                 }
 
                 // TODO: Add group and metadata completion in StringName literals in a follow-up ticket.

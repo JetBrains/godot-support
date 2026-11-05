@@ -115,6 +115,26 @@ class GdCompletionDeduplicationTest {
         assertTrue(seenKeys.contains("test"))
     }
 
+    @Test
+    fun testShouldKeep_insideString_dropsQuotedLspDuplicateOfSameContent() {
+        // Inside a string, the key of an LSP item is its content without quotes and without the & or ^ prefix.
+        val seen = mutableSetOf<String>()
+        assertTrue(GdCompletionDeduplicatingContributor.shouldKeep(seen, null, "jump", insideString = true))
+        assertFalse(GdCompletionDeduplicatingContributor.shouldKeep(seen, GdCompletionSource.LSP, "&'jump'", insideString = true))
+    }
+
+    @Test
+    fun testShouldKeep_insideString_keepsParenthesesInKey() {
+        // Outside a string, the key loses a trailing (). Inside a string, () is content, so it stays in the key.
+        val seen = mutableSetOf<String>()
+        assertTrue(GdCompletionDeduplicatingContributor.shouldKeep(seen, null, "jump", insideString = true))
+        assertTrue(GdCompletionDeduplicatingContributor.shouldKeep(seen, GdCompletionSource.LSP, "\"jump()\"", insideString = true))
+        // A built-in key inside a string also keeps (). If it lost (), the built-in jump() would record jump.
+        // Then the LSP duplicate jump() would not match and would stay in the list.
+        assertTrue(GdCompletionDeduplicatingContributor.shouldKeep(seen, null, "jump()", insideString = true))
+        assertFalse(GdCompletionDeduplicatingContributor.shouldKeep(seen, GdCompletionSource.LSP, "jump()", insideString = true))
+    }
+
     private fun makeParams(caretOffset: Int): CompletionParameters {
         val position = PsiUtilCore.getElementAtOffset(gd.fixture.file, caretOffset)
         return CompletionParameters(

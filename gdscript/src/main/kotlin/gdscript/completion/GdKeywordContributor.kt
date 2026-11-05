@@ -40,6 +40,9 @@ class GdKeywordContributor : CompletionContributor() {
         // A debugger code fragment is a single expression - `func` would legally start a lambda, given up deliberately
         if (parameters.position.containingFile is GdPsiCodeFragment) return
 
+        // String contents are names or values, not GDScript keywords.
+        val tokenType = parameters.position.node.elementType
+        if (tokenType == GdTypes.STRING || tokenType == GdTypes.STRING_NAME) return
         if (SKIP_KEYWORDS_FOR.accepts(parameters.position)) return
 
         result.addAllElements(TO_HINT_KEYWORDS.map { GdLookup.create(it, priority = -100.0) })

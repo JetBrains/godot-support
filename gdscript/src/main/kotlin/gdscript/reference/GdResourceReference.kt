@@ -3,20 +3,16 @@ package gdscript.reference
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.findFileOrDirectory
 import com.intellij.openapi.vfs.isFile
+import com.intellij.psi.ElementManipulators
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
-import gdscript.completion.GdLookup
-import gdscript.completion.utils.GdStringCompletionUtil
 import gdscript.index.impl.GdFileResIndex
-import gdscript.psi.GdElementFactory
 import gdscript.psi.utils.GdCfgUtil
-import gdscript.utils.StringUtil.filterGdTscn
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
-import gdscript.utils.unquote
+import gdscript.utils.stringContentRange
 
 /**
  * Resource "res://" reference to file
@@ -24,14 +20,14 @@ import gdscript.utils.unquote
  */
 class GdResourceReference : PsiReferenceBase<PsiElement> {
 
-    private var key: String = ""
+    private val key: String
     private var resKey: String = ""
     private var project: Project
 
-    constructor(element: PsiElement) : super(element, TextRange(0, element.textLength)) {
+    constructor(element: PsiElement) : super(element, stringContentRange(element.text)) {
         this.project = element.project
-        key = element.text
-        resKey = key.unquote()
+        key = rangeInElement.substring(element.text)
+        resKey = key
 
         if (!resKey.startsWith("res://")){
             element.containingFile?.virtualFile?.parent?.let {
@@ -51,10 +47,10 @@ class GdResourceReference : PsiReferenceBase<PsiElement> {
 
     override fun handleElementRename(newElementName: String): PsiElement {
         // TODO ignored relative paths
-        if (!key.startsWith("\"res://")) return element
-        GdCfgUtil.renameValue(project, key.unquote(), "res://$newElementName")
+        if (!key.startsWith("res://")) return element
+        GdCfgUtil.renameValue(project, key, "res://$newElementName")
 
-        return element.replace(GdElementFactory.typeStringVal(project, newElementName))
+        return ElementManipulators.handleContentChange(element, rangeInElement, "res://$newElementName")
     }
 
     override fun bindToElement(element: PsiElement): PsiElement {
@@ -68,19 +64,6 @@ class GdResourceReference : PsiReferenceBase<PsiElement> {
             ?.getPsiFile(project)
     }
 
-    override fun getVariants(): Array<LookupElement> {
-        when (GdStringCompletionUtil.inputContext(element)) {
-            GdStringCompletionUtil.InputContext.ACTION_ARGUMENT -> return emptyArray()
-            GdStringCompletionUtil.InputContext.UNRESOLVED_NAME_MATCH,
-            GdStringCompletionUtil.InputContext.OTHER -> Unit
-        }
-        return GdFileResIndex.getNonEmptyKeys(project)
-            .filterGdTscn().map {
-                GdLookup.create(
-                    "\"$it\"",
-                    priority = GdLookup.REMOTE_DEFINED,
-                )
-            }.toTypedArray()
-    }
+    override fun getVariants(): Array<LookupElement> = emptyArray()
 
 }

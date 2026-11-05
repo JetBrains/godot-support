@@ -7,6 +7,8 @@ import com.intellij.diagnostic.rethrowControlFlowException
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.registry.Registry
+import gdscript.utils.isInsideStringContent
+import gdscript.utils.toStringContent
 import org.jetbrains.annotations.VisibleForTesting
 
 enum class GdCompletionSource {
@@ -49,8 +51,13 @@ class GdCompletionDeduplicatingContributor : CompletionContributor() {
 
         /** Decides whether to keep a completion item, given the keys already seen for earlier items.*/
         @VisibleForTesting
-        fun shouldKeep(seenKeys: MutableSet<String>, source: GdCompletionSource?, lookupString: String): Boolean {
-            val key = normalizeKey(lookupString)
+        fun shouldKeep(
+            seenKeys: MutableSet<String>,
+            source: GdCompletionSource?,
+            lookupString: String,
+            insideString: Boolean = false,
+        ): Boolean {
+            val key = if (insideString) lookupString.toStringContent() ?: lookupString else normalizeKey(lookupString)
             return if (source == GdCompletionSource.LSP) {
                 // LSP result: keep only if the key was not already produced by PolySymbols.
                 !seenKeys.contains(key)
@@ -67,11 +74,12 @@ class GdCompletionDeduplicatingContributor : CompletionContributor() {
             return
         }
 
+        val insideString = isInsideStringContent(parameters.position, parameters.offset)
         val seenKeys = mutableSetOf<String>()
         result.runRemainingContributors(parameters) { completionResult ->
             try {
                 val completionSource = completionResult.lookupElement.getUserData(SERVICE_COMPLETION_KEY)
-                if (shouldKeep(seenKeys, completionSource, completionResult.lookupElement.lookupString)) {
+                if (shouldKeep(seenKeys, completionSource, completionResult.lookupElement.lookupString, insideString)) {
                     result.passResult(completionResult)
                 }
             } catch (e: Throwable) {

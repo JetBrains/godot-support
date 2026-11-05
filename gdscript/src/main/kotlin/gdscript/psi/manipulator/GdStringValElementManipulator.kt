@@ -5,18 +5,17 @@ import com.intellij.psi.AbstractElementManipulator
 import com.intellij.psi.impl.source.tree.LeafElement
 import com.intellij.psi.util.PsiUtilCore
 import gdscript.psi.GdStringValRef
+import gdscript.utils.stringContentRange
 
 /**
- * Writes a new name into a quoted string or a StringName literal that holds a signal/method
- * own-reference.
+ * Changes the content of a string or StringName literal and keeps its prefix and delimiters.
  *
- * A classic rename reaches the host through [gdscript.search.GdOwnReferencesSearcher], which
- * bridges an own-reference into a classic [com.intellij.psi.PsiReference]. Without a manipulator the
- * rename stops with "No ElementManipulator instance registered" - the same reason
- * [tscn.psi.manipulator.TscnElementManipulator] exists for scene values. The change keeps the
- * quotes and the `&` prefix of a StringName.
+ * A classic rename of a signal or method own-reference reaches the literal through [gdscript.search.GdOwnReferencesSearcher].
+ * Without a manipulator, that rename stops with "No ElementManipulator instance registered".
  */
 class GdStringValElementManipulator : AbstractElementManipulator<GdStringValRef>() {
+
+    override fun getRangeInElement(element: GdStringValRef): TextRange = stringContentRange(element.text)
 
     override fun handleContentChange(element: GdStringValRef, range: TextRange, newContent: String): GdStringValRef? {
         val offset = element.textRange.startOffset + range.startOffset

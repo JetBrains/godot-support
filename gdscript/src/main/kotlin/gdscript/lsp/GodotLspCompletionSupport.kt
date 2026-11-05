@@ -10,6 +10,8 @@ import com.intellij.platform.lsp.util.getOffsetInDocument
 import gdscript.competion.utils.GdMethodParenthesesInsertHandler
 import gdscript.completion.GdCompletionDeduplicatingContributor
 import gdscript.completion.GdCompletionSource
+import gdscript.utils.isInsideStringContent
+import gdscript.utils.toStringContent
 import org.eclipse.lsp4j.CompletionItem
 import org.eclipse.lsp4j.CompletionItemKind
 import javax.swing.Icon
@@ -24,7 +26,10 @@ import javax.swing.Icon
  *    `insertText`/`textEdit.newText` so the IDE inserts parens itself via
  *    [GdMethodParenthesesInsertHandler] (smart caret + auto parameter info; see RIDER-134419).
  *  - For string-literal items (e.g. `"ui_accept"` in `is_action_pressed("ui_a<caret>")`):
- *      * pre-insertion: [preserveLeadingQuoteInRange] shifts a `textEdit.range` that would otherwise
+ *      * The optional LSP CompletionItem field `textEdit` specifies an exact replacement range and new text.
+ *        Godot 4.0 to 4.6 send no `textEdit` for strings. Godot 4.7 sends it only for one-line literals.
+ *      * Without `textEdit`, quoted items insert content only. Unquoted items are hidden.
+ *      * With `textEdit`, [preserveLeadingQuoteInRange] shifts a range that would otherwise
  *        swallow the user's opening quote;
  *      * post-insertion: [stripDuplicateQuotesAdjacentToInserted] removes a duplicate quote that the
  *        platform replacement leaves adjacent to the inserted text.
@@ -34,21 +39,41 @@ import javax.swing.Icon
 open class GodotLspCompletionSupport : LspCompletionSupport() {
     override fun getCompletionPrefix(parameters: CompletionParameters, defaultPrefix: String): String =
         // RIDER-119006 LSP Completion for GDScript doesn't work after "$"
-        if (defaultPrefix.startsWith("$")) defaultPrefix.substringAfter("$")
+        if (!isInsideStringContent(parameters.position, parameters.offset) && defaultPrefix.startsWith("$")) {
+            defaultPrefix.substringAfter("$")
+        }
         else defaultPrefix
 
     override fun createLookupElement(parameters: CompletionParameters, item: CompletionItem): LookupElement? {
+        if (item.textEdit == null && isInsideStringContent(parameters.position, parameters.offset)) {
+            return createStringContentLookupElement(parameters, item)
+        }
         val isFunction = item.isFunctionLike()
         if (isFunction) item.stripTrailingEmptyParens()
+
         item.preserveLeadingQuoteInRange(parameters)
         val base = super.createLookupElement(parameters, item) ?: return null
         // Required for dedup with PolySymbols
         base.putUserData(GdCompletionDeduplicatingContributor.SERVICE_COMPLETION_KEY, GdCompletionSource.LSP)
+
         val hasParams = isFunction && item.hasParameters()
         return LookupElementDecorator.withDelegateInsertHandler(base) { ctx, lk ->
             stripDuplicateQuotesAdjacentToInserted(ctx)
             if (isFunction) GdMethodParenthesesInsertHandler(hasParams).handleInsert(ctx, lk)
         }
+    }
+
+    private fun createStringContentLookupElement(parameters: CompletionParameters, item: CompletionItem): LookupElement? {
+        // Changes the item in place. The platform calls createLookupElement once for each item of a new response.
+        // A second call on the same item would find unquoted content and hide the item.
+        item.insertText = (item.insertText ?: item.label).toStringContent() ?: return null
+        item.filterText = item.insertText
+        val base = super.createLookupElement(parameters, item) ?: return null
+        base.putUserData(GdCompletionDeduplicatingContributor.SERVICE_COMPLETION_KEY, GdCompletionSource.LSP)
+
+        // The platform inserts content between the existing quotes. Duplicate-quote repair could delete a real closing quote.
+        // Do not add callable parentheses to string content.
+        return base
     }
 
     // TODO: remove once IJPL-246856 CompletionItemKind.Event is missing an icon in autocompletion

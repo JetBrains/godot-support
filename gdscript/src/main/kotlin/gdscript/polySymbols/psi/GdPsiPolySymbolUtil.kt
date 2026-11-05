@@ -1,7 +1,6 @@
 package gdscript.polySymbols.psi
 
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
 import com.intellij.polySymbols.query.PolySymbolScope
@@ -40,17 +39,6 @@ import gdscript.psi.utils.GdExprUtil
 import gdscript.utils.PsiElementUtil.getCallExpr
 
 object GdPsiPolySymbolUtil {
-
-    /**
-     * The range of [text] excluding a matching pair of surrounding quotes, if present (e.g. for a
-     * resource-path inheritance clause's `"res://base.gd"`, or a string-literal dictionary key's
-     * `"key1"`) - or the full range otherwise.
-     */
-    fun quotedContentRange(text: String): TextRange =
-        if (text.length >= 2 && (text[0] == '"' || text[0] == '\'') && text.last() == text[0])
-            TextRange(1, text.length - 1)
-        else
-            TextRange(0, text.length)
 
     fun getOwnerClassId(source: PsiElement): String {
         val ownerElement = getOwnerClassElement(source)

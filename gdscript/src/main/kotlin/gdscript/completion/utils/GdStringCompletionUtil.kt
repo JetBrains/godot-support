@@ -1,7 +1,6 @@
 package gdscript.completion.utils
 
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.codeInsight.lookup.Lookup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
@@ -185,7 +184,6 @@ object GdStringCompletionUtil {
         element: PsiElement,
         result: CompletionResultSet,
         context: InputContext,
-        stringName: Boolean = false,
     ) {
         val projectActions = ProjectInputUtil.listActions(element).toSet()
         val defaults = when (context) {
@@ -200,7 +198,7 @@ object GdStringCompletionUtil {
                     .filterNot { '.' in it } // Exclude entries such as `input/ui_close_dialog.macos`.
         }
 
-        val quote = if (stringName) element.text[1] else '"' // Preserve single quotes `'` in StringName literals.
+        // TODO: Escape suggestion content that contains quotes or backslashes.
         val priority = when (context) {
             InputContext.ACTION_ARGUMENT, InputContext.UNRESOLVED_NAME_MATCH -> GdLookup.TOP
             InputContext.OTHER -> GdLookup.USER_DEFINED
@@ -208,20 +206,10 @@ object GdStringCompletionUtil {
         (projectActions + defaults).forEach { action ->
             result.addElement(
                 GdLookup.create(
-                    if (stringName) action else "\"$action\"",
+                    action,
                     priority = if (action in projectActions) priority else priority - 1, // Prioritize project actions, including overrides.
                     tail = " (input)",
                     color = GdLookup.COLOR_ANNOTATION,
-                    handler = if (stringName) { insertion, _ ->
-                        // Tab replaces the rest of the literal, including the closing quote.
-                        // Restore the closing quote if it is missing.
-                        if (insertion.completionChar == Lookup.REPLACE_SELECT_CHAR) {
-                            val tail = insertion.tailOffset
-                            if (insertion.document.charsSequence.getOrNull(tail) != quote) {
-                                insertion.document.insertString(tail, quote.toString())
-                            }
-                        }
-                    } else null,
                 )
             )
         }
@@ -236,7 +224,7 @@ object GdStringCompletionUtil {
             if (it.isNotBlank())
                 result.addElement(
                     GdLookup.create(
-                        "\"$it\"",
+                        it,
                         priority = priority,
                         tail = " (group)",
                         color = GdLookup.COLOR_GROUP,
@@ -253,7 +241,7 @@ object GdStringCompletionUtil {
         TscnNodeUtil.listAllMetas(element).forEach {
             result.addElement(
                 GdLookup.create(
-                    "\"$it\"",
+                    it,
                     priority = priority,
                     tail = " (meta)",
                     color = GdLookup.COLOR_META,

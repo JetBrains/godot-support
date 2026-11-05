@@ -5,10 +5,10 @@ import com.intellij.model.psi.PsiSymbolReference
 import com.intellij.polySymbols.references.polySymbolOwnReferences
 import com.intellij.psi.PsiElementVisitor
 import gdscript.polySymbols.GdPolySymbolKind.INHERITANCE_SYMBOLS
-import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.quotedContentRange
 import gdscript.psi.GdInheritanceIdRef
 import gdscript.psi.GdPsiUtils.isClassName
 import gdscript.psi.GdVisitor
+import gdscript.utils.stringContentRange
 import org.jetbrains.annotations.Unmodifiable
 
 class GdInheritanceIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdInheritanceIdRef {
@@ -32,7 +32,7 @@ class GdInheritanceIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdInherita
         // name differs from the resource path), GdPsiResourceClassesPolySymbolScope wraps it in a
         // name-aliasing delegate reporting the resource-path name, so the own-reference's
         // name-equals-text requirement still holds either way.
-        val range = quotedContentRange(text)
+        val range = stringContentRange(text)
         val name = range.substring(text)
         return polySymbolOwnReferences(this) {
             resolveFromNameMatchQuery(INHERITANCE_SYMBOLS, name, range)

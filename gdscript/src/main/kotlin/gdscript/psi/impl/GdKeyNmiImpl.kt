@@ -8,6 +8,7 @@ import gdscript.psi.GdPsiUtils.getName
 import gdscript.psi.GdPsiUtils.getNameIdentifier
 import gdscript.psi.GdPsiUtils.setName
 import gdscript.psi.GdVisitor
+import gdscript.utils.stringContentRange
 
 class GdKeyNmiImpl(node: ASTNode) : GdNamedIdElementImpl(node), GdKeyNmi {
     fun accept(visitor: GdVisitor) {
@@ -22,13 +23,7 @@ class GdKeyNmiImpl(node: ASTNode) : GdNamedIdElementImpl(node), GdKeyNmi {
     override fun getName(): String {
         // Strip the surrounding quotes of string-literal keys (e.g. {"key": value}) so the name matches the usage in dict.key
         val text = getName(this)
-        if (text.length >= 2) {
-            val first = text.get(0)
-            if ((first == '"' || first == '\'') && text.get(text.length - 1) == first) {
-                return text.substring(1, text.length - 1)
-            }
-        }
-        return text
+        return stringContentRange(text).substring(text)
     }
 
     override fun setName(newName: String): PsiElement =
