@@ -24,20 +24,26 @@ object GdClassParser : GdBaseParser {
         ok = ok && b.mceIdentifier(CLASS_NAME_NMI)
         ok = ok && GdInheritanceParser.parseFromClass(b, l + 1, true, true)
         ok = ok && b.consumeToken(COLON)
-        ok = ok && b.consumeToken(NEW_LINE)
-        ok = ok && b.consumeToken(INDENT)
-
-        while (
-            ok &&
-            (GdInheritanceParser.parse(b, l + 1)
-                || GdRootParser.topLevelParsers.any { it.parse(b, l + 1) })
-        ) {
+        if (b.nextTokenIs(NEW_LINE)) {
+            // Keep each member directly inside the indented class body.
+            ok = ok && b.consumeToken(NEW_LINE)
+            ok = ok && b.consumeToken(INDENT)
+            while (ok && parseMember(b, l + 1)) {
+            }
+            ok = ok && b.consumeToken(DEDENT, true)
+        } else {
+            // Accept one member directly after the class colon.
+            ok = ok && parseMember(b, l + 1)
+            if (!ok) b.error("CLASS_MEMBER", false)
         }
-        ok = ok && b.consumeToken(DEDENT, true)
 
         b.pinned() && GdRecovery.topLevel(b)
 
         return b.exitSection(ok) || optional
+    }
+
+    private fun parseMember(b: GdPsiBuilder, l: Int): Boolean {
+        return GdInheritanceParser.parse(b, l) || GdRootParser.topLevelParsers.any { it.parse(b, l) }
     }
 
 }

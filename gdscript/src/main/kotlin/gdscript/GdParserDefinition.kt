@@ -23,7 +23,10 @@ class GdParserDefinition : ParserDefinition {
     companion object {
         val COMMENTS = TokenSet.create(GdTypes.COMMENT, GdTypes.BACKSLASH)
         val STRING_LITERALS = TokenSet.create(GdTypes.STRING, GdTypes.NODE_PATH_LEX, GdTypes.NODE_PATH_LIT, GdTypes.STRING_NAME)
-        val FILE = IStubFileElementType<PsiFileStub<GdFile>>("GdScriptFile", GdLanguage)
+        /** Increase the version when a parser change affects the stub tree. */
+        val FILE = object : IStubFileElementType<PsiFileStub<GdFile>>("GdScriptFile", GdLanguage) {
+            override fun getStubVersion(): Int = 1
+        }
     }
 
     override fun createLexer(project: Project): Lexer {

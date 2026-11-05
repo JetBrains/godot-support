@@ -1505,6 +1505,22 @@ class GdFormattingTest {
     )
 
     @Test
+    fun testOneLineInnerClassAfterNestedFunction() {
+        // Keep the class body on one line after a nested function body.
+        val code = """
+            class_name OuterAfterFunc
+
+            func foo() -> void:
+                if true:
+                    pass
+
+
+            class OneLiner: pass
+        """
+        doTextTestSpaces(code, code)
+    }
+
+    @Test
     fun testLambdaInConnectIndent() {
         val code = """
             func stop_counting_on_signal(the_signal):
