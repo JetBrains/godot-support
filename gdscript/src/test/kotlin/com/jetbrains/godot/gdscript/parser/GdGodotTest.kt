@@ -109,7 +109,7 @@ class GdGodotTest {
     @Test fun testsemicolon_multiple_alone_suite() = parser.doTest(true, true)
     @Test fun testsemicolon_multiple_on_one_line() = parser.doTest(true, true)
     @Test fun testsignal_declaration() = parser.doTest(true, true)
-    @Disabled("RIDER-126458") @Test fun testsingle_line_declaration() = parser.doTest(true, true)
+    @Test fun testsingle_line_declaration() = parser.doTest(true, true)
     @Test fun testspace_indentation() = parser.doTest(true, true)
     @Disabled("RIDER-126458") @Test fun teststatic_typing() = parser.doTest(true, true)
     @Test fun teststring_formatting() = parser.doTest(true, true)

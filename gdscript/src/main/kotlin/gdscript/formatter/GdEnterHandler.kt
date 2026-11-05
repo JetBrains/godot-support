@@ -15,11 +15,13 @@ import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiUtilCore
 import gdscript.formatter.block.GdBlocks
+import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdFile
 import gdscript.psi.GdStmtOrSuite
 import gdscript.psi.GdTypes
@@ -129,7 +131,14 @@ class GdEnterHandler : EnterHandlerDelegate {
 
         // A GdStmtOrSuite only appears as a colon-header body, so this rejects dict ':', type hints, slices.
         val body = PsiTreeUtil.getParentOfType(file.findElementAt(bodyStart), GdStmtOrSuite::class.java)
-        if (body == null || body.stmt == null || body.textRange.startOffset != bodyStart) return null
+        val isInlineStatement = body != null && body.stmt != null && body.textRange.startOffset == bodyStart
+
+        // Move only a direct member after the class colon into the indented body.
+        val classColon = file.findElementAt(breakAt - 1)
+        val classMember = if (classColon?.parent is GdClassDeclTl) PsiTreeUtil.skipWhitespacesAndCommentsForward(classColon) else null
+        val isInlineClassMember = classMember != null && classMember !is PsiErrorElement &&
+            classMember.parent === classColon?.parent && classMember.textRange.startOffset == bodyStart
+        if (!isInlineStatement && !isInlineClassMember) return null
 
         val lineStart = doc.getLineStartOffset(doc.getLineNumber(breakAt - 1))
         var indentEnd = lineStart
