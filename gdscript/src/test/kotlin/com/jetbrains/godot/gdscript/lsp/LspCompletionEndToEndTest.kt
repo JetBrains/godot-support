@@ -22,37 +22,36 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.eclipse.lsp4j.CompletionItem
 import org.eclipse.lsp4j.CompletionItemKind
+import org.eclipse.lsp4j.Position
+import org.eclipse.lsp4j.Range
+import org.eclipse.lsp4j.TextEdit
+import org.eclipse.lsp4j.jsonrpc.messages.Either
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
 /**
- * End-to-end tests for `GodotLspCompletionSupport`, the LSP completion customizer used by the Godot
- * LSP integration. These tests deliberately target the **public** customizer surface
- * (`createLookupElement` + the resulting `LookupElement.handleInsert`), not the private
- * transformation helpers, so the helpers can be refactored / merged / deleted without breaking
- * the tests.
+ * Tests the public completion behavior of [GodotLspCompletionSupport].
  *
- * Each test simulates what the IDE does when the user accepts a completion suggestion from the
- * Godot LSP server:
- *  1. The user's source is in [setupDocument] with `<caret>` marking the caret.
- *  2. We synthesize a [CompletionItem] mimicking what Godot's LSP would send.
- *  3. We call [GodotLspCompletionSupport.createLookupElement] to obtain a [com.intellij.codeInsight.lookup.LookupElement].
- *  4. We simulate the platform's prefix replacement (write the lookup's `lookupString` into the
- *     document over `[startOffset, caret)`) and then call `handleInsert(ctx)`.
- *  5. We assert the final document text.
+ * Insertion tests create a lookup element, simulate the platform's prefix replacement,
+ * and call the insert handler. Other tests check item filtering, payload preservation,
+ * and completion prefixes directly.
  *
- * This way, future refactors that delete `stripDuplicateQuotesAdjacentToInserted` /
- * `preserveLeadingQuoteInRange` / `stripTrailingEmptyParens` and replace them with anything else
- * still must produce the same observable document state for the user-facing scenarios listed
- * below (see [RIDER-134419](https://youtrack.jetbrains.com/issue/RIDER-134419)):
+ * Cases:
+ *  1. A parameterless function inserts `test()`.
+ *  2. A function with parameters inserts parentheses and places the caret inside them.
+ *  3. A constructor with parameters removes the server's trailing `(` before inserting parentheses.
+ *  4. A quoted item without `textEdit` inserts only its content, without quotes or a `&` or `^` prefix.
+ *  5. An unquoted item inside a string is hidden.
+ *  6. For an item with `textEdit`, the string-content rule does not change the replacement text or range.
+ *  7. A completion prefix keeps `$` inside a string but removes it from node path syntax.
  *
- *  1. `tes<caret>`            + LSP `test()`         → `test()<caret>`            (parameterless fn)
- *  2. `tes<caret>()`          + LSP `test()`         → `test()<caret>`            (no duplicate parens)
- *  3. `test_wit<caret>`       + LSP `test_with_args` → `test_with_args(<caret>)`  (caret inside parens)
- *  4. `is_action_pressed("ui_a<caret>` + LSP `"ui_accept"` → `is_action_pressed("ui_accept"<caret>`
- *
- * Cases 1–3 cover the parens path (which is fine today); case 4 covers the quote handling that
- * the user wants to simplify/replace.
+ * Cases 1 to 3 come from [RIDER-134419](https://youtrack.jetbrains.com/issue/RIDER-134419).
+ * These tests check observable behavior without depending on the transformation helpers.
  */
 @Subsystem(SubsystemConstants.GODOT)
 @ChecklistItems(["LSP functionality/Completion"])
@@ -153,11 +152,11 @@ class LspCompletionEndToEndTest {
     }
 
     // ----------------------------------------------------------------------
-    // Parens path — currently working, regression-locked here.
+    // Function and constructor completion
     // ----------------------------------------------------------------------
 
     @Test
-    fun `Case 1 - parameterless fn - LSP test_paren_inserts_parens`() = timeoutRunBlocking {
+    fun `Case 1 - parameterless function - inserts parentheses`() = timeoutRunBlocking {
         // `tes<caret>` + LSP sends `test()` (CompletionItem.label/insertText both "test()", kind=Function).
         val item = CompletionItem("test()").apply {
             kind = CompletionItemKind.Function
@@ -173,14 +172,14 @@ class LspCompletionEndToEndTest {
         assertEquals("test()", text)
     }
 
-    // TODO Case 2 (`tes<caret>()` + LSP `test()` → `test()` — no duplicate parens) is not yet
-    //  covered by this harness: the test stub for "prefix replacement" doesn't model the platform's
-    //  IDENTIFIER_END_OFFSET, which is what `ParenthesesInsertHandler` actually consults to decide
-    //  whether to reuse an existing `(`. The behaviour works in production. Add coverage once the
-    //  harness exposes IDENTIFIER_END_OFFSET / SELECTION_END_OFFSET correctly.
+    // TODO Cover completion before existing parentheses: `tes<caret>()` + `test()` → `test()`.
+    // The harness does not yet cover this: the test stub for prefix replacement does not model IDENTIFIER_END_OFFSET.
+    // ParenthesesInsertHandler uses this offset to decide whether to reuse an existing `(`.
+    // The behavior works in production.
+    // Add coverage when the harness exposes IDENTIFIER_END_OFFSET and SELECTION_END_OFFSET correctly.
 
     @Test
-    fun `Case 3 - fn with parameters - caret lands inside parens`() = timeoutRunBlocking {
+    fun `Case 2 - function with parameters - caret lands inside parentheses`() = timeoutRunBlocking {
         // `test_wit<caret>` + LSP sends `test_with_args` (no parens in label/insertText — that's how
         // Godot signals a non-empty parameter list). Result should be `test_with_args(<caret>)`.
         val item = CompletionItem("test_with_args").apply {
@@ -198,16 +197,11 @@ class LspCompletionEndToEndTest {
         assertEquals("test_with_args(".length, caret, "caret should be inside parens")
     }
 
-    // ----------------------------------------------------------------------
-    // Quote path — the part the user wants to simplify. These tests pin the
-    // user-visible behaviour so refactors are safe.
-    // ----------------------------------------------------------------------
-
     @Test
-    fun `Case 5 - constructor with params - lone trailing open paren is stripped`() = timeoutRunBlocking {
+    fun `Case 3 - constructor with parameters - trailing open parenthesis is stripped`() = timeoutRunBlocking {
         // RIDER-132535: Godot sends label = "new(…)", insertText = "new(" for constructor-with-args.
         // Without the lone-paren strip we'd insert `new(` and then ParenthesesInsertHandler would
-        // append `()` on top, producing `new(()`. Expected end state mirrors Case 3.
+        // append `()` on top, producing `new(()`. The caret should land inside the parentheses.
         val item = CompletionItem("new(…)").apply {
             kind = CompletionItemKind.Method
             insertText = "new("
@@ -223,33 +217,85 @@ class LspCompletionEndToEndTest {
         assertEquals("new(".length, caret, "caret should be inside parens")
     }
 
-    @Test
-    fun `Case 4 - string literal completion - no duplicate opening quote`() = timeoutRunBlocking {
-        // `is_action_pressed("ui_a<caret>` + LSP sends a CompletionItem whose insertText is the
-        // **quoted** action name `"ui_accept"`. The user already typed an opening `"`; after
-        // accepting, the document must contain exactly one opening quote and one closing quote.
-        //
-        // Platform model: prefix = `"ui_a` (5 chars before caret), gets replaced by lookupString
-        // (`"ui_accept"`). Without dedup we'd end up with `""ui_accept"`; with dedup it should be
-        // `"ui_accept"`.
-        val src = """is_action_pressed("ui_a<caret>)"""
-        val caretIdx = src.indexOf("<caret>")
-        val openingQuoteOffset = caretIdx - "ui_a".length - 1
+    // ----------------------------------------------------------------------
+    // String completion
+    // ----------------------------------------------------------------------
 
-        val item = CompletionItem("ui_accept").apply {
-            kind = CompletionItemKind.Text
-            insertText = "\"ui_accept\""
-            filterText = "ui_accept"
+    @ParameterizedTest(name = "{0}{1}ju<caret>{1}, suggestion={2}")
+    @MethodSource("quotedItems")
+    fun `Case 4 - string item without textEdit - inserts content without quotes`(
+        prefix: String,
+        quote: String,
+        suggestion: String,
+    ): Unit = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            val source = "var s = $prefix${quote}ju<caret>$quote"
+            val item = CompletionItem("original label").apply {
+                kind = CompletionItemKind.Function
+                insertText = suggestion
+            }
+            val (text, _) = runCompletion(source, item, source.indexOf("ju"))
+            assertEquals("var s = $prefix${quote}jump()$quote", text)
+            assertEquals("original label", item.label)
         }
-        val (text, _) = withContext(Dispatchers.EDT) {
-            runCompletion(
-                sourceWithCaret = src,
-                item = item,
-                // The platform replaces from the opening quote (which the user typed) up to the caret.
-                // This is the offset model that triggers the helper's leading-quote dedup.
-                prefixStart = openingQuoteOffset,
-            )
+    }
+
+    @ParameterizedTest(name = "{0}{1}<caret>{1}")
+    @MethodSource("hostLiterals")
+    fun `Case 5 - unquoted item inside string - hidden`(prefix: String, quote: String): Unit = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            // Godot can send an unquoted enum value, for example Node.PROCESS_MODE_INHERIT for node.set_process_mode("<caret>").
+            // As string content, it would become the String "Node.PROCESS_MODE_INHERIT", not the enum value. So the plugin hides it.
+            val caret = setupDocument("var s = $prefix${quote}<caret>$quote")
+            val unquoted = CompletionItem("Node.PROCESS_MODE_INHERIT")
+            assertNull(customizer.createLookupElement(makeParams(caret), unquoted))
         }
-        assertEquals("is_action_pressed(\"ui_accept\")", text)
+    }
+
+    @Test
+    fun `Case 6 - string item with textEdit - payload unchanged`(): Unit = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            // With textEdit, the server defines the replaced range and the new text. The string-content-only rule does not change them.
+            val caret = setupDocument("var s = 'ju<caret>'")
+            val edit = TextEdit(Range(Position(0, 8), Position(0, 12)), "'jump'")
+            val item = CompletionItem("jump").apply {
+                kind = CompletionItemKind.Text
+                textEdit = Either.forLeft(edit)
+            }
+            assertNotNull(customizer.createLookupElement(makeParams(caret), item))
+            assertEquals("'jump'", edit.newText)
+            assertEquals(Range(Position(0, 8), Position(0, 12)), edit.range)
+            assertNull(item.insertText)
+        }
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("dollarPrefixes")
+    fun `Case 7 - dollar prefix - preserved inside strings only`(source: String, expected: String): Unit = timeoutRunBlocking {
+        withContext(Dispatchers.EDT) {
+            // Inside a string, `$` is content. Only node path syntax outside a string removes it from the prefix (RIDER-119006).
+            val caret = setupDocument(source)
+            assertEquals(expected, customizer.getCompletionPrefix(makeParams(caret), "\$Ch"))
+        }
+    }
+
+    companion object {
+        private val hostQuoteForms = listOf("" to "\"", "&" to "\"", "r" to "\"", "" to "\"\"\"")
+
+        @JvmStatic
+        private fun quotedItems(): List<Arguments> = hostQuoteForms.flatMap { (prefix, quote) ->
+            listOf("\"jump()\"", "'jump()'", "&\"jump()\"", "^'jump()'").map { suggestion ->
+                Arguments.of(prefix, quote, suggestion)
+            }
+        }
+
+        @JvmStatic
+        private fun hostLiterals(): List<Arguments> = hostQuoteForms.map { (prefix, quote) -> Arguments.of(prefix, quote) }
+
+        @JvmStatic
+        private fun dollarPrefixes(): List<Arguments> = listOf(
+            Arguments.of("var s = \"\$Ch<caret>\"", "\$Ch"),
+            Arguments.of("var n = \$Ch<caret>", "Ch"),
+        )
     }
 }

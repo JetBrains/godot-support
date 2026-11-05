@@ -1,7 +1,6 @@
 package gdscript.psi.utils
 
 import com.intellij.model.psi.PsiSymbolReference
-import com.intellij.openapi.util.TextRange
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.references.polySymbolOwnReferences
 import com.intellij.psi.PsiElement
@@ -10,7 +9,6 @@ import gdscript.GdKeywords
 import gdscript.polySymbols.GdClassSymbol
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.gdSignature
-import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.quotedContentRange
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReferences
 import gdscript.psi.GdArgExpr
@@ -20,6 +18,7 @@ import gdscript.psi.GdExpr
 import gdscript.psi.GdLiteralEx
 import gdscript.psi.GdStringValRef
 import gdscript.utils.PsiElementUtil.getCallExprOfParam
+import gdscript.utils.stringContentRange
 
 /**
  * Own-references for string and StringName literals that name a signal or a method in a call such
@@ -45,7 +44,8 @@ object GdStringNameMemberReferenceUtil {
 
     /** Own-references of a [GdStringValRef] that is a `"name"` or `&"name"` call argument. */
     fun getOwnReferences(element: GdStringValRef): Collection<PsiSymbolReference> {
-        val (name, range) = stringNameAndRange(element)
+        val range = stringContentRange(element.text)
+        val name = range.substring(element.text)
         if (name.isEmpty()) return emptyList()
 
         val call = element.getCallExprOfParam() ?: return emptyList()
@@ -62,22 +62,6 @@ object GdStringNameMemberReferenceUtil {
                 listOf(symbol)
             }
         }
-    }
-
-    /**
-     * The unquoted member name and its range inside [element]. Handles plain quotes and the
-     * StringName `&"..."` / `&'...'` forms.
-     */
-    private fun stringNameAndRange(element: GdStringValRef): Pair<String, TextRange> {
-        val text = element.text
-        if (text.length >= 3 && text.startsWith("&\"") && text.endsWith('"')) {
-            return text.substring(2, text.length - 1) to TextRange(2, text.length - 1)
-        }
-        if (text.length >= 3 && text.startsWith("&'") && text.endsWith('\'')) {
-            return text.substring(2, text.length - 1) to TextRange(2, text.length - 1)
-        }
-        val range = quotedContentRange(text)
-        return range.substring(text) to range
     }
 
     private fun argumentIndex(element: PsiElement, call: GdCallEx): Int? {

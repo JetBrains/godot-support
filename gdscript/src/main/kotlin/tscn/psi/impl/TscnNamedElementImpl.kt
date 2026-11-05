@@ -34,6 +34,7 @@ import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.PsiTraceUtil.describeForTrace
 import gdscript.utils.VirtualFileUtil.localPath
+import gdscript.utils.stringContentRange
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Unmodifiable
 import tscn.psi.TscnConnectionHeader
@@ -116,8 +117,8 @@ private fun headerValueOwnReferences(element: TscnHeaderValueVal): List<PsiSymbo
  * are left on the classic `tscn.reference.TscnResourceReference` mechanism.
  */
 private fun scriptClassOwnReferences(element: TscnHeaderValueVal): List<PsiSymbolReference> {
-    val text = element.text
-    val className = text.trim('"')
+    val range = stringContentRange(element.text)
+    val className = range.substring(element.text)
     // Resolved eagerly, not inside reference()'s lazy resolver: a reference is only registered when
     // resolution actually succeeds, so an unresolved script_class value stays silent (matching the
     // classic reference it replaces) instead of surfacing a PolySymbolHighlightingAnnotator
@@ -128,7 +129,7 @@ private fun scriptClassOwnReferences(element: TscnHeaderValueVal): List<PsiSymbo
         ?: return emptyList()
 
     return polySymbolOwnReferences(element) {
-        reference(unquotedRange(text), GdPolySymbolKind.CLASS) { listOf(symbol) }
+        reference(range, GdPolySymbolKind.CLASS) { listOf(symbol) }
     }
 }
 
@@ -143,8 +144,8 @@ private fun connectionOwnReferences(element: TscnHeaderValueVal, signal: Boolean
         LOG.trace { "connectionOwnReferences: ${element.text} has no connection header" }
         return emptyList()
     }
-    val text = element.text
-    val name = text.trim('"')
+    val range = stringContentRange(element.text)
+    val name = range.substring(element.text)
     val nodePath = if (signal) header.from else header.to
     val scriptFile = resolveNodeScript(element, nodePath)
     LOG.trace {
@@ -172,7 +173,7 @@ private fun connectionOwnReferences(element: TscnHeaderValueVal, signal: Boolean
     val kind = if (signal) GdPolySymbolKind.SIGNAL else GdPolySymbolKind.METHOD
 
     return polySymbolOwnReferences(element) {
-        reference(unquotedRange(text), kind) { listOf(symbol) }
+        reference(range, kind) { listOf(symbol) }
     }
 }
 
@@ -278,11 +279,6 @@ private fun nodeScriptResource(element: PsiElement, node: TscnNodeHeader): Strin
     val root = scene.descendantsOfType<TscnNodeHeader>().firstOrNull { it.parentPath.isEmpty() } ?: return null
     return root.scriptResource.takeIf { it.isNotBlank() }
 }
-
-/** The range of a header value without the quotes around it. */
-private fun unquotedRange(text: String): TextRange =
-    if (text.length >= 2 && text.startsWith('"') && text.endsWith('"')) TextRange(1, text.length - 1)
-    else TextRange(0, text.length)
 
 /**
  * `.tres` data line keys resolved as a PolySymbol reference to the matching `@export var` in the

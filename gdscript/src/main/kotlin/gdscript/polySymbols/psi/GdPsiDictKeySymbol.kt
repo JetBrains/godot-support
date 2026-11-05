@@ -7,8 +7,8 @@ import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
-import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.quotedContentRange
 import gdscript.psi.GdKeyNmi
+import gdscript.utils.stringContentRange
 import javax.swing.Icon
 
 /**
@@ -30,7 +30,7 @@ class GdPsiDictKeySymbol(
     // part of the declared name (GdKeyNmi.getName() strips them) - excluding them here keeps
     // rename from replacing the quotes themselves along with the name.
     override val textRangeInSourceElement: TextRange
-        get() = quotedContentRange(sourceElement.text)
+        get() = stringContentRange(sourceElement.text)
 
     override fun createPointer(): Pointer<out GdPsiDictKeySymbol> =
         gdPsiSymbolPointer(sourceElement, ::GdPsiDictKeySymbol)

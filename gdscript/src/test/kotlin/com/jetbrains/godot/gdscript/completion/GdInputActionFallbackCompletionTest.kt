@@ -29,7 +29,7 @@ class GdInputActionFallbackCompletionTest {
         fileContents = "extends Node\n\nfunc _ready():\n\tInput.is_action_pressed(\"<caret>\")\n",
     ) {
         completeBasic()
-        assertThat(lookupElementStrings!!).contains("\"ui_accept\"", "\"ui_cancel\"")
-        assertThat(lookupElementStrings!!).doesNotContain("\"TESTING_ONLY_NEWLY_UI_METHOD_TESTING\"")
+        assertThat(lookupElementStrings!!).contains("ui_accept", "ui_cancel")
+        assertThat(lookupElementStrings!!).doesNotContain("TESTING_ONLY_NEWLY_UI_METHOD_TESTING")
     }
 }
