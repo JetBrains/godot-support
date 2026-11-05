@@ -1,0 +1,2 @@
+class Class extends Node2D:
+	<caret>pass

@@ -42,5 +42,8 @@ class GdFoldingTest {
     fun testArray() = doFoldingTest()
 
     @Test
+    fun testSingleLineClassNotFolded() = doFoldingTest()
+
+    @Test
     fun testSuiteAndClass() = doFoldingTest()
 }

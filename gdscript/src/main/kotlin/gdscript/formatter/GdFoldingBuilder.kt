@@ -38,7 +38,7 @@ class GdFoldingBuilder : CustomFoldingBuilder() {
             override fun visitElement(element: PsiElement) {
                 when {
                     element is GdSuite -> foldSuite(element, descriptors)
-                    element is GdClassDeclTl -> foldClassDecl(element, descriptors)
+                    element is GdClassDeclTl -> foldClassDecl(element, descriptors, document)
                     element is GdDictDecl -> foldMultiline(element, descriptors, document)
                     element is GdArrayDecl -> foldMultiline(element, descriptors, document)
                     element.elementType == GdTypes.STRING -> foldMultiline(element, descriptors, document)
@@ -77,11 +77,15 @@ class GdFoldingBuilder : CustomFoldingBuilder() {
         descriptors.add(FoldingDescriptor(element.node, TextRange(element.startOffset, ending.endOffset)))
     }
 
-    private fun foldClassDecl(element: GdClassDeclTl, descriptors: MutableList<FoldingDescriptor>) {
+    private fun foldClassDecl(element: GdClassDeclTl, descriptors: MutableList<FoldingDescriptor>, document: Document) {
         val start = element.classNameNmi?.nextLeaf { it.elementType == GdTypes.COLON } ?: return
         val ending = PsiTreeUtil.getDeepestVisibleLast(element) ?: return
         if (ending.endOffset <= start.startOffset + 1) return
-        descriptors.add(FoldingDescriptor(element.node, TextRange(start.startOffset + 1, ending.endOffset)))
+
+        // Fold a class body only when it spans more than one line.
+        val range = TextRange(start.startOffset + 1, ending.endOffset)
+        if (!isMultiline(range, document)) return
+        descriptors.add(FoldingDescriptor(element.node, range))
     }
 
     private fun foldMultiline(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, document: Document) {

@@ -336,6 +336,15 @@ class GdEditingTest {
     fun testEnterBeforeOneLineStatementFunction() = doEnterTest()
 
     @Test
+    fun testEnterBeforeOneLineClassPass() = doEnterTest()
+
+    @Test
+    fun testEnterBeforeOneLineClassPassAfterSpace() = doEnterTest()
+
+    @Test
+    fun testEnterBeforeOneLineClassExtendsPass() = doEnterTest()
+
+    @Test
     fun testEnterBeforeOneLineStatementIf() = doEnterTest()
 
     @Test
