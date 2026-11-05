@@ -64,7 +64,7 @@ object GdStringNameMemberReferenceUtil {
         }
     }
 
-    private fun argumentIndex(element: PsiElement, call: GdCallEx): Int? {
+    internal fun argumentIndex(element: PsiElement, call: GdCallEx): Int? {
         val args = call.argList?.argExprList ?: return null
         val argExpr = PsiTreeUtil.getParentOfType(element, GdArgExpr::class.java, false) ?: return null
         val index = args.indexOf(argExpr)
@@ -98,12 +98,12 @@ object GdStringNameMemberReferenceUtil {
             .mapNotNull { it.gdSignature?.parameters?.getOrNull(argIndex) }
             .firstOrNull()
 
-    private fun resolveCalleeMethodSymbols(call: GdCallEx, calleeName: String): List<PolySymbol> {
-        val expr = call.expr
-        val receiverClass = when (expr) {
-            is GdAttributeEx -> resolveClassOfExpr(expr.expr)
-            else -> GdSymbolResolverUtil.resolveOwnClassSymbol(call)
-        }
+    /** @param receiverClass the class of the call receiver, if the caller has resolved it already. */
+    internal fun resolveCalleeMethodSymbols(
+        call: GdCallEx,
+        calleeName: String,
+        receiverClass: GdClassSymbol? = resolveReceiverClass(call),
+    ): List<PolySymbol> {
         val fromReceiver = GdSymbolResolverUtil.findMethodSymbol(receiverClass, calleeName)
         if (fromReceiver != null) return listOf(fromReceiver)
 
@@ -120,8 +120,7 @@ object GdStringNameMemberReferenceUtil {
      * - bare `connect("sig", ...)` / `call("m")` -> the current class
      * - `Callable(owner, "m")` -> type of the first argument (`self`, a class name, ...)
      */
-    private fun resolveMemberOwner(call: GdCallEx): GdClassSymbol? {
-        val expr = call.expr
+    internal fun resolveMemberOwner(call: GdCallEx): GdClassSymbol? {
         val calleeName = calleeName(call)
 
         if (calleeName == GdKeywords.CALLABLE) {
@@ -129,13 +128,17 @@ object GdStringNameMemberReferenceUtil {
             return resolveClassOfExpr(ownerExpr)
         }
 
-        return when (expr) {
+        return resolveReceiverClass(call)
+    }
+
+    /** The type of `receiver` in `receiver.method(...)`, or the current class for a bare `method(...)`. */
+    private fun resolveReceiverClass(call: GdCallEx): GdClassSymbol? =
+        when (val expr = call.expr) {
             is GdAttributeEx -> resolveClassOfExpr(expr.expr)
             else -> GdSymbolResolverUtil.resolveOwnClassSymbol(call)
         }
-    }
 
-    private fun resolveClassOfExpr(expr: GdExpr): GdClassSymbol? {
+    internal fun resolveClassOfExpr(expr: GdExpr): GdClassSymbol? {
         val refId = (expr as? GdLiteralEx)?.refIdNm
         // `self` has no own-reference and its return type is a resource path that may not resolve
         // in a temp test VFS - the enclosing class is the correct owner.
@@ -156,7 +159,7 @@ object GdStringNameMemberReferenceUtil {
             ?: if (typeName == GdKeywords.SELF) GdSymbolResolverUtil.resolveOwnClassSymbol(expr) else null
     }
 
-    private fun calleeName(call: GdCallEx): String? {
+    internal fun calleeName(call: GdCallEx): String? {
         val expr = call.expr
         return when (expr) {
             is GdAttributeEx -> expr.refId?.text
