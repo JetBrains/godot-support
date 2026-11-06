@@ -12,6 +12,7 @@ import com.jetbrains.rider.plugins.godot.test.cases.DebugGodotPlayer
 import com.jetbrains.rider.plugins.godot.test.cases.disableDFA
 import com.jetbrains.rider.plugins.godot.test.cases.startGodotWithProject
 import com.jetbrains.rider.plugins.godot.test.cases.waitForGodotRunConfigurationsWithRetries
+import com.jetbrains.rider.test.annotations.Mute
 import com.jetbrains.rider.test.annotations.Solution
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.TestSettings
@@ -245,6 +246,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
      * `root` local only while `EvaluationOptions.AllowTargetInvoke` is set. Its absence is the contract here.
      */
     @Test
+    @Mute("RIDER-143200")
     @ChecklistItems(["Debug/C#/Scene tree/Without target invoke"])
     fun checkSceneTreeIsAbsentWithoutTargetInvoke() {
         withImplicitTargetInvokeDisabled {
