@@ -18,20 +18,19 @@ import com.jetbrains.rd.framework.Identities
 import com.jetbrains.rd.framework.Protocol
 import com.jetbrains.rd.framework.Serializers
 import com.jetbrains.rd.framework.SocketWire
+import com.jetbrains.rd.framework.util.setSuspend
 import com.jetbrains.rd.protocol.IdeRootMarshallersProvider
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rd.util.threading.SingleThreadScheduler
-import com.jetbrains.rd.util.threading.coroutines.asCoroutineDispatcher
 import com.jetbrains.rider.godot.community.EditorConnectionState
 import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil.getEnabledEditorPlugins
-import com.jetbrains.rider.model.godot.frontendGodot.EnvironmentVariable
 import com.jetbrains.rider.model.godot.frontendGodot.FrontendGodotModel
-import com.jetbrains.rider.model.godot.frontendGodot.PlayForDebugResult
 import com.jetbrains.rider.model.godot.frontendGodot.frontendGodotModel
+import com.jetbrains.rider.plugins.godot.run.configurations.GodotEditorDebugSessionService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -40,7 +39,6 @@ import kotlinx.coroutines.withContext
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.cancellation.CancellationException
 
 
 @Service(Service.Level.PROJECT)
@@ -68,13 +66,6 @@ class GodotRdClientService(val project: Project) {
         }
     }
 
-    enum class PlayCurrentSceneResult {
-        Success,
-        NoSceneSelected,
-        Unknown,
-        MultipleInstancesOn,
-        NotConnected,
-    }
 
     val isConnected: Boolean
         get() = connection.get() != null
@@ -149,6 +140,14 @@ class GodotRdClientService(val project: Project) {
                 thisLogger().trace("[GODOT RD] updating current scene to: $it")
                 GdProjectGodotService.getInstance(project).updateCurrentScene(it)
             }
+            val debugSessionService = GodotEditorDebugSessionService.getInstance(project)
+            model.prepareDebugSession.setSuspend { callLifetime, _ -> debugSessionService.prepare(lt, callLifetime) }
+            model.debugLaunchFailed.advise(lt) { sessionId ->
+                debugSessionService.onLaunchFailed(sessionId)
+            }
+            model.debugSceneStopped.advise(lt) { sessionId ->
+                debugSessionService.onSceneStopped(sessionId)
+            }
         }
         val newConnection = Connection(model, protocol)
         lt.onTermination {
@@ -181,36 +180,6 @@ class GodotRdClientService(val project: Project) {
         }
     }
 
-    /**
-     * Plays the current scene in the editor. The game process gets the given [environment] variables.
-     * Returns `false` if the editor is not connected, could not play the scene, or the call
-     * has failed.
-     *
-     * TODO: If a user uses this, and then, in Godot, they use the restart action, it can
-     * make Rider shut it down as part of its teardown -> race. This seems like a minor issue,
-     * so the solution of tracking what was launched with an ID and then giving [stopPlayingScene] this
-     * ID to stop seems like an overkill.
-     */
-    suspend fun playCurrentSceneForDebug(environment: Map<String, String>): PlayCurrentSceneResult {
-        val currentConnection = connection.get() ?: return PlayCurrentSceneResult.NotConnected
-        return try {
-            val result = withContext(currentConnection.protocol.scheduler.asCoroutineDispatcher) {
-                val variables = environment.map { (name, value) -> EnvironmentVariable(name, value) }
-                currentConnection.model.playCurrentSceneForDebug.startSuspending(currentConnection.protocol.lifetime, variables)
-            }
-            when (result) {
-                PlayForDebugResult.NoScene -> PlayCurrentSceneResult.NoSceneSelected
-                PlayForDebugResult.MultipleInstances -> PlayCurrentSceneResult.MultipleInstancesOn
-                PlayForDebugResult.Unknown -> PlayCurrentSceneResult.Unknown
-                PlayForDebugResult.Success -> PlayCurrentSceneResult.Success
-            }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            thisLogger().warn("[GODOT RD] failed to play the current scene", e)
-            PlayCurrentSceneResult.Unknown
-        }
-    }
 
     fun stopPlayingScene() {
         val currentConnection = connection.get() ?: return

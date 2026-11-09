@@ -28,6 +28,7 @@
     <module name="intellij.platform.ide.core.impl"/>
     <module name="intellij.platform.ide.impl"/>
     <module name="intellij.platform.ide.observable"/>
+    <module name="intellij.platform.ide.progress"/>
     <module name="intellij.platform.ide.ui"/>
     <module name="intellij.platform.lang"/>
     <module name="intellij.platform.lang.core"/>
@@ -106,6 +107,8 @@
 
     <notificationGroup displayType="STICKY_BALLOON" id="GodotVirtualSolutionNotificationGroupId" bundle="messages.GodotPluginBundle"
                        key="notification.title.godot.virtual.solution"/>
+    <notificationGroup displayType="STICKY_BALLOON" id="GodotDebugSessionNotificationGroupId" bundle="messages.GodotPluginBundle"
+                       key="godot.debug.in.editor.notification.title"/>
 
     <!-- Logging -->
     <rd.platform.traceScenarioHolder implementation="com.jetbrains.rider.plugins.godot.logs.GodotLogTraceScenarios"/>

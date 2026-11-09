@@ -11,6 +11,7 @@
 
 #include <functional>
 #include <memory>
+#include <string>
 
 
 using namespace rd;
@@ -43,14 +44,20 @@ class GodotRdServer : public RefCounted {
 	void _notify_client_state(bool is_connected);
 
 	static GodotRdExtension *get_extension();
+	void report_debug_session_event(
+		size_t starting_id,
+		const std::wstring &session_id,
+		std::function<void(const std::wstring &)> report
+	);
+	void report_debug_launch_failed(size_t starting_id, const std::wstring &session_id);
+	void report_debug_scene_stopped(size_t starting_id, const std::wstring &session_id);
+	bool queue_on_session(std::function<void()> task);
 	// callable_mp(this, &GodotRdServer::...).call_defered(...) should be preferred
 	// since it doesn't have to use mutexes, and it works for a decent number of cases.
 	// But if you need to pass in a non-Godot arg such as a RD task, then this
 	// is the only reasonable choice.
 	void run_on_godot_thread(std::function<void()> task);
 	void _run_godot_thread_tasks();
-	JetBrains::GodotPlugin::PlayForDebugResult play_current_scene_for_debug(const Dictionary &environment);
-	void stop_playing_scene();
 
 public:
 	static constexpr auto SERVER_NAME = "GodotRdServer";
@@ -73,6 +80,8 @@ public:
 	void stop() noexcept;
 
 	void open_in_rider(const String &);
+	void request_debug_current_scene();
+	void stop_playing_scene();
 
 protected:
 	static void _bind_methods();

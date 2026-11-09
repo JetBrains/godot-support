@@ -5,9 +5,9 @@ Godot 4.6+ editor plugin. Simplifies setting up Rider as External Editor. Helps 
 ## What this addon does
 
 1. **Rider discovery** — Native GDExtension (`RiderLocator`) finds Rider installs on Windows, macOS, and Linux.
-2. **External editor selector** — Adds a **Select Rider** dropdown under **Editor → Editor Settings… → Text Editor → External** (`text_editor/external/editor`). A choice sets `text_editor/external/exec_path` and triggers bridge load for that install.
-3. **Godot ↔ Rider bridge** — When `text_editor/external/exec_path` points at a Rider binary, loads `godot-rd.gdextension` from that install. Changing Rider after a different RD build was loaded may ask you to restart Godot.
-4. **Rider toolbar menu** to switch a settings preset. The preset helps to enable/disable the following settings recommended by the Rider documentation https://www.jetbrains.com/help/rider/Godot.html#optimize-godot-editor-for-rider"
+2. **Rider selection** — Adds a **Select Rider** dropdown under **Editor → Editor Settings… → Text Editor → External** and a **Rider Installation** menu in the toolbar. A selection sets the GDScript editor path and the .NET editor when available. It does not enable **Use External Editor**.
+3. **Godot ↔ Rider bridge** — Loads `godot-rd.gdextension` from the Rider path in `text_editor/external/exec_path`. Godot asks you to restart when you select a different Rider after the bridge loads.
+4. **Rider toolbar menu** — Shows the bridge status in the toolbar button tooltip. This does not confirm a live Rider connection. The menu starts the selected Rider and switches the recommended editor settings preset.
 
 ## Quick start
 
@@ -22,13 +22,14 @@ Install:
 4. Enable "JetBrains Rider External Editor" plugin in the Project → Project Settings… → Plugins tab.
 
 Use:
-1. Open the Rider toolbar button and choose **External Editor settings...** to open the corresponding settings page. Wait for discovery if the control shows a searching state, then pick a Rider installation.
-2. Use the **Start Rider** action to open the current project in Rider.
-3. Choose **Use external editor preset** to switch between the presets.
+1. Open the Rider toolbar menu and choose **Rider Installation**. Pick a Rider installation. The addon sets the GDScript editor path and the .NET editor when available. Turn on **Use External Editor** to use Rider for GDScript.
+2. Hover over the Rider toolbar button to check whether Godot loaded `godot-rd`. This does not confirm a live Rider connection. Restart Godot when the menu asks you to.
+3. Use **Start Rider** to open the current project. This works even when **Use External Editor** is off.
+4. Choose **Use recommended editor settings preset** to change the editor workflow settings, including **Use External Editor**. It does not change the selected Rider.
 
 ## What the presets change
 
-The preset values live in `presets.json`.
+The preset values live in `presets.json`. They include the **Use External Editor** setting, but they do not set or clear the selected Rider.
 
 When ON:
 - Write the values from the "on" preset into the Editor Settings.

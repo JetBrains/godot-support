@@ -3,7 +3,7 @@ package model.frontendGodot
 import com.jetbrains.rd.generator.nova.Ext
 import com.jetbrains.rd.generator.nova.PredefinedType
 import com.jetbrains.rd.generator.nova.Root
-import com.jetbrains.rd.generator.nova.callback
+import com.jetbrains.rd.generator.nova.call
 import com.jetbrains.rd.generator.nova.const
 import com.jetbrains.rd.generator.nova.cpp.Cpp17Generator
 import com.jetbrains.rd.generator.nova.doc
@@ -36,12 +36,17 @@ object FrontendGodotModel : Ext(FrontendGodotRoot) {
         field("name", PredefinedType.string)
         field("value", PredefinedType.string)
     }
-    private val PlayForDebugResult = enum("PlayForDebugResult") {
+    private val DebugSessionStatus = enum("DebugSessionStatus") {
         sourceFileAndLine = null
-        +"NoScene"
-        +"MultipleInstances"
-        +"Unknown"
-        +"Success"
+        +"Ready"
+        +"Busy"
+        +"Failed"
+    }
+    private val DebugSession = structdef("DebugSession") {
+        sourceFileAndLine = null
+        field("status", DebugSessionStatus)
+        field("sessionId", PredefinedType.string)
+        field("environment", immutableList(EnvironmentVariable))
     }
 
     init {
@@ -55,12 +60,11 @@ object FrontendGodotModel : Ext(FrontendGodotRoot) {
 
         source("currentSceneChange", PredefinedType.string).doc("Used for syncing what scene Godot has currently opened.")
 
-        // Debug current C# scene in editor
-        callback("playCurrentSceneForDebug", immutableList(EnvironmentVariable), PlayForDebugResult)
-            .doc(
-                "Plays the current scene with the specified environment variables set for the game process. " +
-                    "Returns [PlayForDebugResult] indicating the status."
-            )
+        call("prepareDebugSession", PredefinedType.void, DebugSession)
+            .doc("Opens a suspended diagnostic port and returns the game environment. Rider attaches when the game connects.")
+        source("debugLaunchFailed", PredefinedType.string).doc("Godot could not play the scene for the given session ID.")
+        source("debugSceneStopped", PredefinedType.string).doc("Godot stopped the scene for the given session ID.")
+
         sink("stopPlayingScene", PredefinedType.void).doc("Stops the scene that is currently being played.")
 
         property("godotPID", PredefinedType.long).doc("Connected GODOT PID")

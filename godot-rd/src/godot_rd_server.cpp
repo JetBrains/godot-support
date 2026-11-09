@@ -9,6 +9,9 @@
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "spdlog/spdlog.h"
 
+#include <utility>
+#include <vector>
+
 
 void GodotRdServer::start() noexcept {
 	stop();
@@ -41,49 +44,17 @@ void GodotRdServer::start() noexcept {
 					String("[RIDER RD] Client disconnected from port: ") +
 					String::num_int64(port));
 		}
-		callable_mp(this, &GodotRdServer::_notify_client_state).call_deferred(is_connected);
+		run_on_godot_thread([this, is_connected] { _notify_client_state(is_connected); });
 	});
 	const auto godot_editor_pid = OS::get_singleton()->get_process_id();
 	tmp_session->bind_model(model, [this, godot_editor_pid](JetBrains::GodotPlugin::FrontendGodotModel &model, Lifetime lifetime) {
 		model.get_openInGodot().advise(lifetime, [this](const std::wstring &path) {
-			callable_mp(this, &GodotRdServer::open_in_godot).call_deferred(Utils::to_godot_string(path));
+			run_on_godot_thread([this, path] { open_in_godot(Utils::to_godot_string(path)); });
 		});
 		model.get_godotPID().set(godot_editor_pid);
-		model.get_playCurrentSceneForDebug().set(
-				[this](Lifetime, const std::vector<Wrapper<JetBrains::GodotPlugin::EnvironmentVariable>> &variables)
-			-> RdTask<JetBrains::GodotPlugin::PlayForDebugResult> {
-					UtilityFunctions::print_verbose("[RIDER RD] play current scene for debug requested");
-					RdTask<JetBrains::GodotPlugin::PlayForDebugResult> task;
-					// Protect against session changes before run_on_godot_thread runs.
-					size_t starting_id;
-					{
-						std::lock_guard m(session_mutex);
-						if (!session) {
-							task.set(JetBrains::GodotPlugin::PlayForDebugResult::Unknown);
-							return task;
-						}
-						starting_id = session->get_id();
-					}
-					Dictionary environment;
-					for (const auto &variable : variables) {
-						environment[Utils::to_godot_string(variable->get_name())] = Utils::to_godot_string(variable->get_value());
-					}
-					run_on_godot_thread([this, task, starting_id, environment] {
-						const auto playing = play_current_scene_for_debug(environment);
-						// we don't need a lock here, since this runs on Godot thread.
-						if (session && session->get_id() == starting_id) {
-							session->queue([task, playing] { task.set(playing); });
-						} else {
-							session->queue([task] { task.set(JetBrains::GodotPlugin::PlayForDebugResult::Unknown); });
-							UtilityFunctions::print_verbose(
-									"[RIDER RD] session gone or has changed before the play result could be sent");
-						}
-					});
-					return task;
-				});
 		model.get_stopPlayingScene().advise(lifetime, [this](const Void &) {
 			UtilityFunctions::print_verbose("[RIDER RD] stop playing scene requested");
-			callable_mp(this, &GodotRdServer::stop_playing_scene).call_deferred();
+			run_on_godot_thread([this] { stop_playing_scene(); });
 		});
 	});
 	if (!write_connection_info(tmp_session->get_port())) {
@@ -111,26 +82,142 @@ void GodotRdServer::_notify_client_state(bool is_connected) {
 	}
 }
 
-void GodotRdServer::on_scene_changed(Node *node) {
-	if (!session) {
+void GodotRdServer::request_debug_current_scene() {
+	auto *extension = get_extension();
+	if (extension == nullptr || !extension->can_debug_current_scene()) {
 		return;
 	}
-	if (node == nullptr) {
-		on_scene_closed("");
-	} else {
-		auto node_path = node->get_scene_file_path();
-		session->queue([this,node_path] {
-			UtilityFunctions::print_verbose(String("[RIDER RD] sending node path: ") + node_path);
-			model.get_currentSceneChange().fire(rd::to_wstring(std::string(node_path.utf8().get_data())));
-		});
+
+	std::lock_guard guard(session_mutex);
+	if (!session) {
+		UtilityFunctions::push_warning("Rider is not connected. Connect Rider and try again.");
+		return;
+	}
+	const size_t starting_id = session->get_id();
+	const Lifetime lifetime = session->get_model_lifetime();
+	const bool queued = session->queue([this, starting_id, lifetime] {
+		{
+			std::lock_guard guard(session_mutex);
+			if (!session || session->get_id() != starting_id) {
+				return;
+			}
+		}
+
+		auto response_lifetime = std::make_shared<LifetimeDefinition>(lifetime);
+		auto task = model.get_prepareDebugSession().start(Void{});
+		task.advise(response_lifetime->lifetime,
+				[this, starting_id, response_lifetime, task](const auto &result) {
+					auto lifetime_guard = Utils::ScopeGuard([response_lifetime] { response_lifetime->terminate(); });
+					if (!task.has_value()) {
+						return;
+					}
+					if (!result.is_succeeded()) {
+						if (!result.is_canceled()) {
+							run_on_godot_thread([] {
+								UtilityFunctions::push_warning("Rider could not prepare a debug session.");
+							});
+						}
+						return;
+					}
+
+					const auto response = result.unwrap();
+					switch (response.get_status()) {
+						case JetBrains::GodotPlugin::DebugSessionStatus::Ready: {
+							std::vector<std::pair<std::wstring, std::wstring>> environment;
+							for (const auto &variable : response.get_environment()) {
+								environment.emplace_back(variable->get_name(), variable->get_value());
+							}
+							const std::wstring session_id = response.get_sessionId();
+							run_on_godot_thread([this, starting_id, session_id, environment = std::move(environment)] {
+								Dictionary godot_environment;
+								for (const auto &[name, value] : environment) {
+									godot_environment[Utils::to_godot_string(name)] = Utils::to_godot_string(value);
+								}
+								{
+									std::lock_guard guard(session_mutex);
+									if (!session || session->get_id() != starting_id) {
+										return;
+									}
+								}
+								auto *extension = get_extension();
+								auto on_stopped = [this, starting_id, session_id] {
+									report_debug_scene_stopped(starting_id, session_id);
+								};
+								if (extension != nullptr && extension->play_current_scene_with_environment(godot_environment, std::move(on_stopped))) {
+									return;
+								}
+								report_debug_launch_failed(starting_id, session_id);
+							});
+							break;
+						}
+						case JetBrains::GodotPlugin::DebugSessionStatus::Busy:
+							run_on_godot_thread([] {
+								UtilityFunctions::push_warning(
+									"A Rider debug session is already starting or active. Stop it and try again.");
+							});
+							break;
+						case JetBrains::GodotPlugin::DebugSessionStatus::Failed:
+							run_on_godot_thread([] {
+								UtilityFunctions::push_warning("Rider could not prepare a debug session.");
+							});
+							break;
+					}
+				});
+	});
+	if (!queued) {
+		UtilityFunctions::push_warning("Rider could not start a debug request.");
 	}
 }
 
-void GodotRdServer::on_scene_closed(const String &) {
-	if (!session) {
+void GodotRdServer::report_debug_session_event(
+		size_t starting_id,
+		const std::wstring &session_id,
+		std::function<void(const std::wstring &)> report
+) {
+	std::lock_guard guard(session_mutex);
+	if (!session || session->get_id() != starting_id) {
 		return;
 	}
-	session->queue([this] {
+	session->queue([this, starting_id, session_id, report = std::move(report)] {
+		std::lock_guard guard(session_mutex);
+		if (!session || session->get_id() != starting_id) {
+			return;
+		}
+		report(session_id);
+	});
+}
+
+void GodotRdServer::report_debug_launch_failed(size_t starting_id, const std::wstring &session_id) {
+	report_debug_session_event(starting_id, session_id, [this](const std::wstring &id) {
+		model.get_debugLaunchFailed().fire(id);
+	});
+}
+
+void GodotRdServer::report_debug_scene_stopped(size_t starting_id, const std::wstring &session_id) {
+	report_debug_session_event(starting_id, session_id, [this](const std::wstring &id) {
+		model.get_debugSceneStopped().fire(id);
+	});
+}
+
+bool GodotRdServer::queue_on_session(std::function<void()> task) {
+	std::lock_guard guard(session_mutex);
+	return session != nullptr && session->queue(std::move(task));
+}
+
+void GodotRdServer::on_scene_changed(Node *node) {
+	if (node == nullptr) {
+		on_scene_closed("");
+		return;
+	}
+	auto node_path = node->get_scene_file_path();
+	queue_on_session([this, node_path] {
+		UtilityFunctions::print_verbose(String("[RIDER RD] sending node path: ") + node_path);
+		model.get_currentSceneChange().fire(rd::to_wstring(std::string(node_path.utf8().get_data())));
+	});
+}
+
+void GodotRdServer::on_scene_closed(const String &) {
+	queue_on_session([this] {
 		model.get_currentSceneChange().fire(std::wstring());
 	});
 }
@@ -141,6 +228,7 @@ void GodotRdServer::run_on_godot_thread(std::function<void()> task) {
 		std::lock_guard guard(godot_thread_tasks_mutex);
 		godot_thread_tasks.push_back(std::move(task));
 	}
+	// Godot checks the callable's object ID before dispatch, and stop() clears queued tasks.
 	callable_mp(this, &GodotRdServer::_run_godot_thread_tasks).call_deferred();
 }
 
@@ -161,14 +249,6 @@ GodotRdExtension *GodotRdServer::get_extension() {
 		ERR_PRINT("[RIDER RD] internal error, the editor plugin of the extension is not in the tree");
 	}
 	return extension;
-}
-
-JetBrains::GodotPlugin::PlayForDebugResult GodotRdServer::play_current_scene_for_debug(const Dictionary &environment) {
-	auto *extension = get_extension();
-	if (extension == nullptr) {
-		return JetBrains::GodotPlugin::PlayForDebugResult::Unknown;
-	}
-	return extension->play_current_scene_for_debug(environment);
 }
 
 void GodotRdServer::stop_playing_scene() {
@@ -201,6 +281,7 @@ bool GodotRdServer::write_connection_info(uint16_t port) {
 void GodotRdServer::stop() noexcept {
 	stopping.set();
 	if (auto extension = get_extension(); extension != nullptr) {
+		extension->clear_debug_scene_stopped_callback();
 		get_extension()->set_new_node_opened_callback(std::function<void(Node *)>());
 		if (extension->is_connected("scene_changed", callable_mp(this, &GodotRdServer::on_scene_changed))) {
 			extension->disconnect("scene_changed", callable_mp(this, &GodotRdServer::on_scene_changed));
@@ -224,14 +305,12 @@ void GodotRdServer::stop() noexcept {
 }
 
 void GodotRdServer::open_in_rider(const String &path) {
-	if (!session) {
+	if (!queue_on_session([this, path] {
+		model.get_openInRider().fire(rd::to_wstring(std::string(path.utf8().get_data())));
+	})) {
 		ERR_PRINT(
 				"[RIDER RD] Open in rider called before establishing a connection, is Rider running with the project opened?");
-		return;
 	}
-	session->queue([this,path] {
-		model.get_openInRider().fire(rd::to_wstring(std::string(path.utf8().get_data())));
-	});
 }
 
 

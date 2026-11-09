@@ -52,6 +52,10 @@ public:
 		return id;
 	}
 
+	Lifetime get_model_lifetime() const {
+		return model_def ? model_def->lifetime : Lifetime::Eternal();
+	}
+
 	bool queue(const std::function<void()> &callback) {
 		if (!this->scheduler) {
 			return false;

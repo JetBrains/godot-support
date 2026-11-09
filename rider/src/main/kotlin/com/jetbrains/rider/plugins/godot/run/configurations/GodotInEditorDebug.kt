@@ -16,7 +16,6 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.execution.ParametersListUtil
@@ -44,13 +43,6 @@ import javax.swing.JComponent
 
 private fun buildCurrentSceneProgramParameters(workingDirectory: String, scene: String): String =
     ParametersListUtil.join(listOf("--path", workingDirectory, scene))
-
-enum class GodotCurrentSceneLaunchSource(private val messageKey: String) {
-    FROM_GODOT_EDITOR("godot.run.current.scene.source.godot.editor"),
-    FROM_RIDER("godot.run.current.scene.source.rider");
-
-    override fun toString(): String = GodotPluginBundle.message(messageKey)
-}
 
 class GodotDebugRunCurrentSceneFactory(type: ConfigurationType) : ConfigurationFactory(type) {
     override fun getId(): String = "Godot Current Scene"
@@ -93,59 +85,42 @@ class GodotDebugRunCurrentScene private constructor(
 
     constructor(project: Project, factory: ConfigurationFactory) : this(project, factory, defaultParameters(project))
 
-    var launchSource: GodotCurrentSceneLaunchSource = GodotCurrentSceneLaunchSource.FROM_GODOT_EDITOR
-
     override fun checkConfiguration() {
         super.checkConfiguration()
         if (!GodotRdClientService.getInstance(project).isConnected) {
             throw RuntimeConfigurationError(GodotPluginBundle.message("godot.debug.in.editor.not.connected"))
         }
 
-        if (launchSource == GodotCurrentSceneLaunchSource.FROM_RIDER) {
-            if (GodotProjectDiscoverer.getInstance(project).godot4Path.value == null) {
-                throw RuntimeConfigurationError(GodotPluginBundle.message("godot.debug.in.editor.not.godot4"))
-            }
+        if (GodotProjectDiscoverer.getInstance(project).godot4Path.value == null) {
+            throw RuntimeConfigurationError(GodotPluginBundle.message("godot.debug.in.editor.not.godot4"))
         }
     }
 
     override fun readExternal(element: Element) {
         super.readExternal(element)
         parameters.readExternal(element)
-        launchSource = GodotCurrentSceneLaunchSource.entries.firstOrNull { it.name == element.getAttributeValue(LAUNCH_SOURCE_ATTRIBUTE) }
-            ?: GodotCurrentSceneLaunchSource.FROM_GODOT_EDITOR
     }
 
     override fun writeExternal(element: Element) {
         super.writeExternal(element)
         parameters.writeExternal(element)
-        element.setAttribute(LAUNCH_SOURCE_ATTRIBUTE, launchSource.name)
     }
 
     override fun clone(): RunConfiguration {
         val newConfiguration = GodotDebugRunCurrentScene(project, requireNotNull(factory), parameters.copy())
-        newConfiguration.launchSource = launchSource
         newConfiguration.doCopyOptionsFrom(this)
         copyCopyableDataTo(newConfiguration)
         return newConfiguration
     }
 
     private class Editor : SettingsEditor<GodotDebugRunCurrentScene>() {
-        private val launchSourceComboBox = ComboBox(GodotCurrentSceneLaunchSource.entries.toTypedArray())
+        override fun resetEditorFrom(configuration: GodotDebugRunCurrentScene) = Unit
 
-        override fun resetEditorFrom(configuration: GodotDebugRunCurrentScene) {
-            launchSourceComboBox.selectedItem = configuration.launchSource
-        }
-
-        override fun applyEditorTo(configuration: GodotDebugRunCurrentScene) {
-            configuration.launchSource = launchSourceComboBox.selectedItem as GodotCurrentSceneLaunchSource
-        }
+        override fun applyEditorTo(configuration: GodotDebugRunCurrentScene) = Unit
 
         override fun createEditor(): JComponent = panel {
             row {
-                text(GodotPluginBundle.message("godot.run.current.scene.source.description"))
-            }
-            row(GodotPluginBundle.message("godot.run.current.scene.launch.source")) {
-                cell(launchSourceComboBox)
+                text(GodotPluginBundle.message("godot.run.current.scene.description"))
             }
         }
     }
@@ -154,7 +129,6 @@ class GodotDebugRunCurrentScene private constructor(
         @NlsSafe
         const val CONFIGURATION_NAME: String = "Player (Current Scene)"
 
-        private const val LAUNCH_SOURCE_ATTRIBUTE = "launchSource"
 
         /**
          * The executable and working directory are set by [com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator].
@@ -188,23 +162,17 @@ private class GodotCurrentSceneExecutorFactory(private val project: Project) : A
         }
 
         val configuration = environment.runProfile as GodotDebugRunCurrentScene
-        return when (configuration.launchSource) {
-            GodotCurrentSceneLaunchSource.FROM_GODOT_EDITOR ->
-                GodotInEditorDebugExecutorFactory(project).create(executorId, environment, lifetime)
-            GodotCurrentSceneLaunchSource.FROM_RIDER -> {
-                val scene = GdProjectGodotService.getInstance(project).currentSceneFlow.value
-                    ?: throw ExecutionException(GodotPluginBundle.message("godot.run.current.scene.no.scene.info"))
-                if (scene.isEmpty()) {
-                    throw ExecutionException(GodotPluginBundle.message("godot.run.current.scene.no.scene.selected"))
-                }
+        val scene = GdProjectGodotService.getInstance(project).currentSceneFlow.value
+            ?: throw ExecutionException(GodotPluginBundle.message("godot.run.current.scene.no.scene.info"))
+        if (scene.isEmpty()) {
+            throw ExecutionException(GodotPluginBundle.message("godot.run.current.scene.no.scene.selected"))
+        }
 
-                val launchParameters = configuration.parameters.copy().apply {
-                    programParameters = buildCurrentSceneProgramParameters(workingDirectory, scene)
-                }
-                withContext(Dispatchers.EDT) {
-                    DotNetExeExecutorFactory(launchParameters).create(executorId, environment, lifetime)
-                }
-            }
+        val launchParameters = configuration.parameters.copy().apply {
+            programParameters = buildCurrentSceneProgramParameters(workingDirectory, scene)
+        }
+        return withContext(Dispatchers.EDT) {
+            DotNetExeExecutorFactory(launchParameters).create(executorId, environment, lifetime)
         }
     }
 }

@@ -9,7 +9,8 @@
 #include "FrontendGodotModel.h"
 
 #include "FrontendGodotModel/EnvironmentVariable.h"
-#include "FrontendGodotModel/PlayForDebugResult.h"
+#include "FrontendGodotModel/DebugSessionStatus.h"
+#include "FrontendGodotModel/DebugSession.h"
 
 #include "FrontendGodotRoot/FrontendGodotRoot.h"
 
@@ -31,6 +32,7 @@ FrontendGodotModel::FrontendGodotModelSerializersOwner const FrontendGodotModel:
 void FrontendGodotModel::FrontendGodotModelSerializersOwner::registerSerializersCore(rd::Serializers const& serializers) const
 {
     serializers.registry<EnvironmentVariable>();
+    serializers.registry<DebugSession>();
 }
 
 void FrontendGodotModel::connect(rd::Lifetime lifetime, rd::IProtocol const * protocol)
@@ -49,12 +51,12 @@ constexpr rd::wstring_view FrontendGodotModel::modelHashKey;
 void FrontendGodotModel::initialize()
 {
     godotPID_.optimize_nested = true;
-    serializationHash = 4053984607140368364L;
+    serializationHash = -7377247151565289175L;
 }
 // primary ctor
-FrontendGodotModel::FrontendGodotModel(rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_, rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, PlayForDebugResult, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<PlayForDebugResult>> playCurrentSceneForDebug_, rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_, rd::RdProperty<int64_t, rd::Polymorphic<int64_t>> godotPID_) :
+FrontendGodotModel::FrontendGodotModel(rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_, rd::RdCall<rd::Void, DebugSession, rd::Polymorphic<rd::Void>, rd::Polymorphic<DebugSession>> prepareDebugSession_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> debugLaunchFailed_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> debugSceneStopped_, rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_, rd::RdProperty<int64_t, rd::Polymorphic<int64_t>> godotPID_) :
 rd::RdExtBase()
-,openInGodot_(std::move(openInGodot_)), openInRider_(std::move(openInRider_)), currentSceneChange_(std::move(currentSceneChange_)), playCurrentSceneForDebug_(std::move(playCurrentSceneForDebug_)), stopPlayingScene_(std::move(stopPlayingScene_)), godotPID_(std::move(godotPID_))
+,openInGodot_(std::move(openInGodot_)), openInRider_(std::move(openInRider_)), currentSceneChange_(std::move(currentSceneChange_)), prepareDebugSession_(std::move(prepareDebugSession_)), debugLaunchFailed_(std::move(debugLaunchFailed_)), debugSceneStopped_(std::move(debugSceneStopped_)), stopPlayingScene_(std::move(stopPlayingScene_)), godotPID_(std::move(godotPID_))
 {
     initialize();
 }
@@ -73,7 +75,9 @@ void FrontendGodotModel::init(rd::Lifetime lifetime) const
     bindPolymorphic(openInGodot_, lifetime, this, "openInGodot");
     bindPolymorphic(openInRider_, lifetime, this, "openInRider");
     bindPolymorphic(currentSceneChange_, lifetime, this, "currentSceneChange");
-    bindPolymorphic(playCurrentSceneForDebug_, lifetime, this, "playCurrentSceneForDebug");
+    bindPolymorphic(prepareDebugSession_, lifetime, this, "prepareDebugSession");
+    bindPolymorphic(debugLaunchFailed_, lifetime, this, "debugLaunchFailed");
+    bindPolymorphic(debugSceneStopped_, lifetime, this, "debugSceneStopped");
     bindPolymorphic(stopPlayingScene_, lifetime, this, "stopPlayingScene");
     bindPolymorphic(godotPID_, lifetime, this, "godotPID");
 }
@@ -84,7 +88,9 @@ void FrontendGodotModel::identify(const rd::Identities &identities, rd::RdId con
     identifyPolymorphic(openInGodot_, identities, id.mix(".openInGodot"));
     identifyPolymorphic(openInRider_, identities, id.mix(".openInRider"));
     identifyPolymorphic(currentSceneChange_, identities, id.mix(".currentSceneChange"));
-    identifyPolymorphic(playCurrentSceneForDebug_, identities, id.mix(".playCurrentSceneForDebug"));
+    identifyPolymorphic(prepareDebugSession_, identities, id.mix(".prepareDebugSession"));
+    identifyPolymorphic(debugLaunchFailed_, identities, id.mix(".debugLaunchFailed"));
+    identifyPolymorphic(debugSceneStopped_, identities, id.mix(".debugSceneStopped"));
     identifyPolymorphic(stopPlayingScene_, identities, id.mix(".stopPlayingScene"));
     identifyPolymorphic(godotPID_, identities, id.mix(".godotPID"));
 }
@@ -113,13 +119,29 @@ rd::ISignal<std::wstring> const & FrontendGodotModel::get_currentSceneChange() c
      */
     return currentSceneChange_;
 }
-rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, PlayForDebugResult, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<PlayForDebugResult>> const & FrontendGodotModel::get_playCurrentSceneForDebug() const
+rd::RdCall<rd::Void, DebugSession, rd::Polymorphic<rd::Void>, rd::Polymorphic<DebugSession>> const & FrontendGodotModel::get_prepareDebugSession() const
 {
     
     /**
-     * Plays the current scene with the specified environment variables set for the game process. Returns [PlayForDebugResult] indicating the status.
+     * Opens a suspended diagnostic port and returns the game environment. Rider attaches when the game connects.
      */
-    return playCurrentSceneForDebug_;
+    return prepareDebugSession_;
+}
+rd::ISignal<std::wstring> const & FrontendGodotModel::get_debugLaunchFailed() const
+{
+    
+    /**
+     * Godot could not play the scene for the given session ID.
+     */
+    return debugLaunchFailed_;
+}
+rd::ISignal<std::wstring> const & FrontendGodotModel::get_debugSceneStopped() const
+{
+    
+    /**
+     * Godot stopped the scene for the given session ID.
+     */
+    return debugSceneStopped_;
 }
 rd::ISource<rd::Void> const & FrontendGodotModel::get_stopPlayingScene() const
 {
@@ -162,8 +184,14 @@ std::string FrontendGodotModel::toString() const
     res += "\tcurrentSceneChange = ";
     res += rd::to_string(currentSceneChange_);
     res += '\n';
-    res += "\tplayCurrentSceneForDebug = ";
-    res += rd::to_string(playCurrentSceneForDebug_);
+    res += "\tprepareDebugSession = ";
+    res += rd::to_string(prepareDebugSession_);
+    res += '\n';
+    res += "\tdebugLaunchFailed = ";
+    res += rd::to_string(debugLaunchFailed_);
+    res += '\n';
+    res += "\tdebugSceneStopped = ";
+    res += rd::to_string(debugSceneStopped_);
     res += '\n';
     res += "\tstopPlayingScene = ";
     res += rd::to_string(stopPlayingScene_);
