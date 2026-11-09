@@ -1,26 +1,18 @@
 package com.jetbrains.rider.plugins.godot.run.configurations
 
-import com.intellij.execution.CantRunException
 import com.intellij.execution.ExecutionException
-import com.intellij.execution.configurations.RunProfileState
-import com.intellij.execution.executors.DefaultDebugExecutor
-import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
 import com.intellij.execution.ui.RunContentDescriptor
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import com.intellij.xdebugger.attach.LocalAttachHost
 import com.jetbrains.rd.ide.model.debuggerAutoAttachModel
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rd.util.threading.coroutines.asCoroutineDispatcher
 import com.jetbrains.rd.util.threading.coroutines.launch
-import com.jetbrains.rider.debugger.DebuggerHelperHost
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
-import com.jetbrains.rider.plugins.godot.rd.GodotRdClientService
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.protocol.protocol
-import com.jetbrains.rider.run.configurations.AsyncExecutorFactory
 import com.jetbrains.rider.run.withSuspendableDiagnosticPort
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineStart
@@ -28,86 +20,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeoutOrNull
 import org.jetbrains.annotations.ApiStatus
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.time.Duration.Companion.seconds
 
-/**
- * Calls on the backend model may only be started on the scheduler of the frontend protocol, while the launch itself
- * runs on a background thread, so every such call has to hop onto this dispatcher first.
- */
 private val Project.protocolDispatcher get() = protocol.scheduler.asCoroutineDispatcher
-
-class GodotInEditorDebugExecutorFactory(private val project: Project) : AsyncExecutorFactory {
-    override suspend fun create(executorId: String, environment: ExecutionEnvironment, lifetime: Lifetime): RunProfileState {
-        if (executorId != DefaultDebugExecutor.EXECUTOR_ID) {
-            throw CantRunException(GodotPluginBundle.message("godot.run.current.scene.debug.only"))
-        }
-
-        val rdClientService = GodotRdClientService.getInstance(project)
-        if (!rdClientService.isConnected) {
-            throw ExecutionException(GodotPluginBundle.message("godot.debug.in.editor.not.connected"))
-        }
-
-        val cleanupLifetime = lifetime.createNested()
-        var stateCreated = false
-        try {
-            val state = withContext(Dispatchers.Default) {
-                val diagnosticPort = GodotGameDiagnosticPort.open(project, lifetime) { port ->
-                    environment.callback = createGodotInEditorDebugCallback(cleanupLifetime, environment.callback) {
-                        try {
-                            port.resume()
-                        } finally {
-                            try {
-                                rdClientService.stopPlayingScene()
-                            } finally {
-                                port.dispose()
-                            }
-                        }
-                    }
-                }
-                when (rdClientService.playCurrentSceneForDebug(diagnosticPort.gameEnvironment)) {
-                    GodotRdClientService.PlayCurrentSceneResult.Success -> {}
-                    GodotRdClientService.PlayCurrentSceneResult.NoSceneSelected -> {
-                        throw ExecutionException(GodotPluginBundle.message("godot.run.current.scene.no.scene.selected"))
-                    }
-
-                    GodotRdClientService.PlayCurrentSceneResult.NotConnected -> {
-                        // This shouldn't happen, since the run configuration should not be enabled without connection.
-                        thisLogger().warn("[RIDER RD] play for current scene called without there being a connection.")
-                        throw ExecutionException(GodotPluginBundle.message("godot.debug.in.editor.play.failed"))
-                    }
-
-                    GodotRdClientService.PlayCurrentSceneResult.Unknown -> {
-                        throw ExecutionException(GodotPluginBundle.message("godot.debug.in.editor.play.failed"))
-                    }
-
-                    GodotRdClientService.PlayCurrentSceneResult.MultipleInstancesOn -> {
-                        throw ExecutionException(GodotPluginBundle.message("godot.debug.in.editor.play.multiple_instances"))
-                    }
-                }
-                val gamePid = diagnosticPort.awaitGameProcessId()
-                val processInfo = LocalAttachHost.INSTANCE.getProcessListAsync().firstOrNull { it.pid == gamePid }
-                    ?: throw ExecutionException(GodotPluginBundle.message("godot.debug.in.editor.game.process.not.found"))
-                val platform = withContext(project.protocolDispatcher) {
-                    DebuggerHelperHost.getInstance(project).getProcessArchitecture(lifetime, gamePid)
-                }
-                GodotInEditorAttachProfileState(
-                    processInfo,
-                    environment,
-                    platform,
-                    diagnosticPort::resume,
-                    cleanupLifetime::terminate,
-                )
-            }
-            stateCreated = true
-            return state
-        } finally {
-            if (!stateCreated) cleanupLifetime.terminate()
-        }
-    }
-}
 
 /** Runs cleanup when startup fails or the cleanup lifetime ends. */
 @ApiStatus.Internal
@@ -139,17 +55,17 @@ fun createGodotInEditorDebugCallback(
     }
 }
 
-private class GodotGameDiagnosticPort private constructor(
+internal class GodotGameDiagnosticPort private constructor(
     private val project: Project,
     private val lifetime: Lifetime,
-    private val sessionId: String,
+    override val sessionId: String,
     address: String,
-) {
+) : GodotEditorDebugPort {
     /**
      * The environment variables for the game process. They enable Edit and Continue (hot reload),
      * and make the game connect to the diagnostic port.
      */
-    val gameEnvironment: Map<String, String> = withSuspendableDiagnosticPort(
+    override val gameEnvironment: Map<String, String> = withSuspendableDiagnosticPort(
         mapOf(
             DOTNET_MODIFIABLE_ASSEMBLIES to "debug",
             COMPLUS_FORCEENC to "1",
@@ -158,22 +74,19 @@ private class GodotGameDiagnosticPort private constructor(
     )
 
     private val resumed = AtomicBoolean(false)
-    private val disposed = AtomicBoolean(false)
 
-    suspend fun awaitGameProcessId(): Int {
+    override suspend fun awaitGameProcessId(): Int {
         val model = project.solution.debuggerAutoAttachModel
-        val pid = withTimeoutOrNull(CONNECT_TIMEOUT) {
-            withContext(project.protocolDispatcher) {
-                model.awaitNewProcessConnection.startSuspending(lifetime, sessionId).toInt()
-            }
+        val pid = withContext(project.protocolDispatcher) {
+            model.awaitNewProcessConnection.startSuspending(lifetime, sessionId).toInt()
         }
-        if (pid == null || pid <= 0) {
+        if (pid <= 0) {
             throw ExecutionException(GodotPluginBundle.message("godot.debug.in.editor.game.not.connected"))
         }
         return pid
     }
 
-    suspend fun resume() {
+    override suspend fun resume() {
         if (!resumed.compareAndSet(false, true)) return
         withContext(NonCancellable + project.protocolDispatcher) {
             try {
@@ -187,30 +100,17 @@ private class GodotGameDiagnosticPort private constructor(
         }
     }
 
-    fun dispose() {
-        if (!disposed.compareAndSet(false, true)) return
-        project.protocol.scheduler.queue {
-            project.solution.debuggerAutoAttachModel.disposeServer.fire(sessionId)
-        }
-    }
-
     companion object {
         private const val DOTNET_MODIFIABLE_ASSEMBLIES = "DOTNET_MODIFIABLE_ASSEMBLIES"
         private const val COMPLUS_FORCEENC = "COMPLUS_FORCEENC"
 
-        // The "Before launch" step builds the project before the editor plays the scene, so this covers
-        // the autosave, the game start and the connection only.
-        private val CONNECT_TIMEOUT = 60.seconds
-
-        suspend fun open(
-            project: Project,
-            lifetime: Lifetime,
-            onCreated: (GodotGameDiagnosticPort) -> Unit,
-        ): GodotGameDiagnosticPort = withContext(project.protocolDispatcher) {
-            val server = project.solution.debuggerAutoAttachModel.createServer.startSuspending(lifetime, Unit)
-            GodotGameDiagnosticPort(project, lifetime, server.sessionId, server.connectionAddress).also { port ->
-                onCreated(port)
+        suspend fun open(project: Project, lifetime: Lifetime): GodotGameDiagnosticPort = withContext(project.protocolDispatcher) {
+            val model = project.solution.debuggerAutoAttachModel
+            val server = model.createServer.startSuspending(lifetime, Unit)
+            lifetime.onTermination {
+                project.protocol.scheduler.queue { model.disposeServer.fire(server.sessionId) }
             }
+            GodotGameDiagnosticPort(project, lifetime, server.sessionId, server.connectionAddress)
         }
     }
 }

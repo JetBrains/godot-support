@@ -26,15 +26,13 @@ func _enter_tree() -> void:
 
 	# Build toolbar control
 	var preset_applier := PresetApplier.new(presets_json_path)
-	toolbar_menu = RiderToolbarMenu.new()
-	toolbar_menu.setup(plugin_dir, plugin_cfg_path, preset_applier, is_active)
-	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, toolbar_menu)
-
 	_locator_service = RiderLocatorService.new()
 	_rd_loader = RdLoader.new()
-	
-	# add_child to get access to _enter/exit_tree
 	add_child(_rd_loader)
+	toolbar_menu = RiderToolbarMenu.new()
+	toolbar_menu.setup(plugin_dir, plugin_cfg_path, preset_applier, is_active, _locator_service, _rd_loader)
+	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, toolbar_menu)
+	toolbar_menu.move_rider_icon_before_run_bar()
 	_locator_service.start_search()
 
 	# Ensure settings reflect current state on startup

@@ -24,8 +24,7 @@ import kotlin.time.Duration.Companion.seconds
  * Attaches to the game process the Godot editor has launched and stops the playing scene
  * as soon as the debug session is over.
  *
- * The runtime of the game is suspended by its diagnostic port until [resumeGame] is called, see
- * [GodotInEditorDebugExecutorFactory].
+ * The runtime of the game stays suspended by its diagnostic port until [resumeGame] is called.
  */
 class GodotInEditorAttachProfileState(
     processInfo: ProcessInfo,

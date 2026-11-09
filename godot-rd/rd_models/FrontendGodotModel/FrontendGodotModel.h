@@ -44,8 +44,7 @@
 #include "thirdparty.hpp"
 #include "instantiations_FrontendGodotRoot.h"
 
-#include "FrontendGodotModel/EnvironmentVariable.h"
-#include "FrontendGodotModel/PlayForDebugResult.h"
+#include "FrontendGodotModel/DebugSession.h"
 
 
 
@@ -78,7 +77,6 @@ public:
 
 private:
     // custom serializers
-    using __EnvironmentVariableListSerializer = rd::ArraySerializer<rd::Polymorphic<EnvironmentVariable>, std::vector>;
 
 public:
     // constants
@@ -91,7 +89,9 @@ protected:
     rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_;
     rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_;
     rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_;
-    rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, PlayForDebugResult, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<PlayForDebugResult>> playCurrentSceneForDebug_;
+    rd::RdCall<rd::Void, DebugSession, rd::Polymorphic<rd::Void>, rd::Polymorphic<DebugSession>> prepareDebugSession_;
+    rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> debugLaunchFailed_;
+    rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> debugSceneStopped_;
     rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_;
     rd::RdProperty<int64_t, rd::Polymorphic<int64_t>> godotPID_;
     
@@ -102,7 +102,7 @@ private:
 
 public:
     // primary ctor
-    FrontendGodotModel(rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_, rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, PlayForDebugResult, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<PlayForDebugResult>> playCurrentSceneForDebug_, rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_, rd::RdProperty<int64_t, rd::Polymorphic<int64_t>> godotPID_);
+    FrontendGodotModel(rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_, rd::RdCall<rd::Void, DebugSession, rd::Polymorphic<rd::Void>, rd::Polymorphic<DebugSession>> prepareDebugSession_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> debugLaunchFailed_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> debugSceneStopped_, rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_, rd::RdProperty<int64_t, rd::Polymorphic<int64_t>> godotPID_);
     
     // default ctors and dtors
     
@@ -128,7 +128,9 @@ public:
     rd::ISource<std::wstring> const & get_openInGodot() const;
     rd::ISignal<std::wstring> const & get_openInRider() const;
     rd::ISignal<std::wstring> const & get_currentSceneChange() const;
-    rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, PlayForDebugResult, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<PlayForDebugResult>> const & get_playCurrentSceneForDebug() const;
+    rd::RdCall<rd::Void, DebugSession, rd::Polymorphic<rd::Void>, rd::Polymorphic<DebugSession>> const & get_prepareDebugSession() const;
+    rd::ISignal<std::wstring> const & get_debugLaunchFailed() const;
+    rd::ISignal<std::wstring> const & get_debugSceneStopped() const;
     rd::ISource<rd::Void> const & get_stopPlayingScene() const;
     rd::IProperty<int64_t> const & get_godotPID() const;
     

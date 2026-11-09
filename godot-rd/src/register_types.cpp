@@ -9,6 +9,7 @@
 #include "godot_rd_extension.h"
 #include "godot_rd_server.h"
 #include "filesystem_menu.h"
+#include "rider_toolbar_item.h"
 
 using namespace godot;
 
@@ -20,6 +21,7 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(GodotRdServer);
 	GDREGISTER_CLASS(RdStarter);
 	GDREGISTER_CLASS(FilesystemMenu);
+	GDREGISTER_CLASS(RiderToolbarItem);
 	// Do not reorder
 	EditorPlugins::add_by_type<GodotRdExtension>();
 	EditorPlugins::add_by_type<RdStarter>();

@@ -23,9 +23,17 @@ void GodotRdExtension::_enter_tree() {
 }
 
 void GodotRdExtension::_exit_tree() {
+	clear_debug_scene_stopped_callback();
 	disconnect("scene_saved", callable_mp(this, &GodotRdExtension::_scene_saved));
 	if (singleton == this) {
 		singleton = nullptr;
+	}
+}
+
+void GodotRdExtension::_process(double) {
+	auto *editor = EditorInterface::get_singleton();
+	if (debug_scene_stopped_callback && (editor == nullptr || !editor->is_playing_scene())) {
+		report_debug_scene_stopped();
 	}
 }
 
@@ -43,19 +51,28 @@ int GodotRdExtension::get_launch_instance_count() const {
 }
 
 
-JetBrains::GodotPlugin::PlayForDebugResult GodotRdExtension::play_current_scene_for_debug(const Dictionary &environment) {
+bool GodotRdExtension::can_debug_current_scene() const {
 	auto *editor = EditorInterface::get_singleton();
-	if (editor->is_playing_scene()) {
-		editor->stop_playing_scene();
-	}
 	if (editor->get_edited_scene_root() == nullptr) {
-		return JetBrains::GodotPlugin::PlayForDebugResult::NoScene;
+		UtilityFunctions::push_warning("No scene is open. Open a scene and try again.");
+		return false;
 	}
 	// Godot can be set to launch multiple instances at once, this would make it so one gets attached,
 	// and the others stay hanging.
 	if (get_launch_instance_count() > 1) {
-		UtilityFunctions::print_verbose("[RIDER RD] Cannot debug in editor with multiple instances. Please disable 'Enable Multiple Instances'");
-		return JetBrains::GodotPlugin::PlayForDebugResult::MultipleInstances;
+		UtilityFunctions::push_warning("Disable multiple instances to use the Rider C# debugger.");
+		return false;
+	}
+	return true;
+}
+
+bool GodotRdExtension::play_current_scene_with_environment(const Dictionary &environment, std::function<void()> on_stopped) {
+	auto *editor = EditorInterface::get_singleton();
+	if (!can_debug_current_scene()) {
+		return false;
+	}
+	if (editor->is_playing_scene()) {
+		editor->stop_playing_scene();
 	}
 	// The game process inherits the editor's environment. The C# build in play_current_scene() runs
 	// 'dotnet build' first, and it must not get the suspended diagnostic port from Rider. So _run_scene()
@@ -68,15 +85,25 @@ JetBrains::GodotPlugin::PlayForDebugResult GodotRdExtension::play_current_scene_
 	restore_launch_environment();
 	launch_environment.clear();
 	const bool playing = editor->is_playing_scene();
+	debug_scene_launched = playing;
 	if (!playing) {
 		UtilityFunctions::print_verbose("[RIDER RD] the editor did not play the current scene");
-		return JetBrains::GodotPlugin::PlayForDebugResult::Unknown;
+		UtilityFunctions::push_warning("The Godot editor could not start the current scene.");
+		return false;
 	}
-	return JetBrains::GodotPlugin::PlayForDebugResult::Success;
+	debug_scene_stopped_callback = std::move(on_stopped);
+	set_process(static_cast<bool>(debug_scene_stopped_callback));
+	return true;
 }
 
 PackedStringArray GodotRdExtension::_run_scene(const String &p_scene, const PackedStringArray &p_args) const {
 	// The editor calls this after the build callbacks and right before it starts the game process.
+	if (debug_scene_stopped_callback) {
+		const_cast<GodotRdExtension *>(this)->report_debug_scene_stopped();
+	}
+	if (launch_environment.is_empty()) {
+		debug_scene_launched = false;
+	}
 	_apply_launch_environment();
 	return p_args;
 }
@@ -133,6 +160,25 @@ void GodotRdExtension::stop_playing_scene() {
 	if (editor->is_playing_scene()) {
 		editor->stop_playing_scene();
 	}
+}
+
+void GodotRdExtension::report_debug_scene_stopped() const {
+	if (!debug_scene_stopped_callback) {
+		return;
+	}
+	const auto callback = std::exchange(debug_scene_stopped_callback, nullptr);
+	const_cast<GodotRdExtension *>(this)->set_process(false);
+	callback();
+}
+
+void GodotRdExtension::clear_debug_scene_stopped_callback() {
+	debug_scene_stopped_callback = {};
+	set_process(false);
+}
+
+bool GodotRdExtension::is_debug_scene_playing() const {
+	auto *editor = EditorInterface::get_singleton();
+	return debug_scene_launched && editor != nullptr && editor->is_playing_scene();
 }
 
 bool GodotRdExtension::_external_editor_turned_on() const {

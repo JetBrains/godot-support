@@ -5,6 +5,7 @@
 #include "godot_cpp/classes/texture_rect.hpp"
 
 class FilesystemMenu;
+class RiderToolbarItem;
 using namespace godot;
 
 /** Serves as an entrypoint.
@@ -17,6 +18,7 @@ class RdStarter : public EditorPlugin {
 	GDCLASS(RdStarter, EditorPlugin)
 	Ref<GodotRdServer> server;
 	Ref<FilesystemMenu> menu;
+	Ref<RiderToolbarItem> toolbar_item;
 	MarginContainer *connection_status_container = nullptr;
 	TextureRect *connection_status_indicator = nullptr;
 

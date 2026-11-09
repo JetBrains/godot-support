@@ -4,6 +4,7 @@ class_name RdLoader
 
 var _loaded_rd_path: String = ""
 var _needs_restart: bool = false
+var _loaded_needs_restart: bool = false
 var _restart_dialog: ConfirmationDialog = null
 
 func _enter_tree() -> void:
@@ -19,10 +20,24 @@ func _exit_tree() -> void:
 		_restart_dialog.queue_free()
 		_restart_dialog = null
 
-func _install_path_to_rd_path(rider_path: String) -> String:
-	var godot_rd_base: String = rider_path.get_base_dir().get_base_dir().path_join("plugins").path_join("rider-godot").path_join("godot-rd")
+static func get_rd_extension_path(rider_path: String) -> String:
+	return _get_rd_extension_path_for_executable(EditorSettingsUtil.resolve_rider_executable(rider_path))
+
+static func _get_rd_extension_path_for_executable(rider_executable_path: String) -> String:
+	var godot_rd_base: String = rider_executable_path.get_base_dir().get_base_dir().path_join("plugins").path_join("rider-godot").path_join("godot-rd")
 	var gdextension_path: String = godot_rd_base.path_join("godot-rd.gdextension")
+	# Local testing in monorepo: load godot-rd from the sibling folder
+	# gdextension_path = ProjectSettings.globalize_path("res://").path_join("../godot-rd/project/addons/godot-rd/bin/godot-rd.gdextension").simplify_path()
 	return gdextension_path
+
+static func has_rd_extension(rider_path: String) -> bool:
+	return not rider_path.is_empty() and FileAccess.file_exists(get_rd_extension_path(rider_path))
+
+func is_loaded_for(rider_path: String) -> bool:
+	return not rider_path.is_empty() and _loaded_rd_path == get_rd_extension_path(rider_path)
+
+func needs_restart() -> bool:
+	return _needs_restart
 
 func _show_restart_dialog(has_rd_available: bool) -> void:
 	_needs_restart = true
@@ -30,7 +45,6 @@ func _show_restart_dialog(has_rd_available: bool) -> void:
 		return
 	_restart_dialog = ConfirmationDialog.new()
 	_restart_dialog.title = "Restart Godot"
-	# TODO: Perhaps better wording?
 	if has_rd_available:
 		_restart_dialog.dialog_text = "Features such as 'Open in Rider' or 'Open in Godot' can only be used after restart."
 	else:
@@ -94,20 +108,27 @@ func engine_meets_minimum(required: String) -> bool:
 
 
 func load_rd_extension(rider_path: String) -> void :
-	if !FileAccess.file_exists(rider_path):
-		print_verbose("[RIDER RD] load rd extension called on non existing path " + rider_path + ", perhaps the rider installation got deleted?")
+	if not EditorSettingsUtil.is_rider_path(rider_path):
 		return
-	var gdextension_path: String = _install_path_to_rd_path(rider_path)
-	var gdextension_exists: bool = FileAccess.file_exists(gdextension_path)
+	var rider_executable_path := EditorSettingsUtil.resolve_rider_executable(rider_path)
+	if !FileAccess.file_exists(rider_executable_path):
+		print_verbose("[RIDER RD] load rd extension called on non existing path " + rider_executable_path + ", perhaps the rider installation got deleted?")
+		return
+	var gdextension_path: String = _get_rd_extension_path_for_executable(rider_executable_path)
+	var has_loaded_before := _needs_restart or not _loaded_rd_path.is_empty()
+	if not FileAccess.file_exists(gdextension_path):
+		if has_loaded_before:
+			_show_restart_dialog(false)
+		else:
+			push_warning("[RIDER RD] The selected Rider installation does not contain godot-rd. Install the Godot Support plugin in Rider to enable the Godot connection.")
+		return
 	if gdextension_path == _loaded_rd_path:
+		_needs_restart = _loaded_needs_restart
 		return
-	if _needs_restart:
-		_show_restart_dialog(gdextension_exists)
-		return
-	if !_loaded_rd_path.is_empty():
+	if has_loaded_before:
 		# loading multiple RD extensions would make it so the port file
 		# for which Rider listens, would get written to by both extensions.
-		_show_restart_dialog(gdextension_exists)
+		_show_restart_dialog(true)
 		return
 	var version_check := check_gdextension_version(gdextension_path)
 	if !version_check.met_requirement:
@@ -119,9 +140,17 @@ func load_rd_extension(rider_path: String) -> void :
 			push_warning("[RIDER RD] Failed to initialize communication between Godot and Rider. " +
 				"The Rider RD extension is compatible with Godot %s or later, but the current version is %s." % [version_check.minimum_version, current_str]  )
 		return
-	# loading the same extension twice would fails with `GDExtensionManager.LOAD_STATUS_ALREADY_LOADED`
-	if (!GDExtensionManager.is_extension_loaded(gdextension_path)
-			&& GDExtensionManager.load_extension(gdextension_path) != GDExtensionManager.LOAD_STATUS_OK):
-		push_warning("[RIDER RD] Failed to initialize communication between Godot and Rider, some features will not be available.")
+	# loading the same extension twice would fail with `GDExtensionManager.LOAD_STATUS_ALREADY_LOADED`
+	var load_status := GDExtensionManager.LOAD_STATUS_OK
+	if not GDExtensionManager.is_extension_loaded(gdextension_path):
+		load_status = GDExtensionManager.load_extension(gdextension_path)
+	if load_status == GDExtensionManager.LOAD_STATUS_NEEDS_RESTART:
+		_loaded_rd_path = gdextension_path
+		_loaded_needs_restart = true
+		push_warning("[RIDER RD] Loading the extension requires a Godot restart (status: %s)." % load_status)
+		_show_restart_dialog(true)
+	elif load_status != GDExtensionManager.LOAD_STATUS_OK:
+		push_warning("[RIDER RD] Failed to initialize communication between Godot and Rider, some features will not be available (status: %s)." % load_status)
 	else:
 		_loaded_rd_path = gdextension_path
+		_loaded_needs_restart = false
