@@ -42,7 +42,7 @@ class GdStringCompletionTest {
     @Test
     fun testInputActionsPrecedeResourcesInUnqualifiedCall() = doActionTest("is_action_pressed(\"<caret>\")") {
         val items = lookup!!.items.map { it.lookupString }
-        assertThat(items).contains("ui_accept", "jump", "res://resource.gd", "enemies", "health")
+        assertThat(items).contains("ui_accept", "jump", "res://resource.gd", "enemies").doesNotContain("health")
 
         val actionIndices = items.indices.filter { items[it] == "ui_accept" || items[it] == "jump" }
         val resourceIndices = items.indices.filter { items[it].startsWith("res://") }
@@ -131,7 +131,7 @@ class GdStringCompletionTest {
 
     @Test
     fun testStringNameDoubleQuoteGroupsAndMetadata() = doActionTest("var s = &\"<caret>\"") {
-        assertThat(lookupElementStrings!!).contains("enemies", "health")
+        assertThat(lookupElementStrings!!).contains("enemies").doesNotContain("health")
         assertFalse(lookupElementStrings!!.any { it.startsWith("res://") })
     }
 
@@ -193,11 +193,11 @@ class GdStringCompletionTest {
         assertThat(items).doesNotContain("res://resource.gd", "enemies", "health")
     }
 
-    /** Checks project actions, resources, groups, and metadata without default-only actions. Resources precede actions. */
+    /** Checks project actions, resources, and groups without default-only actions or metadata. Resources precede actions. */
     private fun CodeInsightTestFixture.assertGeneralSuggestions() {
         val items = lookup!!.items.map { it.lookupString }
-        assertThat(items).contains("jump", "res://resource.gd", "enemies", "health")
-        assertThat(items).doesNotContain("ui_cancel")
+        assertThat(items).contains("jump", "res://resource.gd", "enemies")
+        assertThat(items).doesNotContain("ui_cancel", "health")
         assertTrue(items.indexOf("res://resource.gd") < items.indexOf("jump"))
     }
 

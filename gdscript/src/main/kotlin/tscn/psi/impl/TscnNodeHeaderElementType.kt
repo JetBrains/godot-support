@@ -29,7 +29,8 @@ object TscnNodeHeaderElementType :
         dataStream.writeBoolean(stub.isVisible())
         dataStream.writeName(stub.getScriptResource())
         dataStream.writeName(stub.getInstanceResource())
-        dataStream.writeName(stub.getGroups().joinToString(","))
+        dataStream.writeNames(stub.getGroups())
+        dataStream.writeNames(stub.getMetas())
         dataStream.writeInt(stub.getIndex())
     }
 
@@ -44,9 +45,18 @@ object TscnNodeHeaderElementType :
             dataStream.readBoolean(),
             dataStream.readNameString() ?: "",
             dataStream.readNameString() ?: "",
-            (dataStream.readNameString() ?: "").split(",").toTypedArray(),
+            dataStream.readNames(),
+            dataStream.readNames(),
             dataStream.readInt(),
         )
+
+    private fun StubOutputStream.writeNames(names: Array<String>) {
+        writeInt(names.size)
+        names.forEach { writeName(it) }
+    }
+
+    private fun StubInputStream.readNames(): Array<String> =
+        Array(readInt()) { readNameString().orEmpty() }
 
     override fun indexStub(stub: TscnNodeHeaderStub, sink: IndexSink) {
         sink.occurrence(TscnIndices.NODE_INDEX, stub.getNodePath())
@@ -67,6 +77,7 @@ object TscnNodeHeaderElementType :
             psi.scriptResource,
             psi.instanceResource,
             psi.groups,
+            psi.metas,
             psi.index,
         )
 

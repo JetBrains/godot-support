@@ -32,6 +32,8 @@ public interface TscnNodeHeader extends TscnHeader, StubBasedPsiElement<TscnNode
 
   @NotNull String @NotNull [] getGroups();
 
+  @NotNull String @NotNull [] getMetas();
+
   @NotNull String getInstanceResource();
 
   int getIndex();

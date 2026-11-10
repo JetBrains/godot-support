@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://owner.gd" id="1"]
+[ext_resource type="Script" path="res://multi.gd" id="2"]
+
+[node name="Root" type="Node"]
+metadata/root_only = true
+
+[node name="Owner" type="Node" parent="." groups=["enemies"]]
+script = ExtResource("1")
+metadata/health = 100
+metadata/shared = true
+metadata/_private = true
+
+[node name="Child" type="Node" parent="Owner"]
+metadata/child_only = true
+
+[node name="Unique" type="Node" parent="Owner"]
+unique_name_in_owner = true
+metadata/unique_only = true
+
+[node name="Empty" type="Node" parent="Owner"]
+
+[node name="First" type="Node" parent="."]
+script = ExtResource("2")
+metadata/first = true
+metadata/shared = true

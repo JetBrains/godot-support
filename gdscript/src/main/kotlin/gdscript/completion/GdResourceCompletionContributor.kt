@@ -61,6 +61,16 @@ class GdResourceCompletionContributor : CompletionContributor() {
                 }
             }
         }
+        // Metadata arguments select only the names of the receiver.
+        if (STRING.accepts(position) || STRING_NAME.accepts(position)) {
+            val call = GdStringCompletionUtil.metaCall(position)
+            if (call != null) {
+                // TODO: Godot LSP can still show hidden "_" names and names from other nodes.
+                // GdCompletionDeduplicatingContributor drops only LSP items with the same name as a plugin item.
+                GdStringCompletionUtil.addMetas(position, result, call)
+                return
+            }
+        }
         if (isQuotedUniqueNodePath(parameters)) {
             GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.quotedUniqueLookups()) }
         } else if (GdRefIdCompletionUtil.DIRECT_REF.accepts(position)) {
@@ -89,7 +99,6 @@ class GdResourceCompletionContributor : CompletionContributor() {
                         )
                     }
                     GdStringCompletionUtil.addGroups(position, result)
-                    GdStringCompletionUtil.addMetas(position, result)
                 }
             }
         } else if (STRING_NAME.accepts(position)) {
@@ -102,7 +111,6 @@ class GdResourceCompletionContributor : CompletionContributor() {
 
                 GdStringCompletionUtil.InputContext.OTHER -> {
                     GdStringCompletionUtil.addGroups(position, result)
-                    GdStringCompletionUtil.addMetas(position, result)
                 }
             }
         }

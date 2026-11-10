@@ -24,6 +24,7 @@ object TscnPsiUtils {
     @JvmStatic fun hasScript(element: TscnNodeHeader): Boolean = TscnNodeUtil.hasScript(element)
     @JvmStatic fun getDirectParentPath(element: TscnNodeHeader): String = TscnNodeUtil.getDirectParentPath(element)
     @JvmStatic fun getGroups(element: TscnNodeHeader): Array<String> = TscnNodeUtil.getGroups(element)
+    @JvmStatic fun getMetas(element: TscnNodeHeader): Array<String> = TscnNodeUtil.getMetas(element)
     @JvmStatic fun getInstanceResource(element: TscnNodeHeader): String = TscnNodeUtil.getInstanceResource(element)
     @JvmStatic fun getIndex(element: TscnNodeHeader): Int = TscnNodeUtil.getIndex(element)
 

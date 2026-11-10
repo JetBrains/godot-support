@@ -15,6 +15,7 @@ interface TscnNodeHeaderStub : StubElement<TscnNodeHeader> {
     fun isVisible(): Boolean
     fun hasScript(): Boolean
     fun getGroups(): Array<String>
+    fun getMetas(): Array<String>
     fun getIndex(): Int
 
 }
