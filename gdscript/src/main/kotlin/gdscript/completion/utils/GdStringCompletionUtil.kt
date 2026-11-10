@@ -14,10 +14,16 @@ import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReferences
 import gdscript.polySymbols.sdk.GdSdkMethodSymbol
 import gdscript.psi.GdArgExpr
 import gdscript.psi.GdAttributeEx
+import gdscript.psi.GdCallEx
 import gdscript.psi.GdLiteralEx
+import gdscript.psi.GdPrimaryEx
+import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdStringValRef
+import gdscript.psi.utils.GdNodeUtil
 import gdscript.utils.PsiElementUtil.getCallExprOfParam
+import gdscript.utils.VirtualFileUtil.resourcePath
 import project.psi.util.ProjectInputUtil
+import tscn.index.impl.TscnNodeIndex
 import tscn.psi.utils.TscnNodeUtil
 
 object GdStringCompletionUtil {
@@ -66,27 +72,34 @@ object GdStringCompletionUtil {
         OTHER,
     }
 
-    /** Decides based on [INPUT_METHODS] and the [INPUT_CLASSES]. See also [InputContext] */
-    fun inputContext(element: PsiElement): InputContext {
+    private data class StringArgument(val call: GdCallEx, val index: Int)
+
+    private fun stringArgument(element: PsiElement): StringArgument? {
         // Is string argument?
-        val string = PsiTreeUtil.getParentOfType(element, GdStringValRef::class.java, false)
-            ?: return InputContext.OTHER
-        val literal = string.parent as? GdLiteralEx ?: return InputContext.OTHER
-        val argument = literal.parent as? GdArgExpr ?: return InputContext.OTHER
-        if (argument.expr != literal) return InputContext.OTHER
+        val string = PsiTreeUtil.getParentOfType(element, GdStringValRef::class.java, false) ?: return null
+        val literal = string.parent as? GdLiteralEx ?: return null
+        val argument = literal.parent as? GdArgExpr ?: return null
+        if (argument.expr != literal) return null
 
         // Is inside call?
-        val call = string.getCallExprOfParam() ?: return InputContext.OTHER
-        val index = call.argList?.argExprList?.indexOf(argument) ?: return InputContext.OTHER
-        if (index < 0) return InputContext.OTHER
+        val call = string.getCallExprOfParam() ?: return null
+        val index = call.argList?.argExprList?.indexOf(argument) ?: return null
+        if (index < 0) return null
+        return StringArgument(call, index)
+    }
 
-        // Is callee an input method, which might expect an action?
-        val callee = call.expr
-        val reference = when (callee) {
-            is GdAttributeEx -> callee.refId
-            is GdLiteralEx -> callee.refIdNm
-            else -> null
-        } ?: return InputContext.OTHER
+    private fun GdCallEx.calleeReference(): GdRefIdRef? = when (val callee = expr) {
+        is GdAttributeEx -> callee.refId
+        is GdLiteralEx -> callee.refIdNm
+        else -> null
+    }
+
+    /** Decides based on [INPUT_METHODS] and the [INPUT_CLASSES]. See also [InputContext] */
+    fun inputContext(element: PsiElement): InputContext {
+        val (call, index) = stringArgument(element) ?: return InputContext.OTHER
+
+        // Check the callee before resolving input methods.
+        val reference = call.calleeReference() ?: return InputContext.OTHER
         if (reference.text !in INPUT_METHODS) return InputContext.OTHER
 
         // Resolve the callee.
@@ -233,19 +246,50 @@ object GdStringCompletionUtil {
         }
     }
 
-    fun addMetas(element: PsiElement, result: CompletionResultSet) {
-        var priority = GdLookup.USER_DEFINED
-        val method = element.getCallExprOfParam()?.expr?.text
-        if (method != null && method.contains("meta")) priority = GdLookup.TOP
+    private val META_METHODS = setOf("get_meta", "set_meta", "has_meta", "remove_meta")
 
-        TscnNodeUtil.listAllMetas(element).forEach {
+    fun metaCall(element: PsiElement): GdCallEx? {
+        val (call, index) = stringArgument(element) ?: return null
+        if (index != 0) return null
+
+        // Is callee a meta method?
+        // A same-named script function is the only gap in this name rule.
+        return call.takeIf { call.calleeReference()?.text in META_METHODS }
+    }
+
+    fun addMetas(element: PsiElement, result: CompletionResultSet, call: GdCallEx) {
+        val receiver = (call.expr as? GdAttributeEx)?.expr
+        val allNodes by lazy { TscnNodeIndex.INSTANCE.getAllValues(element.project) }
+        // TODO: In a static function, a call without a receiver has no owner node. Do not use the script nodes there.
+        val nodes = if (receiver == null || receiver.text == "self") {
+            val script = element.containingFile.originalFile.virtualFile?.resourcePath()
+            // Boss in `level1.tscn` can instance `enemy.tscn` and add `is_boss` meta without a script line.
+            // Completion in `enemy.gd` does not show `is_boss` from that instance. We would need to read all level files for that.
+            allNodes.filter { it.scriptResource == script }
+        } else {
+            val path = (receiver as? GdPrimaryEx)?.nodePath
+            if (path == null) {
+                emptyList()
+            } else {
+                // A node path can include property names, such as `Child:position:x`. Keep only the node part.
+                val nodeName = path.text.trim('$', '%', '"', '^', '\'').substringBefore(':')
+                GdNodeUtil.listNodes(path).filter { node ->
+                    node.relativePath.trim('$', '"', '\'') == nodeName || node.uniqueId?.trim('%') == nodeName
+                }.map { node -> node.element }
+            }
+        }
+        // Fallback to all metas from all nodes with lower priority, when no actual nodes found
+        val names = (nodes.ifEmpty { allNodes }).flatMap { TscnNodeUtil.getMetas(it).toList() }
+        val prefix = result.prefixMatcher.prefix
+        val priority = if (nodes.isEmpty()) GdLookup.USER_DEFINED else GdLookup.TOP
+        // TODO: Collect set_meta names from scripts and metadata from .tres files.
+        // TODO: Show the value type and the scene name in each item.
+        // TODO: Add go to declaration, find usages, rename, and an unknown-meta inspection.
+        // Godot treats a meta name that starts with `_` as editor-only.
+        // The Inspector hides it, so completion hides it until the user types `_`.
+        names.distinct().filter { !it.startsWith('_') || prefix.startsWith('_') }.forEach {
             result.addElement(
-                GdLookup.create(
-                    it,
-                    priority = priority,
-                    tail = " (meta)",
-                    color = GdLookup.COLOR_META,
-                )
+                GdLookup.create(it, priority = priority, tail = " (meta)", color = GdLookup.COLOR_META)
             )
         }
     }

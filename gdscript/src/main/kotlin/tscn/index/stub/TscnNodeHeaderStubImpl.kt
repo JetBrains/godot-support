@@ -16,6 +16,7 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
     private var isUniqueNameOwner: Boolean = false
     private var visible: Boolean = true
     private var groups: Array<String> = emptyArray()
+    private var metas: Array<String> = emptyArray()
     private var index: Int = -1
 
     constructor(
@@ -29,6 +30,7 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
         scriptResource: String,
         instanceResource: String,
         groups: Array<String>,
+        metas: Array<String>,
         index: Int,
     ) : super(parent,
         TscnNodeHeaderElementType) {
@@ -41,6 +43,7 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
         this.scriptResource = scriptResource
         this.instnaceResource = instanceResource
         this.groups = groups
+        this.metas = metas
         this.index = index
     }
 
@@ -63,6 +66,8 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
     override fun getParentPath(): String = parentPath
 
     override fun getGroups(): Array<String> = groups
+
+    override fun getMetas(): Array<String> = metas
 
     override fun getIndex() = index
 

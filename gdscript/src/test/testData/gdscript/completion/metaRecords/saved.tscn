@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[node name="WithMeta" type="Node"]
+metadata/health = 100
+metadata/shared = true
+
+[node name="WithoutMeta" type="Node" parent="."]

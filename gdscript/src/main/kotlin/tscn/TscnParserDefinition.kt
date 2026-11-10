@@ -14,6 +14,7 @@ import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.IStubFileElementType
 import com.intellij.psi.tree.TokenSet
 import com.jetbrains.rider.godot.community.tscn.TscnLanguage
+import tscn.index.TscnIndices
 import tscn.parser.TscnParser
 import tscn.psi.TscnFile
 import tscn.psi.TscnTypes
@@ -23,7 +24,10 @@ class TscnParserDefinition : ParserDefinition {
     companion object {
         val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
         val COMMENTS = TokenSet.create(TscnTypes.COMMENT)
-        val FILE = IStubFileElementType<PsiFileStub<TscnFile>>("GdScriptTscnFile", TscnLanguage)
+        // Rebuild the file stubs when the TSCN stub format changes.
+        val FILE = object : IStubFileElementType<PsiFileStub<TscnFile>>("GdScriptTscnFile", TscnLanguage) {
+            override fun getStubVersion(): Int = super.getStubVersion() + TscnIndices.VERSION
+        }
     }
 
     override fun getWhitespaceTokens(): TokenSet = WHITE_SPACES

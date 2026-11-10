@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://multi.gd" id="1"]
+[ext_resource type="Script" path="res://owner.gd" id="2"]
+
+[node name="Second" type="Node"]
+script = ExtResource("1")
+metadata/second = true
+metadata/shared = true
+
+[node name="Owner" type="Node" parent="."]
+script = ExtResource("2")
+metadata/health = 100
+metadata/shared = true
+
+[node name="Child" type="Node" parent="Owner"]
+metadata/second_child_only = true

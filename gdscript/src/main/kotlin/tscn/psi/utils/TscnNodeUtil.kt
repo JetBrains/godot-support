@@ -64,6 +64,7 @@ object TscnNodeUtil {
             .trim('[', ']')
             .split(",")
             .map { it.trim(' ', '"') }
+            .filter { it.isNotBlank() }
             .toTypedArray()
     }
 
@@ -161,15 +162,13 @@ object TscnNodeUtil {
         }.toTypedArray()
     }
 
-    fun listAllMetas(element: PsiElement): Array<String> {
-        val tscnFile = TscnResourceUtil.findTscnByResource(element) ?: return emptyArray()
-        val node = PsiTreeUtil.findChildOfType(tscnFile.containingFile, TscnNodeHeader::class.java)
-            ?: return emptyArray()
-        val datas = PsiTreeUtil.getChildrenOfTypeAsList(node.parent, TscnDataLine::class.java)
+    fun getMetas(element: TscnNodeHeader): Array<String> {
+        val stub = element.stub
+        if (stub != null) return stub.getMetas()
 
-        return datas.mapNotNull {
+        return PsiTreeUtil.getChildrenOfTypeAsList(element.parent, TscnDataLine::class.java).mapNotNull {
             val name = it.dataLineHeader.text
-            if (name.startsWith(META_PREFIX)) name.substring(META_PREFIX.length)
+            if (name.startsWith(META_PREFIX)) name.removePrefix(META_PREFIX).takeIf { meta -> meta.isNotBlank() }
             else null
         }.toTypedArray()
     }

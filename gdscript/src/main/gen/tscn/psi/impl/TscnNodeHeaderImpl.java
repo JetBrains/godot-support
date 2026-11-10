@@ -89,6 +89,11 @@ public class TscnNodeHeaderImpl extends TscnNodeHeaderElementImpl implements Tsc
   }
 
   @Override
+  public @NotNull String @NotNull [] getMetas() {
+    return TscnPsiUtils.getMetas(this);
+  }
+
+  @Override
   public @NotNull String getInstanceResource() {
     return TscnPsiUtils.getInstanceResource(this);
   }
