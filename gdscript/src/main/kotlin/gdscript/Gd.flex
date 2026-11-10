@@ -37,9 +37,10 @@
   PARENTHESES & COLON
   -------------------
   '(' '[' '{' -> parens.open();   ')' ']' '}' -> onCloseParen().
-  A ':' immediately followed by a newline opens a block suite. Its only special
-  lexer job is to ACTIVATE a pending lambda frame (activateLambdaAfterColon);
-  an inline ':' (code on the same line) opens no block and activates nothing.
+  A ':' followed by spaces or tabs, an optional comment, and a newline opens
+  a block suite. The spaces and tabs are optional. Its only special lexer job
+  is to ACTIVATE a pending lambda frame (activateLambdaAfterColon).
+  An inline ':' (code on the same line) opens no block and activates nothing.
 
 ------------------------------------------------------------------------------
   LAMBDAS INSIDE PARENS  (the LambdaFrame mechanism)
@@ -47,7 +48,7 @@
   A `func` lexed while inside parens (markLambda) pushes a LambdaFrame:
       parenDepth      = paren depth of that `func`
       startIndentSize = -1 while pending; set to indentSizes.size() once the
-                        body activates at ':'+newline (the indent level the
+                        body activates at the block ':' (the indent level the
                         body starts from)
   While a frame is active at the current depth, isIgnored() is false, so the
   body emits real INDENT/DEDENT/NEW_LINE -- it is a genuine indented suite even
@@ -216,12 +217,20 @@ import gdscript.lexer.ParenTracker;
         }
     }
 
-    private boolean nextCharIsNewline() {
-        int start = Math.min(zzBuffer.length(), zzCurrentPos + yylength());
-        if (start >= zzBuffer.length()) return false;
-        char c = zzBuffer.charAt(start);
-        if (c == '\r') return true; // handles \r and \r\n
-        return c == '\n';
+    private boolean nextIsNewlineAfterTrivia() {
+        // Detect a block body without consuming trailing whitespace or a comment.
+        int pos = Math.min(zzBuffer.length(), zzCurrentPos + yylength());
+        while (pos < zzBuffer.length()) {
+            char c = zzBuffer.charAt(pos);
+            if (c != ' ' && c != '\t') break;
+            pos++;
+        }
+        if (pos < zzBuffer.length() && zzBuffer.charAt(pos) == '#') {
+            while (pos < zzBuffer.length() && zzBuffer.charAt(pos) != '\r' && zzBuffer.charAt(pos) != '\n') {
+                pos++;
+            }
+        }
+        return pos < zzBuffer.length() && (zzBuffer.charAt(pos) == '\r' || zzBuffer.charAt(pos) == '\n');
     }
 
     private void activateLambdaAfterColon() {
@@ -229,7 +238,7 @@ import gdscript.lexer.ParenTracker;
         if (top != null
             && top.startIndentSize < 0
             && top.parenDepth == parens.getDepth()
-            && nextCharIsNewline()) {
+            && nextIsNewlineAfterTrivia()) {
             top.startIndentSize = indentSizes.size();
         }
     }

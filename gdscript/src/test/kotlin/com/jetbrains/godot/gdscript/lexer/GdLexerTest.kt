@@ -35,6 +35,7 @@ class GdLexerTest {
     @Test fun testlambdaAsArgumentReturnLastArg() = lexer.doFileTest("gd")
     @Test fun testlambdaAsArgumentReturnCommaNextLine() = lexer.doFileTest("gd")
     @Test fun testlambdaAsArgumentReturnMultiStmt() = lexer.doFileTest("gd")
+    @Test fun testlambdaAsArgumentColonTrailingComment() = lexer.doFileTest("gd")
     @Test fun testlambdaAsArgumentReturnNestedIf() = lexer.doFileTest("gd")
     @Test fun testlambdaAsArgumentNestedIfElse() = lexer.doFileTest("gd")
     @Test fun testsemicolon_as_end_statement() = lexer.doFileTest("gd")
