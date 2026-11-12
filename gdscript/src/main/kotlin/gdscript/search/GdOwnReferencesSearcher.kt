@@ -16,7 +16,9 @@ import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import gdscript.polySymbols.gdPsiSourceElement
+import gdscript.psi.GdFile
 import gdscript.utils.PsiTraceUtil.describeForTrace
+import tscn.psi.TscnFile
 
 /**
  * Bridges GDScript's own-references (own [com.intellij.model.psi.PsiSymbolReference]s, e.g.
@@ -52,6 +54,9 @@ class GdOwnReferencesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
             "processQuery: target=${target.describeForTrace()}, name=$name, scope=${queryParameters.effectiveSearchScope}"
         }
         if (name == null) return
+        // A target of another language, for example C# or TypeScript, has no GDScript own references.
+        val file = target.containingFile
+        if (file !is GdFile && file !is TscnFile) return
 
         queryParameters.optimizer.searchWord(
             name,

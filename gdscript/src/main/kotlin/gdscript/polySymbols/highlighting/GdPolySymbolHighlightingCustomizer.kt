@@ -7,6 +7,7 @@ import com.intellij.polySymbols.utils.PolySymbolDeclaredInPsi
 import com.intellij.polySymbols.utils.unwrapMatchedSymbols
 import com.intellij.psi.PsiElement
 import gdscript.highlighter.GdHighlighterColors
+import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolModifier
 import gdscript.polySymbols.GdPolySymbolsConstants
@@ -19,7 +20,7 @@ class GdPolySymbolHighlightingCustomizer : PolySymbolHighlightingCustomizer {
     override fun getSymbolTextAttributes(host: PsiElement, symbol: PolySymbol, level: Int): TextAttributesKey? {
         // `symbol` is often a raw nameMatchQuery result wrapper whose own kind/modifiers/etc. don't
         // reflect the real underlying symbol - unwrap first (same pattern as PolySymbol.hasModifier).
-        val real = symbol.unwrapMatchedSymbols().firstOrNull() ?: return null
+        val real = symbol.unwrapMatchedSymbols().firstOrNull() as? GdPolySymbol ?: return null
 
         // A symbol with its own color, e.g. GdSuperSymbol, keeps it - the platform annotator applies it.
         if (real[PolySymbol.TextAttributesKeyProperty] != null) return null

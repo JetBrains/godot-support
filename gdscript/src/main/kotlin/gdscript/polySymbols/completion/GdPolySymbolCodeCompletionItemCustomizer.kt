@@ -15,9 +15,14 @@ class GdPolySymbolCodeCompletionItemCustomizer : PolySymbolCodeCompletionItemCus
         kind: PolySymbolKind,
         location: PsiElement,
     ): PolySymbolCodeCompletionItem {
+        // The platform calls each customizer for the items of all plugins, for example HTML or Angular.
+        // Keep the text of an item when the symbol has no GDScript text.
         val symbol = item.symbol ?: return item
-        return item
-            .withTailText(symbol.gdCompletionTailText)
-            .withTypeText(symbol.gdCompletionTypeText)
+        val tailText = symbol.gdCompletionTailText
+        val typeText = symbol.gdCompletionTypeText
+        var result = item
+        if (tailText != null) result = result.withTailText(tailText)
+        if (typeText != null) result = result.withTypeText(typeText)
+        return result
     }
 }
