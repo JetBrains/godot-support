@@ -439,6 +439,7 @@ object GdLibraryManager {
             // Without the Godot program, the plugin cannot generate the core docs. The shared core docs folder can still
             // hold docs for this version from an earlier session or from another project. The refresh makes these files
             // visible and drops the cached core docs that the doc reader read before the Godot project folder was known.
+            thisLogger().info("The Godot executable is not known, so the core documentation for Godot $version is not generated.")
             dirsToRefresh.add(GdSdkPathManager.getCoreSdkDir(version))
             return
         }
@@ -449,6 +450,9 @@ object GdLibraryManager {
             rethrowControlFlowException(e)
             thisLogger().warn("Failed to write the core documentation for Godot $version.", e)
             GdCoreSdkService.Result.FAILED
+        }
+        if (coreResult == GdCoreSdkService.Result.UP_TO_DATE) {
+            thisLogger().info("The core documentation for Godot $version in ${GdSdkPathManager.getCoreSdkDir(version)} is up to date for $godotPath.")
         }
         if (coreResult != GdCoreSdkService.Result.WRITTEN) {
             dirsToRefresh.add(GdSdkPathManager.getCoreSdkDir(version))
