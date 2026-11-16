@@ -74,6 +74,7 @@ class GdCoreSdkService {
             return@withLock Result.FAILED
         }
         if (withContext(Dispatchers.IO) { GdSdkIntegrityValidator.hasValidCoreStamp(coreSdkStampFile, stamp) }) {
+            thisLogger().info("Godot core SDK stamp is valid. Result.UP_TO_DATE.")
             return@withLock Result.UP_TO_DATE
         }
 
