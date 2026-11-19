@@ -52,8 +52,8 @@ public:
 		return id;
 	}
 
-	Lifetime get_model_lifetime() const {
-		return model_def ? model_def->lifetime : Lifetime::Eternal();
+	std::optional<Lifetime> get_model_lifetime() const {
+		return model_def ? std::optional(model_def->lifetime) : std::nullopt;
 	}
 
 	bool queue(const std::function<void()> &callback) {

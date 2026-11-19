@@ -1,5 +1,6 @@
 #include "register_types.h"
 
+#include "RunOnGodotThreadHelper.h"
 #include "rd_starter.h"
 
 #include <gdextension_interface.h>
@@ -22,6 +23,7 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(RdStarter);
 	GDREGISTER_CLASS(FilesystemMenu);
 	GDREGISTER_CLASS(RiderToolbarItem);
+	GDREGISTER_INTERNAL_CLASS(RunOnGodotThreadHelper);
 	// Do not reorder
 	EditorPlugins::add_by_type<GodotRdExtension>();
 	EditorPlugins::add_by_type<RdStarter>();

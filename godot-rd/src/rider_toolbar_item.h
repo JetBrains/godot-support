@@ -6,6 +6,7 @@
 #include "godot_cpp/classes/texture2d.hpp"
 
 #include <functional>
+#include <utility>
 
 using namespace godot;
 
@@ -15,7 +16,6 @@ using namespace godot;
  */
 class RiderToolbarItem : public RefCounted {
 	GDCLASS(RiderToolbarItem, RefCounted)
-
 	// High IDs keep the item clear of the item IDs of the addon.
 	static constexpr int ITEM_ID = 1000;
 	static constexpr int SEPARATOR_ID = 1001;
@@ -42,7 +42,6 @@ class RiderToolbarItem : public RefCounted {
 	void update_item();
 	void remove_item();
 	static void remove_popup_items(PopupMenu *popup);
-	static bool is_csharp_project();
 	static bool is_toolbar_menu(Node *node);
 	static Node *find_toolbar_menu(Node *node);
 

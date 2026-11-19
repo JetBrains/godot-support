@@ -65,8 +65,7 @@ private fun createGodotEditorGameWaiter(project: Project): GodotEditorGameWaiter
         ) {
             port.awaitGameProcessId()
         }
-    }
-    catch (_: CancellationException) {
+    } catch (_: CancellationException) {
         currentCoroutineContext().ensureActive()
         GodotRdClientService.getInstance(project).stopPlayingScene()
         null
@@ -97,6 +96,7 @@ class GodotEditorDebugSessionService @ApiStatus.Internal constructor(
     private val sessionStarter: GodotEditorDebugSessionStarter,
     private val gameWaiter: GodotEditorGameWaiter = createGodotEditorGameWaiter(project),
 ) {
+    @Suppress("unused")
     constructor(project: Project) : this(
         project,
         GodotEditorDebugPortFactory { lifetime -> GodotGameDiagnosticPort.open(project, lifetime) },
@@ -134,18 +134,16 @@ class GodotEditorDebugSessionService @ApiStatus.Internal constructor(
             sessionLifetime.lifetime.onTermination { finish(newSession) }
             sessionLifetime.lifetime.launch(Dispatchers.Default) { waitForGameAndStart(newSession) }
 
-            val environment = openedPort.gameEnvironment.map { (name, value) ->
+            val environment = openedPort.gameEnvironment.map { [name, value] ->
                 EnvironmentVariable(name, value)
             }
             return DebugSession(DebugSessionStatus.Ready, openedPort.sessionId, environment)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             rethrowControlFlowException(e)
             thisLogger().warn("[GODOT] failed to prepare a debug session", e)
             session?.let(::finish)
             return DebugSession(DebugSessionStatus.Failed, "", emptyList())
-        }
-        finally {
+        } finally {
             if (session == null) {
                 sessionLifetime.terminate()
                 sessionReserved.set(false)
@@ -185,12 +183,13 @@ class GodotEditorDebugSessionService @ApiStatus.Internal constructor(
                 DebuggerHelperHost.getInstance(project).getProcessArchitecture(session.lifetime.lifetime, processId)
             }
             sessionStarter.start(processInfo, targetPlatform, session.port, session.lifetime) { finish(session) }
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             rethrowControlFlowException(e)
             if (!session.finished.get()) {
                 thisLogger().warn("[GODOT] failed to attach to the game process", e)
                 showErrorNotification(e)
+                session.port.resume()
+                GodotRdClientService.getInstance(project).stopPlayingScene()
                 finish(session)
             }
         }
@@ -198,7 +197,7 @@ class GodotEditorDebugSessionService @ApiStatus.Internal constructor(
 
     private fun showErrorNotification(error: Exception) {
         val content = error.message?.takeIf { it.isNotBlank() }
-                     ?: GodotPluginBundle.message("godot.debug.in.editor.launch.failed")
+            ?: GodotPluginBundle.message("godot.debug.in.editor.launch.failed")
         NotificationGroupManager.getInstance()
             .getNotificationGroup(NOTIFICATION_GROUP_ID)
             .createNotification(GodotPluginBundle.message("godot.debug.in.editor.notification.title"), content, NotificationType.ERROR)
@@ -253,8 +252,7 @@ private suspend fun startGodotDebugSession(
             }
             ProgramRunnerUtil.executeConfigurationAsync(environment, true, true, environment.callback)
         }
-    }
-    catch (e: Exception) {
+    } catch (e: Exception) {
         rethrowControlFlowException(e)
         cleanupLifetime.terminate()
         throw e

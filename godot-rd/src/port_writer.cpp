@@ -5,7 +5,7 @@
 #ifdef _WIN32
 #include <Windows.h>
 #ifdef CONNECT_DEFERRED
-    #undef CONNECT_DEFERRED
+#undef CONNECT_DEFERRED
 #endif
 #elif defined(__APPLE__) || defined(__linux__)
 #include <fcntl.h>
@@ -42,11 +42,11 @@ bool PortWriter::acquire_port_lock() {
 	}
 	OVERLAPPED offset{};
 	if (!LockFileEx(
-				handle,
-				LOCKFILE_EXCLUSIVE_LOCK | LOCKFILE_FAIL_IMMEDIATELY,
-				0,
-				1, 0,
-				&offset)) {
+			handle,
+			LOCKFILE_EXCLUSIVE_LOCK | LOCKFILE_FAIL_IMMEDIATELY,
+			0,
+			1, 0,
+			&offset)) {
 		UtilityFunctions::print_verbose(String("[RIDER RD] Failed to start communication between Godot and Rider. Failed to lock file: ") + err_to_string().c_str());
 		CloseHandle(handle);
 		return false;

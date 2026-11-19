@@ -1,17 +1,14 @@
 #pragma once
+#include "RunOnGodotThreadHelper.h"
 #include "godot_rd_extension.h"
 #include "port_writer.h"
 #include "rd_session.h"
 #include "../rd_models/FrontendGodotModel/FrontendGodotModel.h"
-#include "godot_cpp/classes/editor_plugin.hpp"
-#include "lifetime/LifetimeDefinition.h"
-#include "scheduler/SingleThreadScheduler.h"
-#include "wire/SocketWire.h"
-#include "protocol/Protocol.h"
 
 #include <functional>
 #include <memory>
 #include <string>
+#include <mutex>
 
 
 using namespace rd;
@@ -34,8 +31,9 @@ class GodotRdServer : public RefCounted {
 
 	PortWriter writer;
 
-	std::mutex godot_thread_tasks_mutex;
-	std::vector<std::function<void()>> godot_thread_tasks;
+	std::shared_ptr<TaskQueue> run_on_godot_thread_q;
+	uint64_t run_later_helper_id = 0;
+	
 	String get_port_file_path() const;
 	// Reports port and model hash to rider
 	bool write_connection_info(uint16_t port);
@@ -44,11 +42,12 @@ class GodotRdServer : public RefCounted {
 	void _notify_client_state(bool is_connected);
 
 	static GodotRdExtension *get_extension();
+	void toggle_debug_current_scene();
 	void report_debug_session_event(
-		size_t starting_id,
-		const std::wstring &session_id,
-		std::function<void(const std::wstring &)> report
-	);
+			size_t starting_id,
+			const std::wstring &session_id,
+			std::function<void(const std::wstring &)> report
+			);
 	void report_debug_launch_failed(size_t starting_id, const std::wstring &session_id);
 	void report_debug_scene_stopped(size_t starting_id, const std::wstring &session_id);
 	bool queue_on_session(std::function<void()> task);
@@ -56,8 +55,9 @@ class GodotRdServer : public RefCounted {
 	// since it doesn't have to use mutexes, and it works for a decent number of cases.
 	// But if you need to pass in a non-Godot arg such as a RD task, then this
 	// is the only reasonable choice.
+	// You shouldn't put tasks here that will take overly long. There is a budget
+	// so many smaller tasks do not freeze, but one big one will.
 	void run_on_godot_thread(std::function<void()> task);
-	void _run_godot_thread_tasks();
 
 public:
 	static constexpr auto SERVER_NAME = "GodotRdServer";

@@ -4,16 +4,17 @@
 #include "godot_cpp/classes/control.hpp"
 #include "godot_cpp/classes/editor_plugin.hpp"
 #include "godot_cpp/classes/wrapped.hpp"
+#include "godot_cpp/classes/input_event.hpp"
 
 #include <array>
 #include <functional>
-#include <utility>
 
 using namespace godot;
 
 class GodotRdExtension : public EditorPlugin {
 	GDCLASS(GodotRdExtension, EditorPlugin)
 	static constexpr std::array<const char *, 4> editable_extensions{ "tres", "res", "gdshader", "gdshaderinc" };
+	static constexpr auto debug_current_scene_signal_id = "rider_addon/debug_current_scene_in_rider_(c#)";
 	// The instance of an editor plugin is created and owned by the editor, so it is published here for the
 	// classes which are not plugins themselves.
 	static GodotRdExtension *singleton;
@@ -36,12 +37,15 @@ class GodotRdExtension : public EditorPlugin {
 	void report_debug_scene_stopped() const;
 
 public:
+	static constexpr auto debug_current_scene_signal = "debug_current_scene_in_rider_requested";
+
 	void set_new_node_opened_callback(std::function<void(Node *)> callback);
 
 	static GodotRdExtension *get_singleton() { return singleton; }
 
 	void _enter_tree() override;
 	void _exit_tree() override;
+	void _shortcut_input(const Ref<InputEvent> &p_event) override;
 	void _process(double) override;
 	PackedStringArray _run_scene(const String &p_scene, const PackedStringArray &p_args) const override;
 
