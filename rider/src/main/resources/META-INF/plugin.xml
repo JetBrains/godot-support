@@ -91,6 +91,7 @@
     <rider.debugger.editAndContinue.dotNetEncInfoAutodetect
       implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetEncInfoAutodetect"/>
     <rider.filesIndexingRuleProvider implementation="com.jetbrains.rider.plugins.godot.GodotFilesIndexingRuleProvider"/>
+    <rider.gotoCustomizer implementation="com.jetbrains.rider.plugins.godot.GodotGotoCustomizer"/>
     <fileDocumentManagerListener implementation="com.jetbrains.rider.plugins.godot.GodotFileDocumentManagerListener"/>
 
     <!-- Options pages -->

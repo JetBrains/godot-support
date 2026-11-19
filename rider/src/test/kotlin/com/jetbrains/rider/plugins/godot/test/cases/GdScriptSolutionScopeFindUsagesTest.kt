@@ -22,6 +22,7 @@ import com.jetbrains.rider.test.enums.sdk.SdkVersion
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import com.jetbrains.rider.test.scriptingApi.calculateInBackground
 import com.jetbrains.rider.test.scriptingApi.waitPumping
+import com.jetbrains.rider.test.scriptingApi.withSolution
 import com.jetbrains.rider.test.scriptingApi.withSolutionFromFolder
 import com.jetbrains.rider.test.shared.constants.TeamCityTags
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -36,6 +37,7 @@ import kotlin.io.path.invariantSeparatorsPathString
  * usage of the project, in the project root and in a subdirectory, the same as "All Places".
  *
  * `GdScriptOnlyFindUsages` is a GDScript-only project, which Rider opens as a directory.
+ * `GdScriptCSharpFindUsages` is a C# project, and its `.csproj` does not list the `.gd` files.
  */
 @Subsystem(SubsystemConstants.GODOT)
 @TestSettings(sdkVersion = SdkVersion.LATEST_STABLE, buildTool = BuildTool.SDK)
@@ -45,6 +47,11 @@ class GdScriptSolutionScopeFindUsagesTest : PerTestSettingsTestBase() {
 
     @Test
     fun testGdScriptOnlyProject() = withSolutionFromFolder("GdScriptOnlyFindUsages", openParams()) {
+        checkClassUsages(project)
+    }
+
+    @Test
+    fun testCSharpProject() = withSolution("GdScriptCSharpFindUsages", openParams()) {
         checkClassUsages(project)
     }
 
