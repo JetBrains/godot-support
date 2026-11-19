@@ -7,6 +7,8 @@
 
 #include "utils.h"
 
+#include "godot_cpp/classes/project_settings.hpp"
+
 using namespace godot;
 
 String Utils::to_godot_string(const std::wstring &str) {
@@ -28,4 +30,9 @@ void Utils::focus_godot() {
 	}
 #endif
 	display->window_move_to_foreground(DisplayServer::MAIN_WINDOW_ID);
+}
+
+bool Utils::is_csharp_project() {
+	const PackedStringArray features = ProjectSettings::get_singleton()->get_setting("application/config/features");
+	return features.has("C#");
 }

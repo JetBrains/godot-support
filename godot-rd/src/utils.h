@@ -12,12 +12,17 @@ String to_godot_string(const std::wstring &str);
 
 void focus_godot();
 
+bool is_csharp_project();
+
+// Never ever use this with something that can throw
+// since if an exception is being propagated and another exception
+// is thrown Godot would be terminated. Always add try catches inside you callable.
 class ScopeGuard {
 	std::function<void()> callable;
 
 public:
 	explicit ScopeGuard(std::function<void()> callable) :
-		callable(callable) {
+		callable(std::move(callable)) {
 	}
 
 	ScopeGuard(const ScopeGuard &) = delete;

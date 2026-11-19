@@ -6,10 +6,12 @@
 #include "godot_cpp/classes/editor_interface.hpp"
 #include "godot_cpp/classes/editor_settings.hpp"
 #include "godot_cpp/classes/file_system_dock.hpp"
+#include "godot_cpp/classes/input_event.hpp"
 #include "godot_cpp/classes/os.hpp"
 #include "godot_cpp/classes/project_settings.hpp"
 #include "godot_cpp/classes/resource_loader.hpp"
 #include "godot_cpp/classes/script.hpp"
+#include "godot_cpp/classes/viewport.hpp"
 
 
 GodotRdExtension *GodotRdExtension::singleton = nullptr;
@@ -20,6 +22,11 @@ void GodotRdExtension::_enter_tree() {
 	// the happy path is scene_changed(nullptr) -> scene_saved("<path>"). Deferred, so that the editor is done
 	// saving by the time the edited scene is looked at.
 	connect("scene_saved", callable_mp(this, &GodotRdExtension::_scene_saved), CONNECT_DEFERRED);
+	Ref<Shortcut> debug_cs_shortcut;
+	debug_cs_shortcut.instantiate();
+	debug_cs_shortcut->set_name("Debug current scene with Rider (C#)");
+	EditorInterface::get_singleton()->get_editor_settings()->add_shortcut(debug_current_scene_signal_id
+			, debug_cs_shortcut);
 }
 
 void GodotRdExtension::_exit_tree() {
@@ -28,6 +35,19 @@ void GodotRdExtension::_exit_tree() {
 	if (singleton == this) {
 		singleton = nullptr;
 	}
+}
+
+void GodotRdExtension::_shortcut_input(const Ref<InputEvent> &p_event) {
+	if (p_event.is_null() || !p_event->is_pressed() || p_event->is_echo()) {
+		return;
+	}
+	const Ref<EditorSettings> settings =
+			EditorInterface::get_singleton()->get_editor_settings();
+	if (!settings->is_shortcut(debug_current_scene_signal_id, p_event)) {
+		return;
+	}
+	get_viewport()->set_input_as_handled();
+	emit_signal(debug_current_scene_signal);
 }
 
 void GodotRdExtension::_process(double) {
@@ -52,6 +72,9 @@ int GodotRdExtension::get_launch_instance_count() const {
 
 
 bool GodotRdExtension::can_debug_current_scene() const {
+	if (!Utils::is_csharp_project()) {
+		return false;
+	}
 	auto *editor = EditorInterface::get_singleton();
 	if (editor->get_edited_scene_root() == nullptr) {
 		UtilityFunctions::push_warning("No scene is open. Open a scene and try again.");
@@ -99,7 +122,7 @@ bool GodotRdExtension::play_current_scene_with_environment(const Dictionary &env
 PackedStringArray GodotRdExtension::_run_scene(const String &p_scene, const PackedStringArray &p_args) const {
 	// The editor calls this after the build callbacks and right before it starts the game process.
 	if (debug_scene_stopped_callback) {
-		const_cast<GodotRdExtension *>(this)->report_debug_scene_stopped();
+		this->report_debug_scene_stopped();
 	}
 	if (launch_environment.is_empty()) {
 		debug_scene_launched = false;
@@ -255,4 +278,5 @@ void GodotRdExtension::scene_saved(const String &path) {
 }
 
 void GodotRdExtension::_bind_methods() {
+	ADD_SIGNAL(MethodInfo(debug_current_scene_signal));
 }

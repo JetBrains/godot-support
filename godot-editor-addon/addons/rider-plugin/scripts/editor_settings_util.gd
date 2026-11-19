@@ -81,7 +81,7 @@ static func is_dotnet_external_editor_rider(rider_path: String) -> bool:
 
 static func set_dotnet_external_editor_rider(rider_path: String, is_enabled: bool) -> void:
 	var editor_settings := EditorInterface.get_editor_settings()
-	if not has_dotnet_external_editor():
+	if !editor_settings.has_setting(DOTNET_EXTERNAL_EDITOR_SETTING) and _get_dotnet_rider_editor_id() >= 0:
 		return
 	if is_enabled:
 		if rider_path.is_empty():

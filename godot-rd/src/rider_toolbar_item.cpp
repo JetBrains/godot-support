@@ -1,15 +1,17 @@
 #include "rider_toolbar_item.h"
 
 #include "rider_icon.h"
+#include "utils.h"
 #include "godot_cpp/classes/control.hpp"
 #include "godot_cpp/classes/editor_interface.hpp"
 #include "godot_cpp/classes/menu_button.hpp"
-#include "godot_cpp/classes/project_settings.hpp"
 #include "godot_cpp/classes/scene_tree.hpp"
 #include "godot_cpp/classes/scene_tree_timer.hpp"
 #include "godot_cpp/classes/script.hpp"
 #include "godot_cpp/core/object.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
+
+#include <deque>
 
 
 static SceneTree *get_editor_tree() {
@@ -65,20 +67,14 @@ void RiderToolbarItem::set_enabled(bool value) {
 }
 
 PopupMenu *RiderToolbarItem::get_popup() const {
-	return popup_id.is_valid() ? Object::cast_to<PopupMenu>(ObjectDB::get_instance(popup_id)) : nullptr;
-}
-
-bool RiderToolbarItem::is_csharp_project() {
-	// On save, the editor adds the "C#" feature if the project has a .csproj file, and removes it otherwise.
-	const PackedStringArray features = ProjectSettings::get_singleton()->get_setting("application/config/features");
-	return features.has("C#");
+	return popup_id.is_valid() ? cast_to<PopupMenu>(ObjectDB::get_instance(popup_id)) : nullptr;
 }
 
 void RiderToolbarItem::add_item(Node *node) {
 	if (get_popup() != nullptr) {
 		return;
 	}
-	auto *menu = Object::cast_to<MenuButton>(node);
+	auto *menu = cast_to<MenuButton>(node);
 	PopupMenu *popup = menu == nullptr ? nullptr : menu->get_popup();
 	if (popup == nullptr) {
 		return;
@@ -95,7 +91,7 @@ void RiderToolbarItem::update_item() {
 		return;
 	}
 	const bool has_item = popup->get_item_index(ITEM_ID) >= 0;
-	if (!is_csharp_project()) {
+	if (!Utils::is_csharp_project()) {
 		if (has_item) {
 			remove_popup_items(popup);
 		}
@@ -161,7 +157,7 @@ void RiderToolbarItem::remove_item() {
 }
 
 bool RiderToolbarItem::is_toolbar_menu(Node *node) {
-	if (Object::cast_to<MenuButton>(node) == nullptr) {
+	if (cast_to<MenuButton>(node) == nullptr) {
 		return false;
 	}
 	const Ref<Script> script = node->get_script();
@@ -172,12 +168,17 @@ Node *RiderToolbarItem::find_toolbar_menu(Node *node) {
 	if (node == nullptr) {
 		return nullptr;
 	}
-	if (is_toolbar_menu(node)) {
-		return node;
-	}
-	for (int i = 0; i < node->get_child_count(); ++i) {
-		if (Node *result = find_toolbar_menu(node->get_child(i)); result != nullptr) {
-			return result;
+	std::deque<Node *> q;
+	q.push_back(node);
+	// no set needed since this is a tree
+	while (!q.empty()) {
+		Node *current = q.front();
+		q.pop_front();
+		if (is_toolbar_menu(current)) {
+			return current;
+		}
+		for (int i = 0; i < current->get_child_count(); ++i) {
+			q.push_back(current->get_child(i));
 		}
 	}
 	return nullptr;
