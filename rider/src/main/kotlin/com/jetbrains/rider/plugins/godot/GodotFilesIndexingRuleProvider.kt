@@ -2,6 +2,7 @@ package com.jetbrains.rider.plugins.godot
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.isFile
 import com.jetbrains.rd.util.threading.coroutines.nextNotNullValueAsync
 import com.jetbrains.rider.ijent.extensions.toVirtualFile
@@ -35,10 +36,7 @@ class GodotFilesIndexingRuleProvider : RiderFilesIndexingRuleProvider {
         } ?: return emptyList()
 
         val rule = RiderFilesIndexingRule({
-            if (!it.isFile) return@RiderFilesIndexingRule null
-            if ((it.name.endsWith(".gd", true)
-                    || it.name.endsWith(".tscn", true)) // https://youtrack.jetbrains.com/issue/RIDER-131262/Rider-Godots-scene-preview-doesnt-work-in-c.#focus=Comments-27-13239615.0-0
-                && VfsUtil.isAncestor(projectBaseFile, it, true))
+            if (isGodotIndexedFile(it) && VfsUtil.isAncestor(projectBaseFile, it, true))
                 it
             else
                 null
@@ -46,3 +44,11 @@ class GodotFilesIndexingRuleProvider : RiderFilesIndexingRuleProvider {
         return listOf(rule)
     }
 }
+
+/**
+ * Whether [file] is a GDScript or a scene file. [GodotFilesIndexingRuleProvider] indexes these files, and
+ * [GodotGotoCustomizer] puts them into the "Solution" scope.
+ */
+// The scene files: https://youtrack.jetbrains.com/issue/RIDER-131262/Rider-Godots-scene-preview-doesnt-work-in-c.#focus=Comments-27-13239615.0-0
+internal fun isGodotIndexedFile(file: VirtualFile): Boolean =
+    file.isFile && (file.name.endsWith(".gd", true) || file.name.endsWith(".tscn", true))

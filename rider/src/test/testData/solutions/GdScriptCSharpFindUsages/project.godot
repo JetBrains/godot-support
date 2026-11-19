@@ -1,0 +1,12 @@
+; Engine configuration file.
+
+config_version=5
+
+[application]
+
+config/name="GdScriptCSharpFindUsages"
+config/features=PackedStringArray("4.0", "C#", "Vulkan Clustered")
+
+[dotnet]
+
+project/assembly_name="GdScriptCSharpFindUsages"
