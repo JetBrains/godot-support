@@ -1,0 +1,8 @@
+; Engine configuration file.
+
+config_version=5
+
+[application]
+
+config/name="GdScriptOnlyFindUsages"
+config/features=PackedStringArray("4.5", "Forward Plus")
