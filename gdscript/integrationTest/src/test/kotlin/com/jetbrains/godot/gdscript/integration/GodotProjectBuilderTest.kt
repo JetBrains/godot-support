@@ -68,6 +68,7 @@ class GodotProjectBuilderTest {
             scene("world.tscn", main = true) {
                 root("World", "Node", "scripts/world.gd") {
                     node("Player", "Node2D", "scripts/player.gd") {
+                        uniqueNameInOwner = true
                         node("Weapon", "Node2D", "scripts/weapon.gd")
                     }
                     node("Camera", "Camera2D")
@@ -94,6 +95,7 @@ class GodotProjectBuilderTest {
                 script = ExtResource("1_world")
     
                 [node name="Player" type="Node2D" parent="."]
+                unique_name_in_owner = true
                 script = ExtResource("2_player")
     
                 [node name="Weapon" type="Node2D" parent="Player"]

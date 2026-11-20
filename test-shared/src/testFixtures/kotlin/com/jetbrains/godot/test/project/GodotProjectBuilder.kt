@@ -152,17 +152,20 @@ class NodeBuilder internal constructor(
 ) {
     private val children = mutableListOf<GodotNode>()
 
+    var uniqueNameInOwner: Boolean = false
+
     fun node(name: String, type: String, script: String? = null, body: NodeBuilder.() -> Unit = {}) {
         children += NodeBuilder(name, type, script?.let(::normalizePath)).apply(body).build()
     }
 
-    internal fun build(): GodotNode = GodotNode(name, type, script, children.toList())
+    internal fun build(): GodotNode = GodotNode(name, type, script, uniqueNameInOwner, children.toList())
 }
 
 internal data class GodotNode(
     val name: String,
     val type: String,
     val script: String?,
+    val uniqueNameInOwner: Boolean,
     val children: List<GodotNode>,
 ) {
     fun flatten(): List<GodotNode> = listOf(this) + children.flatMap { it.flatten() }
@@ -173,6 +176,7 @@ private fun StringBuilder.appendNode(node: GodotNode, parent: String?, resourceI
     append("[node name=\"${escape(node.name)}\" type=\"${escape(node.type)}\"")
     if (parent != null) append(" parent=\"${escape(parent)}\"")
     appendLine("]")
+    if (node.uniqueNameInOwner) appendLine("unique_name_in_owner = true")
     node.script?.let { appendLine("script = ExtResource(\"${resourceIds.getValue(it)}\")") }
     val childParent = if (parent == null) "." else if (parent == ".") node.name else "$parent/${node.name}"
     node.children.forEach { appendNode(it, childParent, resourceIds) }

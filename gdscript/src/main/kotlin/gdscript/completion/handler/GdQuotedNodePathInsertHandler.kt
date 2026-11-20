@@ -9,6 +9,7 @@ object GdQuotedNodePathInsertHandler : InsertHandler<LookupElement> {
 
     override fun handleInsert(context: InsertionContext, item: LookupElement) {
         stripDuplicateQuotesAdjacentToInserted(context)
+        GdQuotedStringInsertHandler.handleInsert(context, item)
     }
 
 }

@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.completion.GdLookup
+import gdscript.completion.handler.GdQuotedStringInsertHandler
 import gdscript.completion.utils.GdStringCompletionUtil.DEFAULT_ACTIONS
 import gdscript.completion.utils.GdStringCompletionUtil.INPUT_CLASSES
 import gdscript.completion.utils.GdStringCompletionUtil.INPUT_METHODS
@@ -223,6 +224,7 @@ object GdStringCompletionUtil {
                     priority = if (action in projectActions) priority else priority - 1, // Prioritize project actions, including overrides.
                     tail = " (input)",
                     color = GdLookup.COLOR_ANNOTATION,
+                    handler = GdQuotedStringInsertHandler,
                 )
             )
         }
@@ -241,6 +243,7 @@ object GdStringCompletionUtil {
                         priority = priority,
                         tail = " (group)",
                         color = GdLookup.COLOR_GROUP,
+                        handler = GdQuotedStringInsertHandler,
                     )
                 )
         }
@@ -289,7 +292,13 @@ object GdStringCompletionUtil {
         // The Inspector hides it, so completion hides it until the user types `_`.
         names.distinct().filter { !it.startsWith('_') || prefix.startsWith('_') }.forEach {
             result.addElement(
-                GdLookup.create(it, priority = priority, tail = " (meta)", color = GdLookup.COLOR_META)
+                GdLookup.create(
+                    it,
+                    priority = priority,
+                    tail = " (meta)",
+                    color = GdLookup.COLOR_META,
+                    handler = GdQuotedStringInsertHandler,
+                )
             )
         }
     }
