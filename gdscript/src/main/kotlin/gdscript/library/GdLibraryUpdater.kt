@@ -4,6 +4,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
+import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import gdscript.GdScriptBundle
@@ -50,7 +51,11 @@ class GdLibraryUpdater(private val project: Project) {
             val godotPath = GodotCommunityUtil.getGodotExecutablePath(project)
             val projectFile = projectBasePath.resolve("project.godot")
             if (!projectFile.exists()) return
-            val version = GdSdkUtil.getGodotVersion(project)
+            val version = GdProjectGodotService.getInstance(project).godotVersion
+            if (version == null) {
+                thisLogger().info("Skipped the SDK load: the Godot version in $projectFile is not known.")
+                return
+            }
 
             try {
                 GdLibraryManager.generateSdkIfNeeded(version, project, godotPath, projectBasePath)

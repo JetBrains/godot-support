@@ -43,8 +43,8 @@ object StartGodotEditorAction : DumbAwareAction() {
     fun startEditor(project: Project) {
         val launchConfig = GodotCommunityUtil.getEditorLaunchConfig(project) ?: return
 
-        val parsedVersion = GdProjectGodotService.getInstance(project).projectInfoFlow.value?.parsedVersion
-        val arguments = withDefaultServerPorts(launchConfig, parsedVersion)
+        val version = GdProjectGodotService.getInstance(project).godotVersion
+        val arguments = withDefaultServerPorts(launchConfig, version)
 
         val runCommandLine = GeneralCommandLine(launchConfig.executablePath.toString())
             .withEnvironment(launchConfig.environmentVariables)
