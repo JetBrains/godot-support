@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.jetbrains.annotations.VisibleForTesting
 import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -28,13 +29,27 @@ import kotlin.io.path.readText
 @Service(Service.Level.PROJECT)
 class GdProjectGodotService(project: Project) {
 
-    data class GodotProjectInfo(val version: String) {
-        /** Parsed version; `null` for unparseable values like "Master" */
-        val parsedVersion: Version? by lazy { Version.parseVersion(version) }
+    /**
+     * The info of a supported `project.godot`.
+     * [version] is `null` when `config/features` is missing or has no parseable version.
+     */
+    data class GodotProjectInfo(val version: Version?)
+
+    /** The result of [parseVersion]. */
+    sealed interface ParseResult {
+        data class Parsed(val version: Version) : ParseResult
+        data object Unknown : ParseResult
+        data object Unsupported : ParseResult
     }
 
     private val _projectInfoFlow = MutableStateFlow<GodotProjectInfo?>(null)
+
+    /** `null` when there is no `project.godot`, or when the file is for Godot 3.x. */
     val projectInfoFlow: StateFlow<GodotProjectInfo?> = _projectInfoFlow.asStateFlow()
+
+    /** The engine version from `project.godot`, or `null` when it is not known. */
+    val godotVersion: Version?
+        get() = projectInfoFlow.value?.version
 
     private val _currentSceneFlow = MutableStateFlow<String?>(null)
 
@@ -118,25 +133,34 @@ class GdProjectGodotService(project: Project) {
             return null
         }
 
-        // todo: use com.intellij.openapi.util.Version instead of string
-        // todo: get full version from the FileVersionInfo on Windows, Contents/Info.plist on Mac, parse file name on Linux
-        // also possible to run `godot --version` and parse the output
-        var version = VERSION_REGEX.find(content)?.groups?.get(1)?.value
-        if (version == null) {
-            version = "Master"
-            // when opening godot sources as a folder, there are some "project.godot" for tests there
-            thisLogger().warn("GdSdk version cannot be parsed from ${projectFile.pathString}")
+        return when (val result = parseVersion(content)) {
+            is ParseResult.Parsed -> GodotProjectInfo(result.version)
+            ParseResult.Unknown -> {
+                // when opening godot sources as a folder, there are some "project.godot" for tests there
+                thisLogger().warn("GdSdk version cannot be parsed from ${projectFile.pathString}")
+                GodotProjectInfo(null)
+            }
+            ParseResult.Unsupported -> {
+                thisLogger().warn("Godot 3.x is not supported by the plugin (${projectFile.pathString})")
+                null
+            }
         }
-        if (version.startsWith("3.")) {
-            thisLogger().warn("Godot 3.x is not supported by the plugin (${projectFile.pathString})")
-            return null
-        }
-
-        return GodotProjectInfo(version)
     }
 
     companion object {
-        private val VERSION_REGEX = "config/features=PackedStringArray\\(.*\"(\\d\\.\\d)\".*\\)".toRegex()
+        private val VERSION_REGEX = "config/features=PackedStringArray\\(.*\"(\\d+\\.\\d+)\".*\\)".toRegex()
+
+        /**
+         * Parses the engine version from the [content] of `project.godot`.
+         * A follow-up can also read the version from the Godot executable.
+         */
+        @VisibleForTesting
+        fun parseVersion(content: String): ParseResult {
+            val versionString = VERSION_REGEX.find(content)?.groups?.get(1)?.value ?: return ParseResult.Unknown
+            val version = Version.parseVersion(versionString) ?: return ParseResult.Unknown
+            if (version.major == 3) return ParseResult.Unsupported
+            return ParseResult.Parsed(version)
+        }
 
         fun getInstance(project: Project): GdProjectGodotService = project.service()
     }

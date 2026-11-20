@@ -11,7 +11,11 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.launch
 import java.nio.file.Path
 
 /**
@@ -21,6 +25,12 @@ import java.nio.file.Path
  * The generated XMLs live outside the project content (the core SDK is in the plugin directory, the project ones are
  * project-store files), so the platform reports no PSI change for them and the daemon keeps the stale highlighting:
  * both the cache invalidation and the restart have to be done explicitly, which is what [docsChanged] does.
+ *
+ * The tracker also reflects the engine version from [GdProjectGodotService]. The core SDK files depend on that version.
+ * A version change in `project.godot` calls [docsChanged], also when the later docs load fails or is skipped.
+ *
+ * I think we do not care about invalidating on the null values.
+ *
  */
 @Service(Service.Level.PROJECT)
 class GdSdkDocsTracker(private val project: Project) : ModificationTracker {
@@ -38,6 +48,14 @@ class GdSdkDocsTracker(private val project: Project) : ModificationTracker {
             DocsFileListener(),
             GdScriptProjectLifetimeService.getLifetime(project).createNestedDisposable()
         )
+        GdScriptProjectLifetimeService.getScope(project).launch {
+            GdProjectGodotService.getInstance(project).projectInfoFlow
+                .mapNotNull { it?.version }
+                .distinctUntilChanged()
+                .collect {
+                    if (!project.isDisposed) docsChanged()
+                }
+        }
     }
 
     /**

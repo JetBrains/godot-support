@@ -18,7 +18,8 @@ class GdProjectUsagesCollector : ProjectUsagesCollector() {
     override fun getGroup(): EventLogGroup = GROUP
 
     override fun getMetrics(project: Project): Set<MetricEvent> {
-        val version = GdProjectGodotService.getInstance(project).projectInfoFlow.value?.version ?: return emptySet()
-        return setOf(PROJECT.metric(version))
+        val version = GdProjectGodotService.getInstance(project).godotVersion ?: return emptySet()
+        // Keep the "major.minor" form of config/features, for example "4.3", not "4.3.0".
+        return setOf(PROJECT.metric("${version.major}.${version.minor}"))
     }
 }

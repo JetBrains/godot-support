@@ -1,9 +1,11 @@
 package gdscript.library
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
+import com.jetbrains.rider.godot.community.GdProjectGodotService
 import java.nio.file.Path
 
 /**
@@ -18,8 +20,17 @@ class GdSdkFilesProviderImpl(private val project: Project) : GdSdkFilesProvider 
     }
 
     override fun getAllCoreSdkFiles(): Collection<VirtualFile> {
-        val version = GdSdkUtil.getGodotVersion(project)
-        return walkXmlFiles(GdSdkPathManager.getCoreSdkDir(version))
+        val version = GdProjectGodotService.getInstance(project).godotVersion
+        if (version == null) {
+            thisLogger().warn("No core SDK files: the Godot version of the project is not known.")
+            return emptyList()
+        }
+        val coreSdkDir = GdSdkPathManager.getCoreSdkDir(version)
+        val files = walkXmlFiles(coreSdkDir)
+        if (files.isEmpty()) {
+            thisLogger().warn("No core SDK files for Godot $version in $coreSdkDir.")
+        }
+        return files
     }
 
     /**

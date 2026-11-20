@@ -255,7 +255,7 @@ private class GodotLspClientDescriptor(
             override fun getHighlightSeverity(diagnostic: Diagnostic): HighlightSeverity? {
                 // RIDER-117554, also fixed in Godot 4.7 https://github.com/godotengine/godot/pull/114185
                 val beforeGodot47 =
-                    GdProjectGodotService.getInstance(project).projectInfoFlow.value?.parsedVersion?.lessThan(4, 7)
+                    GdProjectGodotService.getInstance(project).godotVersion?.lessThan(4, 7)
                         ?: false
                 if (diagnostic.messageIfStringOrEmpty.startsWith("(UNUSED_PARAMETER)") && beforeGodot47) {
                     return null

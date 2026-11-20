@@ -20,7 +20,8 @@ class GdLoadSdkProjectActivity : ProjectActivity {
         val basePathFlow = GodotCommunityUtil.getGodotProjectBasePathFlow(project)
         val projectInfoFlow = GdProjectGodotService.getInstance(project).projectInfoFlow
 
-        // A missing version does not stop a load. The updater reads the current paths after it acquires the mutex.
+        // The updater reads the current paths and the version after it acquires the mutex.
+        // It skips the load when the version is not known.
         combine(basePathFlow, godotExecutableFlow, projectInfoFlow) { basePath, godotPath, info ->
             if (basePath != null) Triple(basePath, godotPath, info?.version) else null
         }.distinctUntilChanged().collect { selection ->
