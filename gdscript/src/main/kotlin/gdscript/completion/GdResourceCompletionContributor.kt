@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.completion.impl.CamelHumpMatcher
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.completion.handler.GdQuotedStringInsertHandler
 import gdscript.completion.utils.GdRefIdCompletionUtil
 import gdscript.completion.utils.GdSignalNameCompletionUtil
 import gdscript.completion.utils.GdSignalNameCompletionUtil.SignalCompletionContext
@@ -95,6 +96,7 @@ class GdResourceCompletionContributor : CompletionContributor() {
                             GdLookup.create(
                                 it,
                                 priority = GdLookup.REMOTE_DEFINED,
+                                handler = GdQuotedStringInsertHandler,
                             )
                         )
                     }

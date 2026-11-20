@@ -1,5 +1,6 @@
 package com.jetbrains.godot.gdscript.lsp.integration
 
+import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.lookup.Lookup
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.application.EDT
@@ -44,12 +45,24 @@ suspend fun GodotEditorFixture.runCompletionAndCheckItems(expectedCompletionItem
   assertEquals(expectedCompletionItems.sorted(), items.sorted())
 }
 
-suspend fun GodotEditorFixture.runCompletionAndCheckAgainst(expected: String) {
+suspend fun GodotEditorFixture.runCompletionAndCheckAgainst(expected: String, lookupString: String? = null) {
   waitForGodotLspStart()
   withContext(Dispatchers.EDT) {
-    codeInsight.completeBasic()
-    codeInsight.finishLookup(Lookup.NORMAL_SELECT_CHAR)
-    codeInsight.checkResult(expected)
+    val settings = CodeInsightSettings.getInstance()
+    val autoInsert = settings.AUTOCOMPLETE_ON_CODE_COMPLETION
+    settings.AUTOCOMPLETE_ON_CODE_COMPLETION = false
+    try {
+      codeInsight.completeBasic()
+      if (lookupString != null) {
+        val lookup = checkNotNull(codeInsight.lookup) { "The completion lookup is missing" }
+        lookup.currentItem = lookup.items.single { it.lookupString == lookupString }
+      }
+      codeInsight.finishLookup(Lookup.NORMAL_SELECT_CHAR)
+      codeInsight.checkResult(expected)
+    }
+    finally {
+      settings.AUTOCOMPLETE_ON_CODE_COMPLETION = autoInsert
+    }
   }
 }
 
