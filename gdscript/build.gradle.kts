@@ -67,6 +67,7 @@ dependencies {
         bundledPlugin("com.intellij.bookmarks")
         bundledModule("intellij.platform.debugger")
         bundledModule("intellij.platform.debugger.impl")
+        bundledModule("intellij.platform.polySymbols")
         bundledModule("intellij.platform.polySymbols.backend")
         bundledModule("intellij.platform.dap")
         bundledModule("intellij.platform.dap.protocol")
