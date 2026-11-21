@@ -134,7 +134,7 @@ class GodotEditorDebugSessionService @ApiStatus.Internal constructor(
             sessionLifetime.lifetime.onTermination { finish(newSession) }
             sessionLifetime.lifetime.launch(Dispatchers.Default) { waitForGameAndStart(newSession) }
 
-            val environment = openedPort.gameEnvironment.map { [name, value] ->
+            val environment = openedPort.gameEnvironment.map { (name, value) ->
                 EnvironmentVariable(name, value)
             }
             return DebugSession(DebugSessionStatus.Ready, openedPort.sessionId, environment)
