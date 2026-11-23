@@ -5,6 +5,7 @@ import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdDocXmlSplitter
 import gdscript.embeddedDocs.GdEmbeddedDocExtractor
+import gdscript.embeddedDocs.GdZlibEmbeddedDocs
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -24,7 +25,7 @@ class GdEmbeddedDocExtractorTest {
 
     @Test
     fun testFindsValidBlobAtNonZeroOffset() = withFixture(byteArrayOf(1, 2, 3, 4, 5) + zlib(document) + byteArrayOf(6, 7)) { path ->
-        val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.Found
+        val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.Found
 
         assertEquals(1, result.streams.size)
         val stream = result.streams.single()
@@ -38,7 +39,7 @@ class GdEmbeddedDocExtractorTest {
     fun testFindsMagicPairAcrossChunkBoundary() {
         val filler = ByteArray(GdEmbeddedDocExtractor.SCAN_CHUNK_SIZE - 1) { 0x55 }
         withFixture(filler + zlib(document)) { path ->
-            val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.Found
+            val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.Found
 
             assertEquals(GdEmbeddedDocExtractor.SCAN_CHUNK_SIZE.toLong() - 1, result.streams.single().fileOffset)
             assertArrayEquals(document, result.streams.single().bytes)
@@ -52,7 +53,7 @@ class GdEmbeddedDocExtractorTest {
     fun testFindsMarkerAtNonZeroWindowOffset() {
         val payload = ByteArray(17) { 'x'.code.toByte() } + "<class name=\"Node\"></class>".toByteArray()
         withFixture(zlib(payload)) { path ->
-            val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.Found
+            val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.Found
 
             assertArrayEquals(payload, result.streams.single().bytes)
         }
@@ -66,7 +67,7 @@ class GdEmbeddedDocExtractorTest {
 
     @Test
     fun testRejectsHeaderThatFailsMod31Check() = withFixture(byteArrayOf(0x78, 0x9D.toByte()) + ByteArray(256)) { path ->
-        val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.NotFound
+        val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.NotFound
 
         assertEquals(GdEmbeddedDocExtractor.NotFoundReason.NO_CANDIDATE_FOUND, result.reason)
         assertEquals(0, result.candidateCount)
@@ -89,7 +90,7 @@ class GdEmbeddedDocExtractorTest {
         }.toByteArray()
 
         withFixture(compressed) { path ->
-            val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.NotFound
+            val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.NotFound
             assertEquals(GdEmbeddedDocExtractor.NotFoundReason.CAP_EXCEEDED, result.reason)
             assertEquals(1, result.candidateCount)
         }
@@ -101,7 +102,7 @@ class GdEmbeddedDocExtractorTest {
         val compressed = zlib(payload)
 
         withFixture(compressed + compressed + compressed) { path ->
-            val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.Found
+            val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.Found
 
             assertEquals(2, result.streams.size)
             assertTrue(result.acceptedTotalExceeded)
@@ -115,7 +116,7 @@ class GdEmbeddedDocExtractorTest {
         val candidates = ByteArray(2 * candidateCount) { index -> if (index % 2 == 0) 0x78.toByte() else 0x9C.toByte() }
 
         withFixture(candidates + byteArrayOf(0) + zlib(document)) { path ->
-            val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.Found
+            val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.Found
 
             assertEquals(candidateCount + 1, result.candidateCount)
             assertEquals((candidates.size + 1).toLong(), result.streams.single().fileOffset)
@@ -128,7 +129,7 @@ class GdEmbeddedDocExtractorTest {
         val candidates = ByteArray(2 * 250_000) { index -> if (index % 2 == 0) 0x78.toByte() else 0x9C.toByte() }
 
         withFixture(zlib(document) + byteArrayOf(0) + candidates) { path ->
-            val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.NotFound
+            val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.NotFound
 
             assertEquals(GdEmbeddedDocExtractor.NotFoundReason.SCAN_GUARD_EXCEEDED, result.reason)
             assertEquals(250_001, result.candidateCount)
@@ -145,7 +146,7 @@ class GdEmbeddedDocExtractorTest {
             is GodotBinaryFromEnvironment.Outcome.Invalid -> fail(outcome.message)
             is GodotBinaryFromEnvironment.Outcome.Ready -> {
                 val binary = outcome.binary
-                val result = GdEmbeddedDocExtractor.extract(binary) as GdEmbeddedDocExtractor.Result.Found
+                val result = GdEmbeddedDocExtractor.extract(binary, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.Found
                 val splitResults = result.streams.map { GdDocXmlSplitter.split(it.bytes) }
                 val documents = splitResults.flatMap { it.documents }
 
@@ -164,7 +165,7 @@ class GdEmbeddedDocExtractorTest {
         val path = Files.createTempFile("gd-embedded-docs-missing", ".bin")
         Files.delete(path)
 
-        val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.NotFound
+        val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.NotFound
 
         assertEquals(GdEmbeddedDocExtractor.NotFoundReason.INPUT_UNAVAILABLE, result.reason)
         assertEquals(0, result.candidateCount)
@@ -175,7 +176,7 @@ class GdEmbeddedDocExtractorTest {
         val cancellation = IllegalStateException("cancel")
         withFixture(ByteArray(2048) { 0x55 }) { path ->
             try {
-                GdEmbeddedDocExtractor.extract(path) { throw cancellation }
+                GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) { throw cancellation }
                 throw AssertionError("The extractor did not rethrow the cancellation.")
             } catch (e: IllegalStateException) {
                 assertTrue(e === cancellation)
@@ -190,7 +191,7 @@ class GdEmbeddedDocExtractorTest {
         val checks = AtomicInteger()
         withFixture(zlib(payload)) { path ->
             try {
-                GdEmbeddedDocExtractor.extract(path) {
+                GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) {
                     if (checks.incrementAndGet() == 10) throw cancellation
                 }
                 throw AssertionError("The extractor did not rethrow the cancellation.")
@@ -207,7 +208,7 @@ class GdEmbeddedDocExtractorTest {
         val firstCompressed = zlib(document)
         val secondCompressed = zlib(second)
         withFixture(byteArrayOf(1, 2) + firstCompressed + byteArrayOf(3, 4, 5) + secondCompressed) { path ->
-            val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.Found
+            val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.Found
 
             assertEquals(2, result.streams.size)
             assertEquals(listOf(2L, (2 + firstCompressed.size + 3).toLong()), result.streams.map { it.fileOffset })
@@ -218,14 +219,14 @@ class GdEmbeddedDocExtractorTest {
 
     @Test
     fun testReportsNoCandidate() = withFixture(ByteArray(2048) { 0x55 }) { path ->
-        val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.NotFound
+        val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.NotFound
 
         assertEquals(GdEmbeddedDocExtractor.NotFoundReason.NO_CANDIDATE_FOUND, result.reason)
         assertEquals(0, result.candidateCount)
     }
 
     private fun assertNoValidatedCandidate(bytes: ByteArray) = withFixture(bytes) { path ->
-        val result = GdEmbeddedDocExtractor.extract(path) as GdEmbeddedDocExtractor.Result.NotFound
+        val result = GdEmbeddedDocExtractor.extract(path, GdZlibEmbeddedDocs) as GdEmbeddedDocExtractor.Result.NotFound
         assertEquals(GdEmbeddedDocExtractor.NotFoundReason.NO_CANDIDATE_VALIDATED, result.reason)
         assertTrue(result.candidateCount >= 1)
     }

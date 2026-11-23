@@ -1,9 +1,13 @@
 package gdscript.embeddedDocs
 
+import com.intellij.util.system.LowLevelLocalMachineAccess
+import com.intellij.util.system.OS
 import gdscript.utils.GdPathUtil
 import org.jetbrains.annotations.ApiStatus
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.isDirectory
+import kotlin.io.path.name
 
 /**
  * Resolves the real executable inside a macOS `.app` or `.framework` bundle.
@@ -24,6 +28,21 @@ object GdMacBundleUtils {
         data object ExecutableUnreachable : BundleResolution
         data object ExecutableDoesNotExist : BundleResolution
         data object ExecutableIsNotRegularFile : BundleResolution
+    }
+
+    /**
+     * Resolves a macOS application bundle to the executable inside it.
+     *
+     * The extractor reads the executable, and a bundle directory holds no bytes to read.
+     * A plain binary is not a bundle, so the load uses it directly. A bundle with no readable executable returns null.
+     */
+    @OptIn(LowLevelLocalMachineAccess::class)
+    fun resolveBundleExecutable(godotPath: Path): Path? {
+        if (OS.CURRENT != OS.macOS) return null
+        if (!godotPath.name.endsWith(".app") || !godotPath.isDirectory()) return null
+
+        val result = resolveAppExecutable(godotPath)
+        return (result as? BundleResolution.Found)?.executable
     }
 
     /** Returns whether [path] names an `.xcframework`, which the plugin does not support. */

@@ -13,6 +13,7 @@ import com.jetbrains.godot.gdscript.gdSdkFixture
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.reporting.SubsystemConstants
+import gdscript.embeddedDocs.GdCoreDocPipeline
 import gdscript.library.GdCoreSdkService
 import gdscript.library.GdSdkIntegrityValidator
 import gdscript.library.GdSdkPathManager
@@ -183,6 +184,64 @@ class GdCoreSdkServiceTest {
                 assertTrue(Files.exists(coreSdkDir.resolve("Node.xml")))
             }
         }
+    }
+
+    @Test
+    fun testDoctoolDocsRetryTheBinaryButNotTheDoctool() = runBlocking {
+        // Prepare valid binary
+        val fullBytes = zlib(fixtureBlob())
+        Files.write(binary, ByteArray(fullBytes.size) { 0x55 })
+        val originalTime = Files.getLastModifiedTime(binary)
+        var calls = 0
+        val validBinary = Files.createTempFile("gd-core-valid", ".bin")
+        val fallback: suspend (Path) -> GdCoreDocPipeline.Outcome = {
+            calls++
+            GdCoreDocPipeline.build(validBinary)
+        }
+        val service = GdCoreSdkService.getInstance()
+
+        try {
+            // Invalid binary calls the doctool and writes it in stamp
+
+            Files.write(validBinary, fullBytes)
+            assertErrorLogged {
+                assertEquals(GdCoreSdkService.Result.WRITTEN, service.ensureCoreDocs(version, binary, fallback))
+                assertEquals(GdCoreSdkService.Result.FAILED, service.ensureCoreDocs(version, binary, fallback))
+            }
+            assertEquals(1, calls, "Usable docs must suppress another doctool run.")
+            assertTrue(Files.readString(stampFile).contains("method=doctool"))
+
+            // Retry with a valid binary
+
+            Files.write(binary, fullBytes)
+            // Keep the stamped identity unchanged to prove that a doctool stamp permits a binary retry.
+            Files.setLastModifiedTime(binary, originalTime)
+            assertEquals(GdCoreSdkService.Result.WRITTEN, service.ensureCoreDocs(version, binary, fallback))
+            assertTrue(Files.readString(stampFile).contains("method=binary"))
+        }
+        finally {
+            Files.deleteIfExists(validBinary)
+        }
+    }
+
+    @Test
+    fun testBinaryDocsSurviveARejectedReplacement() = runBlocking {
+        val service = GdCoreSdkService.getInstance()
+        assertEquals(GdCoreSdkService.Result.WRITTEN, service.ensureCoreDocs(version, binary))
+        val oldStamp = Files.readString(stampFile)
+        val oldNode = Files.readString(coreSdkDir.resolve("Node.xml"))
+        Files.write(binary, ByteArray(512) { 0x55 })
+
+        var calls = 0
+        val result = service.ensureCoreDocs(version, binary) {
+            calls++
+            error("The doctool must not replace binary documentation.")
+        }
+
+        assertEquals(GdCoreSdkService.Result.FAILED, result)
+        assertEquals(0, calls, "Usable binary docs must suppress the doctool.")
+        assertEquals(oldStamp, Files.readString(stampFile))
+        assertEquals(oldNode, Files.readString(coreSdkDir.resolve("Node.xml")))
     }
 
     /** A binary whose blob holds the four required classes plus one stream that the splitter refuses. */

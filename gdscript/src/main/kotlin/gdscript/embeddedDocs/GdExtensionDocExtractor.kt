@@ -41,8 +41,9 @@ object GdExtensionDocExtractor {
         }
 
         return try {
+            // godot-cpp embeds zlib-compressed XML and decompresses it before it calls the engine XML loader.
             // Step 1: pull the raw XML doc streams out of the extension binary.
-            val extraction = GdEmbeddedDocExtractor.extract(resolution.binary)
+            val extraction = GdEmbeddedDocExtractor.extract(resolution.binary, GdZlibEmbeddedDocs)
             if (extraction !is GdEmbeddedDocExtractor.Result.Found) return Result.NotFound
             val documents = extraction.streams.flatMap { GdDocXmlSplitter.split(it.bytes).documents }
             if (documents.isEmpty()) return Result.NotFound
