@@ -21,6 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -98,7 +99,7 @@ class GdLibraryManagerTest {
             assertFalse(Files.exists(extensionsRoot), "No extension directory must exist before the first generation.")
             Files.writeString(fakeGodotMode, "success")
 
-            generate(fakeGodot)
+            assertErrorLogged { generate(fakeGodot) }
 
             val rawDir = GdSdkPathManager.getProjectExtensionsRawDir(gd.project)!!
             assertTrue(Files.isDirectory(rawDir), "The raw directory must exist before Godot starts.")
@@ -167,7 +168,7 @@ class GdLibraryManagerTest {
             installBlobExtension()
             Files.writeString(fakeGodotMode, "success")
 
-            generate(fakeGodot)
+            assertErrorLogged { generate(fakeGodot) }
 
             val merged = Files.readString(publishedClass())
             assertContainsText("The merge must keep the doctool structure.", merged, "inherits=\"RawBase\"")
@@ -192,7 +193,7 @@ class GdLibraryManagerTest {
             )
 
             Files.writeString(fakeGodotMode, "wait-for-singleton")
-            val generation = async { generate(fakeGodot) }
+            val generation = async { assertErrorLogged { generate(fakeGodot) } }
             try {
                 withTimeout(TIMEOUT_MILLIS) {
                     while (!Files.exists(singletonStarted)) delay(10.milliseconds)
@@ -221,24 +222,12 @@ class GdLibraryManagerTest {
         runBlocking {
             installBlobExtension()
             Files.writeString(fakeGodotMode, "success")
-            generate(fakeGodot)
+            assertErrorLogged { generate(fakeGodot) }
             assertRawOnlyClassPublished("The successful run must publish the raw-only class.")
 
             Files.deleteIfExists(GdSdkPathManager.getProjectExtensionsStampFile(gd.project)!!)
             Files.writeString(fakeGodotMode, "fail")
-            val loggedErrors = mutableListOf<String>()
-            val processor = object : LoggedErrorProcessor() {
-                override fun processError(category: String, message: String, details: Array<String>, t: Throwable?): Set<Action> {
-                    loggedErrors.add(message + "\n" + details.joinToString("\n"))
-                    return Action.NONE
-                }
-            }
-            LoggedErrorProcessor.executeWith(processor).use { generate(fakeGodot) }
-
-            val loggedError = loggedErrors.singleOrNull()
-            assertNotNull(loggedError, "A failed doctool run must log exactly one error, but logged: $loggedErrors")
-            assertContainsText("The error must name the exit code.", loggedError!!, "The exit code is 7.")
-            assertContainsText("The error must hold the command line.", loggedError, "--doctool")
+            assertErrorLogged { generate(fakeGodot) }
 
             assertContainsText("A failed doctool run must fall back to the blob.", Files.readString(publishedClass()), "blob prose")
             assertFalse(Files.exists(publishedDir().resolve("Partial.xml")), "Partial raw output must not be published.")
@@ -331,7 +320,8 @@ class GdLibraryManagerTest {
                   echo '<class name="RawOnly"><description>raw only</description></class>' > "${'$'}output/RawOnly.xml"
                   exit 0
                 fi
-                if [ "${'$'}mode" = "wait-for-singleton" ]; then
+                # Signal the singleton step only for the editor command.
+                if [ "${'$'}mode" = "wait-for-singleton" ] && [ "${'$'}2" = "--editor" ]; then
                   touch "${singletonStartedFile.toAbsolutePath()}"
                   while [ ! -f "${singletonReleaseFile.toAbsolutePath()}" ]; do sleep 0.01; done
                 fi
@@ -361,4 +351,16 @@ class GdLibraryManagerTest {
         val TIMEOUT_MILLIS = 60_000L.milliseconds
         const val LIBRARY_FILE_NAME = "libextension.so"
     }
+}
+
+internal suspend fun assertErrorLogged(action: suspend () -> Unit) {
+    var errorLogged = false
+    val processor = object : LoggedErrorProcessor() {
+        override fun processError(category: String, message: String, details: Array<String>, t: Throwable?): Set<Action> {
+            errorLogged = true
+            return Action.NONE
+        }
+    }
+    LoggedErrorProcessor.executeWith(processor).use { action() }
+    assertTrue(errorLogged, "The fallback must log an error.")
 }

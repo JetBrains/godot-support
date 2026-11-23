@@ -1,27 +1,27 @@
 package gdscript.library
 
+import com.intellij.diagnostic.rethrowControlFlowException
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.util.Version
-import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.VfsUtil.findFile
 import com.intellij.openapi.vfs.newvfs.RefreshQueue
 import com.intellij.serviceContainer.AlreadyDisposedException
-import com.intellij.util.system.LowLevelLocalMachineAccess
-import com.intellij.util.system.OS
 import gdscript.embeddedDocs.GdCoreDocPipeline
-import gdscript.embeddedDocs.GdMacBundleUtils
+import gdscript.embeddedDocs.GdCoreDoctoolDocs
+import gdscript.library.GdSdkIntegrityValidator.CoreDocsMethod
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import java.nio.file.Files
+import java.nio.file.Files.deleteIfExists
 import java.nio.file.Path
-import kotlin.io.path.isDirectory
-import kotlin.io.path.name
 
 /**
  * Writes the core Godot documentation, which every open project in the process shares.
@@ -37,6 +37,12 @@ class GdCoreSdkService {
 
     companion object {
         fun getInstance(): GdCoreSdkService = service()
+
+        // Describe the usable set even when no executable is configured.
+        fun describeCoreDocs(directory: Path, method: CoreDocsMethod?): String {
+            val usable = GdCoreDocPipeline.REQUIRED_CLASS_NAMES.all { Files.isRegularFile(directory.resolve("$it.xml")) }
+            return if (!usable) "none" else method?.name?.lowercase() ?: "unknown"
+        }
     }
 
     /** Guards the shared core directory against every other project in this process. */
@@ -54,83 +60,111 @@ class GdCoreSdkService {
     }
 
     /**
-     * Makes the core documentation for [version] match [godotPath].
-     *
-     * The service writes the stamp last, and only after the new set is visible in the VFS and the
-     * trackers moved. A cancellation or a failure before that point leaves an invalid stamp, so the
-     * next run retries. A failed extraction keeps the existing directory and the existing stamp.
-     *
-     * A degraded extraction adds its own files and deletes nothing, so it never leaves the user with less
-     * documentation than before. Only a clean extraction removes a file that the new set does not name.
+     * Publishes checked core documentation under the shared lock and writes the stamp after the VFS refresh.
+     * A matching binary stamp skips extraction. A usable folder suppresses the doctool after a binary rejection.
      */
-    suspend fun ensureCoreDocs(version: Version, godotPath: Path): Result = mutex.withLock {
-        val coreSdkDir = GdSdkPathManager.getCoreSdkDir(version)
-        val coreSdkStampFile = GdSdkPathManager.getCoreSdkStampFile(version)
-        val binary = resolveBundleExecutable(godotPath) ?: godotPath
+    suspend fun ensureCoreDocs(
+        version: Version,
+        godotPath: Path,
+        doctool: suspend (Path) -> GdCoreDocPipeline.Outcome = GdCoreDoctoolDocs::build,
+    ): Result = mutex.withLock {
+        val directory = GdSdkPathManager.getCoreSdkDir(version)
+        val stampFile = GdSdkPathManager.getCoreSdkStampFile(version)
+        val binary = godotPath
+        var exactMethod: String? = null
+        var binaryRejection: String? = null
+        var doctoolRan = false
 
-        val stamp = GdSdkIntegrityValidator.coreStamp(version, binary)
+        // Report the attempted method and the kind that readers can use.
+        suspend fun finish(result: Result, method: CoreDocsMethod?, reason: String? = null): Result {
+            val kind = withContext(Dispatchers.IO) {
+                describeCoreDocs(directory, GdSdkIntegrityValidator.readCoreMethod(stampFile))
+            }
+            val details = listOfNotNull(binaryRejection, reason).joinToString(", ")
+            val resultText = if (details.isEmpty()) result.toString() else "$result ($details)"
+            val warning = if (kind == "none") " GDScript types will not resolve." else ""
+            val message =
+                "Core documentation result=$resultText, method=${exactMethod ?: method?.name?.lowercase() ?: "unknown"}, kind=$kind, " +
+                    "binary=$binary, SDK version=$version.$warning"
+            if (doctoolRan) thisLogger().error(message) else thisLogger().info(message)
+            return result
+        }
+
+        val previousMethod = withContext(Dispatchers.IO) { GdSdkIntegrityValidator.readCoreMethod(stampFile) }
+        val stamp = withContext(Dispatchers.IO) { GdSdkIntegrityValidator.coreStamp(version, binary) }
         if (stamp == null) {
-            thisLogger().warn("Cannot read the attributes of the Godot executable $binary, so the core documentation stays as it is.")
-            return@withLock Result.FAILED
+            return@withLock finish(Result.FAILED, previousMethod, "cannot read binary attributes")
         }
-        if (withContext(Dispatchers.IO) { GdSdkIntegrityValidator.hasValidCoreStamp(coreSdkStampFile, stamp) }) {
-            thisLogger().info("Godot core SDK stamp is valid. Result.UP_TO_DATE.")
-            return@withLock Result.UP_TO_DATE
+        // 1. Cache hit: require the binary identity and the four required class files.
+        val hasRequiredClasses = withContext(Dispatchers.IO) {
+            GdCoreDocPipeline.REQUIRED_CLASS_NAMES.all { Files.isRegularFile(directory.resolve("$it.xml")) }
+        }
+        if (hasRequiredClasses && withContext(Dispatchers.IO) { GdSdkIntegrityValidator.hasValidCoreStamp(stampFile, stamp) }) {
+            return@withLock finish(Result.UP_TO_DATE, CoreDocsMethod.BINARY)
         }
 
-        // Stamp out of date, need to rebuild anew
-        val outcome = withContext(Dispatchers.IO) {
-            GdCoreDocPipeline.build(binary) { coroutineContext.ensureActive() }
+        // 2. Try binary extraction to get full documentation.
+        var method = CoreDocsMethod.BINARY
+        val outcome = when (val extracted = withContext(Dispatchers.IO) {
+            GdCoreDocPipeline.build(binary, version) { coroutineContext.ensureActive() }
+        }) {
+            is GdCoreDocPipeline.Outcome.Ready -> extracted
+            is GdCoreDocPipeline.Outcome.Rejected -> {
+                binaryRejection = "binary rejected: ${describeRejection(extracted)}"
+
+                // 3. Binary rejected: keep usable docs, or run the doctool fallback.
+                if (hasRequiredClasses && withContext(Dispatchers.IO) { Files.isRegularFile(stampFile) }) {
+                    return@withLock finish(Result.FAILED, method, "doctool skipped because usable docs exist")
+                }
+                method = CoreDocsMethod.DOCTOOL
+                exactMethod = "doctool"
+                doctoolRan = true
+                try {
+                    doctool(binary)
+                } catch (e: Exception) {
+                    rethrowControlFlowException(e)
+                    return@withLock finish(Result.FAILED, method, "doctool failed: $e")
+                }
+            }
         }
+        // Check that either binary or doctool method succeeded
         val ready = when (outcome) {
             is GdCoreDocPipeline.Outcome.Rejected -> {
-                val rejectionString = when (outcome.reason) {
-                    GdCoreDocPipeline.Outcome.RejectReason.INPUT_UNAVAILABLE,
-                    GdCoreDocPipeline.Outcome.RejectReason.NO_CANDIDATE_FOUND,
-                    GdCoreDocPipeline.Outcome.RejectReason.NO_CANDIDATE_VALIDATED,
-                    GdCoreDocPipeline.Outcome.RejectReason.STREAM_CAP_EXCEEDED,
-                    GdCoreDocPipeline.Outcome.RejectReason.SCAN_GUARD_EXCEEDED -> {
-                        val candidates = outcome.candidateCount?.let { "$it candidates" } ?: "candidate count unavailable"
-                        "The extractor found no documentation in $binary: ${outcome.reason}, $candidates."
-                    }
-                    GdCoreDocPipeline.Outcome.RejectReason.TOTAL_CAP_EXCEEDED ->
-                        "The extractor reached its total size cap on $binary: ${outcome.reason}. " +
-                            "The documentation is incomplete."
-                    GdCoreDocPipeline.Outcome.RejectReason.REQUIRED_CLASS_MISSING ->
-                        "The documentation in $binary misses the required classes: ${outcome.missingClasses.sorted()} " +
-                            "(${outcome.reason})."
-                }
-                thisLogger().warn("The core documentation stays as it is. $rejectionString")
-                return@withLock Result.FAILED
+                return@withLock finish(Result.FAILED, method, "${method.name.lowercase()} rejected: ${describeRejection(outcome)}")
             }
+
             is GdCoreDocPipeline.Outcome.Ready -> outcome
         }
-        ready.recoveryReport?.let { thisLogger().warn("$it (Godot $version, $binary)") }
+        exactMethod = ready.method ?: exactMethod
+        ready.recoveryReport?.let { thisLogger().warn("$it (method=${method.name.lowercase()}, Godot $version, $binary)") }
 
-        // A degraded extraction may miss a class that the directory already documents, so it must not
-        // delete. It adds its own files, and the next clean extraction removes what it left behind.
-        val sweepStale = ready.sweepStale
-        withContext(Dispatchers.IO) { GdCoreDocPipeline.writeCoreDocs(coreSdkDir, ready.files, sweepStale) }
+        // 4. Publish in place, then refresh readers and write the stamp last.
+        try {
+            // Invalidate the stamp before writing the new files.
+            withContext(Dispatchers.IO) {
+                deleteIfExists(stampFile)
+                GdCoreDocPipeline.writeCoreDocs(directory, ready.files, ready.sweepStale)
+            }
 
-        // The stamp must not become valid before a reader can see the new set, because a valid stamp
-        // stops every later run from refreshing the directory again.
-        val root = withContext(Dispatchers.IO) { VfsUtil.findFile(coreSdkDir, true) }
-        if (root == null) {
-            thisLogger().warn("The core documentation in $coreSdkDir is not visible in the VFS, so the stamp stays invalid.")
-            return@withLock Result.FAILED
+            // Make the files visible and move the trackers before writing the stamp.
+            val root = withContext(Dispatchers.IO) { findFile(directory, true) }
+            if (root == null) {
+                return@withLock finish(Result.FAILED, method, "publication failed: $directory is not visible in the VFS")
+            } else {
+                RefreshQueue.getInstance().refresh(true, listOf(root))
+                currentCoroutineContext().ensureActive()
+                bumpOpenProjects()
+                withContext(Dispatchers.IO) { GdSdkIntegrityValidator.writeCoreStamp(stampFile, stamp.copy(method = method)) }
+                return@withLock finish(Result.WRITTEN, method)
+            }
+        } catch (e: Exception) {
+            rethrowControlFlowException(e)
+            return@withLock finish(Result.FAILED, method, "publication failed: $e")
         }
-        RefreshQueue.getInstance().refresh(true, listOf(root))
-
-        currentCoroutineContext().ensureActive()
-        bumpOpenProjects()
-
-        withContext(Dispatchers.IO) { GdSdkIntegrityValidator.writeCoreStamp(coreSdkStampFile, stamp) }
-        thisLogger().info(
-            "Wrote ${ready.files.size} core documentation files for Godot $version into $coreSdkDir, " +
-                "and ${if (sweepStale) "removed every file that the new set does not name" else "kept every earlier file"}."
-        )
-        return@withLock Result.WRITTEN
     }
+
+    private fun describeRejection(outcome: GdCoreDocPipeline.Outcome.Rejected): String =
+        "${outcome.reason}, candidates=${outcome.candidateCount}, missing classes=${outcome.missingClasses.sorted()}"
 
     /**
      * Moves the symbol tracker of every open project. Each open project reads the shared directory.
@@ -140,8 +174,7 @@ class GdCoreSdkService {
             if (project.isDisposed) continue
             try {
                 GdSdkDocsTracker.getInstance(project).docsChanged()
-            }
-            catch (e: ProcessCanceledException) {
+            } catch (e: ProcessCanceledException) {
                 // A project can close between the check above and this lookup. It throws
                 // AlreadyDisposedException directly, or a plain ProcessCanceledException when the
                 // caller runs under an indicator or a job. Skip only that case; re-throw any other
@@ -151,20 +184,5 @@ class GdCoreSdkService {
                 thisLogger().debug("Cannot move the symbol tracker of a closed project (${e.javaClass.name}$details)")
             }
         }
-    }
-
-    /**
-     * Resolves a macOS application bundle to the executable inside it.
-     *
-     * The extractor reads the executable, and a bundle directory holds no bytes to read.
-     * A plain binary is not a bundle, so the service uses it directly. A bundle with no readable executable returns null.
-     */
-    @OptIn(LowLevelLocalMachineAccess::class)
-    private fun resolveBundleExecutable(godotPath: Path): Path? {
-        if (OS.CURRENT != OS.macOS) return null
-        if (!godotPath.name.endsWith(".app") || !godotPath.isDirectory()) return null
-
-        val result = GdMacBundleUtils.resolveAppExecutable(godotPath)
-        return (result as? GdMacBundleUtils.BundleResolution.Found)?.executable
     }
 }

@@ -1,5 +1,6 @@
 package gdscript.library
 
+import com.intellij.diagnostic.rethrowControlFlowException
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.Version
 import com.intellij.util.io.DigestUtil
@@ -7,6 +8,7 @@ import gdscript.embeddedDocs.GdDocFormat
 import org.jetbrains.annotations.ApiStatus
 import java.io.IOException
 import java.nio.file.Files
+import java.nio.file.NoSuchFileException
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.fileSize
@@ -47,6 +49,11 @@ object GdSdkIntegrityValidator {
         return "input=$input\noutput=${GdSdkFingerprints.ofGeneratedDocs(generatedDocsDir)}"
     }
 
+    enum class CoreDocsMethod {
+        BINARY,
+        DOCTOOL,
+    }
+
     /*
      * The core documentation comes from the Godot executable, so the stamp records the executable too.
      * A new executable at the same version, or a new byte format, invalidates the stamp.
@@ -56,9 +63,11 @@ object GdSdkIntegrityValidator {
         val godotVersion: String,
         val binarySize: Long,
         val binaryModifiedMillis: Long,
+        val method: CoreDocsMethod = CoreDocsMethod.BINARY,
     ) {
         fun serialize(): String =
-            "format=$formatVersion\nversion=$godotVersion\nbinarySize=$binarySize\nbinaryModified=$binaryModifiedMillis\n"
+            "format=$formatVersion\nversion=$godotVersion\nbinarySize=$binarySize\nbinaryModified=$binaryModifiedMillis\n" +
+                "method=${method.name.lowercase()}\n"
     }
 
     /** Reads the attributes of [binary] to create the coreStamp. Returns null when the attributes are unreadable. */
@@ -82,6 +91,23 @@ object GdSdkIntegrityValidator {
         } catch (_: Exception) {
             false
         }
+    }
+
+    /** Returns the method from the stamp, or null when the method is absent or unknown. */
+    fun readCoreMethod(stampFile: Path): CoreDocsMethod? = try {
+        when (stampFile.readText().lineSequence().firstOrNull { it.startsWith("method=") }?.substringAfter("method=")) {
+            "binary" -> CoreDocsMethod.BINARY
+            "doctool" -> CoreDocsMethod.DOCTOOL
+            else -> null
+        }
+    }
+    catch (_: NoSuchFileException) {
+        null
+    }
+    catch (e: Exception) {
+        rethrowControlFlowException(e)
+        thisLogger().warn("Cannot read the core documentation stamp $stampFile.")
+        null
     }
 
     fun writeCoreStamp(stampFile: Path, stamp: CoreStamp) {

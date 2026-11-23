@@ -1,6 +1,8 @@
 package gdscript.embeddedDocs
 
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.progress.ProgressManager
+import com.intellij.openapi.util.Version
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.ExperimentalPathApi
@@ -49,6 +51,7 @@ object GdCoreDocPipeline {
             val candidateCount: Int,
             val sweepStale: Boolean,
             val recoveryReport: String? = null,
+            val method: String? = null,
         ) : Outcome {
             init {
                 require(sweepStale == (recoveryReport == null)) { "sweepStale must match recoveryReport" }
@@ -80,8 +83,32 @@ object GdCoreDocPipeline {
      *
      * A degraded extraction must not delete. [writeCoreDocs] takes the sweep as a parameter for that reason.
      */
-    fun build(binary: Path, checkCanceled: () -> Unit = { ProgressManager.checkCanceled() }): Outcome {
-        val extracted = when (val result = GdEmbeddedDocExtractor.extract(binary, checkCanceled)) {
+    fun build(
+        binary: Path,
+        version: Version = Version(4, 5, 0),
+        checkCanceled: () -> Unit = { ProgressManager.checkCanceled() },
+    ): Outcome {
+        // Try each binary method in order and return the first usable result.
+        // GdCoreSdkService decides whether the doctool runs.
+        var rejected: Outcome.Rejected? = null
+        for (method in GdCoreDocMethods.toTry(version)) {
+            when (val outcome = build(binary, method, checkCanceled)) {
+                is Outcome.Ready -> return outcome.copy(method = method.name)
+                is Outcome.Rejected -> {
+                    logger<GdCoreDocPipeline>().info(
+                        "Core documentation method=${method.name} failed: ${outcome.reason}, " +
+                            "candidates=${outcome.candidateCount}, missing classes=${outcome.missingClasses.sorted()}, binary=$binary",
+                    )
+                    // Keep a useful rejection when the other method finds no candidate.
+                    if (rejected == null || outcome.reason != Outcome.RejectReason.NO_CANDIDATE_FOUND) rejected = outcome
+                }
+            }
+        }
+        return requireNotNull(rejected)
+    }
+
+    private fun build(binary: Path, method: GdBinaryDocMethod, checkCanceled: () -> Unit): Outcome {
+        val extracted = when (val result = GdEmbeddedDocExtractor.extract(binary, method, checkCanceled)) {
             is GdEmbeddedDocExtractor.Result.NotFound ->
                 return Outcome.Rejected(
                     reason = when (result.reason) {
@@ -92,10 +119,12 @@ object GdCoreDocPipeline {
                             // When no stream is accepted, acceptedTotal is zero. Therefore totalRemaining exceeds STREAM_LIMIT,
                             // so only the per-stream cap can fire.
                             Outcome.RejectReason.STREAM_CAP_EXCEEDED
+
                         GdEmbeddedDocExtractor.NotFoundReason.SCAN_GUARD_EXCEEDED -> Outcome.RejectReason.SCAN_GUARD_EXCEEDED
                     },
                     candidateCount = result.candidateCount,
                 )
+
             is GdEmbeddedDocExtractor.Result.Found -> result
         }
 
@@ -106,20 +135,32 @@ object GdCoreDocPipeline {
             )
         }
 
+        return checkDocuments(
+            extracted.streams.map { it.fileOffset to it.bytes }, extracted.candidateCount, extracted.streamCapExceeded, checkCanceled,
+        )
+    }
+
+    /** Applies the same XML safety and class checks to each source of core documentation. */
+    internal fun checkDocuments(
+        documents: List<Pair<Long, ByteArray>>,
+        candidateCount: Int,
+        streamCapExceeded: Boolean = false,
+        checkCanceled: () -> Unit,
+    ): Outcome {
         val byName = LinkedHashMap<String, GdDocXmlSplitter.ClassDocument>()
         val notes = mutableListOf<String>()
-        if (extracted.streamCapExceeded) {
+        if (streamCapExceeded) {
             notes.add("the extractor dropped at least one stream because it exceeded the per-stream cap, so the class set may be incomplete")
         }
-        for (stream in extracted.streams) {
+        for ([offset, bytes] in documents) {
             checkCanceled()
-            val split = GdDocXmlSplitter.split(stream.bytes, checkCanceled)
+            val split = GdDocXmlSplitter.split(bytes, checkCanceled)
             split.malformedDocuments.forEach {
-                notes.add("dropped a malformed document at stream ${stream.fileOffset}, offset ${it.blobOffset}: ${it.message}")
+                notes.add("dropped a malformed document at stream $offset, offset ${it.blobOffset}: ${it.message}")
             }
             split.conflicts.forEach {
                 notes.add(
-                    "kept the first variant of class ${it.className} in stream ${stream.fileOffset}, " +
+                    "kept the first variant of class ${it.className} in stream $offset, " +
                         "and skipped a later variant: ${it.firstContentHash} against ${it.conflictingContentHash}"
                 )
             }
@@ -157,7 +198,7 @@ object GdCoreDocPipeline {
         files.sortBy { it.fileName }
         return Outcome.Ready(
             files = files,
-            candidateCount = extracted.candidateCount,
+            candidateCount = candidateCount,
             sweepStale = notes.isEmpty(),
             recoveryReport = notes.reportNotes(),
         )

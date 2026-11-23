@@ -14,6 +14,7 @@ import com.intellij.util.system.OS
 import gdscript.embeddedDocs.GdDocXmlMerger
 import gdscript.embeddedDocs.GdExtensionDocExtractor
 import gdscript.embeddedDocs.GdExtensionManifestParser
+import gdscript.embeddedDocs.GdMacBundleUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -37,7 +38,7 @@ object GdLibraryManager {
     private const val DUMP_SINGLETONS_RESOURCE = "/gdscript/scripts/dump_singletons.gd"
     private const val DOCTOOL_FAILURE_MESSAGE = "Failed to dump GDExtensions API (godot doctool)."
 
-    private class GodotProcessResult(
+    internal class GodotProcessResult(
         val commandLine: GeneralCommandLine,
         val terminated: Boolean,
         val exitCode: Int?,
@@ -54,7 +55,7 @@ object GdLibraryManager {
      * Starts [commandLine] and suspends until the process exits. Cancelling the caller (e.g. via the progress indicator
      * or on project close) kills the process instead of leaking it together with a blocked thread.
      */
-    private suspend fun runGodotProcess(commandLine: GeneralCommandLine): GodotProcessResult {
+    internal suspend fun runGodotProcess(commandLine: GeneralCommandLine): GodotProcessResult {
         val processHandler = OSProcessHandler(commandLine)
 
         val outputCollector = CapturingProcessAdapter()
@@ -420,6 +421,8 @@ object GdLibraryManager {
         godotPath: Path?,
         projectBasePath: Path
     ) {
+        // Use the executable inside a macOS app bundle for all documentation generation.
+        val resolvedGodotPath = godotPath?.let { GdMacBundleUtils.resolveBundleExecutable(it) ?: it }
         GdSdkPathManager.ensureDirectoriesExist(version, project)
 
         // Core and singleton refreshes are batched, so they increment the modification tracker only once.
@@ -427,14 +430,18 @@ object GdLibraryManager {
         val dirsToRefresh = mutableListOf<Path>()
 
         // A core failure must not stop the GDExtension or singletons generation
-        generateCoreDocsIfNeeded(version, godotPath, dirsToRefresh)
-        val manifestsStamp = generateExtensionDocsIfNeeded(project, godotPath, projectBasePath)
-        generateSingletonDocsIfNeeded(project, godotPath, projectBasePath, version, manifestsStamp, dirsToRefresh)
+        generateCoreDocsIfNeeded(version, resolvedGodotPath, dirsToRefresh)
+        val manifestsStamp = generateExtensionDocsIfNeeded(project, resolvedGodotPath, projectBasePath)
+        generateSingletonDocsIfNeeded(project, resolvedGodotPath, projectBasePath, version, manifestsStamp, dirsToRefresh)
 
         if (dirsToRefresh.isNotEmpty()) refreshGeneratedDocs(project, dirsToRefresh)
     }
 
-    private suspend fun generateCoreDocsIfNeeded(version: Version, godotPath: Path?, dirsToRefresh: MutableList<Path>) {
+    private suspend fun generateCoreDocsIfNeeded(
+        version: Version,
+        godotPath: Path?,
+        dirsToRefresh: MutableList<Path>,
+    ) {
         if (godotPath == null) {
             // Without the Godot program, the plugin cannot generate the core docs. The shared core docs folder can still
             // hold docs for this version from an earlier session or from another project. The refresh makes these files
