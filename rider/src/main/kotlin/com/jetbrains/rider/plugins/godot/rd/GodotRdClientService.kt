@@ -31,6 +31,7 @@ import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil.getEnabledEd
 import com.jetbrains.rider.model.godot.frontendGodot.FrontendGodotModel
 import com.jetbrains.rider.model.godot.frontendGodot.frontendGodotModel
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotEditorDebugSessionService
+import com.jetbrains.rider.plugins.godot.statistics.GodotEditorUsagesCollector
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -141,7 +142,10 @@ class GodotRdClientService(val project: Project) {
                 GdProjectGodotService.getInstance(project).updateCurrentScene(it)
             }
             val debugSessionService = GodotEditorDebugSessionService.getInstance(project)
-            model.prepareDebugSession.setSuspend { callLifetime, _ -> debugSessionService.prepare(lt, callLifetime) }
+            model.prepareDebugSession.setSuspend { callLifetime, _ ->
+                GodotEditorUsagesCollector.logDebugCurrentSceneRequested(project)
+                debugSessionService.prepare(lt, callLifetime)
+            }
             model.debugLaunchFailed.advise(lt) { sessionId ->
                 debugSessionService.onLaunchFailed(sessionId)
             }
@@ -207,6 +211,7 @@ class GodotRdClientService(val project: Project) {
         }
         GdScriptProjectLifetimeService.getScope(project).launch {
             val file = LocalFileSystem.getInstance().refreshAndFindFileByNioFile(Path.of(path)) ?: return@launch
+            GodotEditorUsagesCollector.logOpenInRiderRequested(project)
             withContext(Dispatchers.EDT) {
                 OpenFileDescriptor(project, file).navigate(true)
                 focusRider()
