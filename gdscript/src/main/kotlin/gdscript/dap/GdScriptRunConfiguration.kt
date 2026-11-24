@@ -8,13 +8,16 @@ import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.configurations.RunConfigurationBase
 import com.intellij.execution.configurations.RunProfileState
 import com.intellij.execution.configurations.WithoutOwnBeforeRunSteps
+import com.intellij.execution.impl.statistics.FusAwareRunConfiguration
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.RunConfigurationWithSuppressedDefaultRunAction
+import com.intellij.internal.statistic.eventLog.events.EventPair
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.platform.dap.DapStartRequest
 import com.jetbrains.rider.godot.community.GdProjectGodotService
 import gdscript.GdScriptBundle
+import gdscript.statistics.GdScriptRunConfigurationUsageData
 import org.jdom.Element
 
 data class GdScriptStructuredArguments(
@@ -22,16 +25,39 @@ data class GdScriptStructuredArguments(
     val debugServerPort: Int,
     val remainingArguments: String,
     val scene: String,
-)
+) {
+    internal val kind: GdScriptRunConfigurationKind
+        get() = when (request) {
+            DapStartRequest.Attach -> GdScriptRunConfigurationKind.RUNNING_SESSION
+            DapStartRequest.Launch -> if (scene == GdScriptRunFactory.CURRENT_SCENE) {
+                GdScriptRunConfigurationKind.CURRENT_SCENE
+            }
+            else {
+                GdScriptRunConfigurationKind.PLAYER
+            }
+        }
+}
+
+internal enum class GdScriptRunConfigurationKind {
+    PLAYER,
+    CURRENT_SCENE,
+    RUNNING_SESSION,
+}
 
 class GdScriptRunConfiguration(name: String, project: Project, factory: ConfigurationFactory) :
     RunConfigurationBase<GdScriptRunFactory.GdScriptDebugConfigurationOptions>(project, factory, name),
     RunConfigurationWithSuppressedDefaultRunAction,
-    WithoutOwnBeforeRunSteps {
+    WithoutOwnBeforeRunSteps,
+    FusAwareRunConfiguration {
 
     var json: String = GdScriptRunFactory.DEFAULT_FULL_JSON
     val structured: GdScriptStructuredArguments
         get() = GdScriptRunConfigurationHelper.parse(json)
+
+    override fun getAdditionalUsageData(): List<EventPair<*>> {
+        val arguments = GdScriptRunConfigurationHelper.parseForUsage(json) ?: return emptyList()
+        return listOf(GdScriptRunConfigurationUsageData.CONFIGURATION_KIND.with(arguments.kind))
+    }
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState {
         // Best effort check: for projects with rider-godot plugin and RD connection

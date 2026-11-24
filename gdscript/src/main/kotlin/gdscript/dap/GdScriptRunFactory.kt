@@ -22,6 +22,7 @@ open class GdScriptRunFactory(type: ConfigurationType) : ConfigurationFactory(ty
         const val DEFAULT_ADDRESS: String = "127.0.0.1"
         val DEFAULT_REQUEST: DapStartRequest = DapStartRequest.Launch
         const val DEFAULT_SCENE: String = "main"
+        const val CURRENT_SCENE: String = "current"
         val DEFAULT_EMPTY_JSON: String = """
             {
             

@@ -355,6 +355,8 @@
 
     <!-- Statistics -->
     <statistics.projectUsagesCollector implementation="gdscript.statistics.GdProjectUsagesCollector"/>
+    <statistics.collectorExtension implementation="gdscript.statistics.GdScriptConfigurationTypeCollectorExtension"/>
+    <statistics.collectorExtension implementation="gdscript.statistics.GdScriptConfigurationUsageCollectorExtension"/>
 
     <!-- DAP debugging -->
     <runConfigurationProducer implementation="gdscript.dap.GdScriptSceneRunConfigurationProducer"/>

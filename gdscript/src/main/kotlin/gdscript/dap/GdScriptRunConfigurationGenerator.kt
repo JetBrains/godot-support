@@ -84,7 +84,9 @@ class GdScriptRunConfigurationGenerator(project: Project) {
 
         private fun generateConfigs(runManager: RunManager) {
             createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
-            createOrUpdateGdScriptRunConfiguration(CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME, runManager, scene = "current")
+            createOrUpdateGdScriptRunConfiguration(
+                CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME, runManager, scene = GdScriptRunFactory.CURRENT_SCENE
+            )
             createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME, runManager, attach = true)
         }
 

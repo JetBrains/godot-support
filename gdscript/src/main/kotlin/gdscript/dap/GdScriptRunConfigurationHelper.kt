@@ -34,7 +34,23 @@ object GdScriptRunConfigurationHelper {
 
     fun parse(text: String): GdScriptStructuredArguments {
         val map = parseArgumentsToMap(text)
-        val req = (map["request"] as? String)?.let { DapStartRequest.valueOf(it) } ?: DapStartRequest.Launch
+        return parse(map, parseRequest(map))
+    }
+
+    internal fun parseForUsage(text: String): GdScriptStructuredArguments? {
+        val map = parseArgumentsToMap(text)
+        val request = try {
+            parseRequest(map)
+        } catch (_: IllegalArgumentException) {
+            return null
+        }
+        return parse(map, request)
+    }
+
+    private fun parseRequest(map: Map<String, Any?>): DapStartRequest =
+        (map["request"] as? String)?.let { DapStartRequest.valueOf(it) } ?: DapStartRequest.Launch
+
+    private fun parse(map: Map<String, Any?>, request: DapStartRequest): GdScriptStructuredArguments {
         val port = when (val v = map["debugServer"]) {
             is Number -> v.toInt()
             is String -> v.toIntOrNull() ?: GdScriptRunFactory.DEFAULT_PORT
@@ -48,7 +64,7 @@ object GdScriptRunConfigurationHelper {
             remove("scene")
         }
         val restText = mapToPrettyJson(rest)
-        return GdScriptStructuredArguments(req, port, restText, scene)
+        return GdScriptStructuredArguments(request, port, restText, scene)
     }
 
     fun serialize(structured: GdScriptStructuredArguments): String {

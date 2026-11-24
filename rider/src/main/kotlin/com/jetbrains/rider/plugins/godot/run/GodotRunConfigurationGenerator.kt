@@ -2,11 +2,16 @@ package com.jetbrains.rider.plugins.godot.run
 
 import com.intellij.execution.RunManager
 import com.intellij.execution.RunnerAndConfigurationSettings
+import com.intellij.execution.compound.CompoundRunConfiguration
+import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationTypeUtil
+import com.intellij.execution.impl.RunManagerImpl
+import com.intellij.execution.impl.RunnerAndConfigurationSettingsImpl
 import com.intellij.openapi.client.ClientProjectSession
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
+import com.intellij.util.execution.ParametersListUtil
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -19,6 +24,7 @@ import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigu
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunCurrentScene
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunCurrentSceneType
+import com.jetbrains.rider.plugins.godot.run.configurations.GodotPlayerConfigurationType
 import com.jetbrains.rider.projectView.isCMakeSolution
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.solutionDirectoryPath
@@ -29,6 +35,7 @@ import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.runtime.dotNetCore.DotNetCoreRuntimeType
+import org.jdom.Element
 import org.jetbrains.annotations.NonNls
 import kotlin.io.path.pathString
 import kotlin.io.path.relativeToOrSelf
@@ -101,12 +108,15 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             project: Project,
             relPath: String,
         ) {
+            val playerType = ConfigurationTypeUtil.findConfigurationType(GodotPlayerConfigurationType::class.java)
+            migratePlayerConfigurations(runManager, playerType.factory)
             createOrUpdateCoreRunConfiguration(
                 PLAYER_CONFIGURATION_NAME,
                 "--path \"${relPath}\"",
                 runManager,
                 corePath,
-                project
+                project,
+                playerType.factory,
             )
             createOrUpdateCoreRunConfiguration(
                 EDITOR_CONFIGURATION_NAME,
@@ -115,6 +125,40 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 corePath,
                 project
             )
+        }
+
+        private fun migratePlayerConfigurations(runManager: RunManager, factory: ConfigurationFactory) {
+            val legacyConfigurations = runManager.allSettings.filter {
+                val configuration = it.configuration as? DotNetExeConfiguration ?: return@filter false
+                val arguments = ParametersListUtil.parse(configuration.parameters.programParameters)
+                it.type is DotNetExeConfigurationType && it.name == PLAYER_CONFIGURATION_NAME &&
+                    "--path" in arguments &&
+                    "--editor" !in arguments && "-e" !in arguments
+            }
+            for (settings in legacyConfigurations) {
+                val oldConfiguration = settings.configuration as DotNetExeConfiguration
+                val configuration = runManager.createConfiguration(settings.name, factory).configuration as DotNetExeConfiguration
+                val state = Element("configuration")
+                oldConfiguration.writeExternal(state)
+                configuration.readExternal(state)
+                configuration.isAllowRunningInParallel = oldConfiguration.isAllowRunningInParallel
+                configuration.beforeRunTasks = oldConfiguration.beforeRunTasks
+                for (compoundSettings in runManager.allSettings) {
+                    val compound = compoundSettings.configuration as? CompoundRunConfiguration ?: continue
+                    val configurationsWithTargets = compound.getConfigurationsWithTargets(RunManagerImpl.getInstanceImpl(compound.project))
+                    if (oldConfiguration in configurationsWithTargets) {
+                        compound.setConfigurationsWithTargets(configurationsWithTargets.mapKeys {
+                            if (it.key === oldConfiguration) configuration else it.key
+                        })
+                    }
+                }
+                val wasSelected = runManager.selectedConfiguration === settings
+                (settings as RunnerAndConfigurationSettingsImpl).setConfiguration(configuration)
+                settings.name = configuration.name
+                if (wasSelected) {
+                    runManager.selectedConfiguration = settings
+                }
+            }
         }
 
         private fun generateGodot3(
@@ -270,9 +314,10 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 programParameters: String,
                 runManager: RunManager,
                 godotPath: String,
-                project: Project
+                project: Project,
+                factory: ConfigurationFactory = ConfigurationTypeUtil.findConfigurationType(DotNetExeConfigurationType::class.java).factory,
             ): RunnerAndConfigurationSettings {
-                val configs = runManager.allSettings.filter { it.type is DotNetExeConfigurationType && it.name == configurationName }
+                val configs = runManager.allSettings.filter { it.type == factory.type && it.name == configurationName }
                 if (configs.any()) {
                     configs.forEach {
                         (it.configuration as DotNetExeConfiguration).parameters.exePath = godotPath
@@ -280,8 +325,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                     }
                     return configs.last()
                 } else {
-                    val configurationType = ConfigurationTypeUtil.findConfigurationType(DotNetExeConfigurationType::class.java)
-                    val runConfiguration = runManager.createConfiguration(configurationName, configurationType.factory)
+                    val runConfiguration = runManager.createConfiguration(configurationName, factory)
                     val config = runConfiguration.configuration as DotNetExeConfiguration
                     config.parameters.exePath = godotPath
                     config.parameters.programParameters = programParameters
