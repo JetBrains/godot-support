@@ -4,12 +4,14 @@
     "interface/editor/import_resources_when_unfocused": true,
     "interface/editor/save_on_focus_loss": true,
     "text_editor/behavior/files/auto_reload_scripts_on_external_change": true,
-    "run/window_placement/game_embed_mode": -1
+    "run/window_placement/game_embed_mode": -1,
+    "text_editor/behavior/files/restore_scripts_on_load": false
   },
   "off": {
     "text_editor/external/use_external_editor": false,
     "interface/editor/import_resources_when_unfocused": false,
     "interface/editor/save_on_focus_loss": false,
-    "text_editor/behavior/files/auto_reload_scripts_on_external_change": false
+    "text_editor/behavior/files/auto_reload_scripts_on_external_change": false,
+    "text_editor/behavior/files/restore_scripts_on_load": true
   }
 }
