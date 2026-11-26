@@ -6,6 +6,9 @@ var _locator_service: RiderLocatorService
 var _rd_loader: RdLoader
 
 func _enter_tree() -> void:
+	if _is_headless_run():
+		return
+
 	var editor_settings := EditorInterface.get_editor_settings()
 	var script_path := (get_script() as Script).resource_path
 	var plugin_dir := script_path.get_base_dir()
@@ -39,14 +42,22 @@ func _enter_tree() -> void:
 	preset_applier.apply_preset(editor_settings, is_active)
 
 func _exit_tree() -> void:
-	EditorSettingsUtil.erase_rider_external_editor_setting()
-	if toolbar_menu != null:
-		remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, toolbar_menu)
-		toolbar_menu.queue_free()
+	if not _is_headless_run():
+		EditorSettingsUtil.erase_rider_external_editor_setting()
+		if toolbar_menu != null:
+			remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, toolbar_menu)
+			# free() now, not queue_free(): the toolbar holds the locator service and the RD loader.
+			toolbar_menu.free()
+			toolbar_menu = null
+		# This drops the last reference. ~RiderLocator joins the worker, and Godot skips the pending deferred emit.
+		_locator_service = null
 
 	var args := OS.get_cmdline_args()
 	if "--rider-addon-tests" in args:
 		print("==== rider-addon-tests finished ====")
+
+func _is_headless_run() -> bool:
+	return DisplayServer.get_name() == "headless" and "--rider-addon-tests" not in OS.get_cmdline_args()
 
 func _write_godot_editor_cfg() -> void:
 	var settings_dir := EditorInterface.get_editor_paths().get_project_settings_dir()
