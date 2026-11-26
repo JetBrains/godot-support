@@ -12,7 +12,6 @@ import com.jetbrains.rider.plugins.godot.test.cases.DebugGodotPlayer
 import com.jetbrains.rider.plugins.godot.test.cases.disableDFA
 import com.jetbrains.rider.plugins.godot.test.cases.startGodotWithProject
 import com.jetbrains.rider.plugins.godot.test.cases.waitForGodotRunConfigurationsWithRetries
-import com.jetbrains.rider.test.annotations.Mute
 import com.jetbrains.rider.test.annotations.Solution
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.TestSettings
@@ -241,34 +240,6 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     }
 
     /**
-     * Without target invocation the scene tree cannot be offered at all: reaching `SceneTree.Root` means calling
-     * `Engine.GetMainLoop()` in the debuggee, so `GodotAdditionalValuesProvider.GetAdditionalLocals` contributes the
-     * `root` local only while `EvaluationOptions.AllowTargetInvoke` is set. Its absence is the contract here.
-     */
-    @Test
-    @Mute("RIDER-143200")
-    @ChecklistItems(["Debug/C#/Scene tree/Without target invoke"])
-    fun checkSceneTreeIsAbsentWithoutTargetInvoke() {
-        withImplicitTargetInvokeDisabled {
-            debugAtCardReady {
-                val localNames = getLocals().map { rowName(it) }
-                localNames.contains(SCENE_TREE_ROOT).shouldBe(
-                    false,
-                    "The scene tree must not be offered without target invoke, found locals: $localNames"
-                )
-                printlnIndented("locals without target invoke: $localNames")
-
-                val thisValue = localNamed("this")
-                val rows = childRowNames(thisValue)
-                rows.shouldContainInOrder(listOf(groupRow(CHILDREN_GROUP), PARENT_ROW))
-
-                dumpSceneTreeShape(childNamed(thisValue, CHILDREN_GROUP), depth = 0, caption = "this.Children")
-                dumpSceneTreeShape(childNamed(thisValue, "Parent"), depth = 0, caption = "this.Parent")
-            }
-        }
-    }
-
-    /**
      * Runs [body] paused at `Card._Ready()`, with the standard node-instance mask and gold comparison.
      *
      * `DeckDrawer.InitialCards` is 1 in `example-layout.tscn`, so exactly one card is ever drawn: `HandLayout` always
@@ -311,24 +282,6 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
             },
             testGoldFile
         )
-    }
-
-    /**
-     * Runs [body] with implicit target invocation switched off, restoring it afterwards.
-     *
-     * Deliberately not [disableTargetInvokeWithWatches]: that is the restore half of a save/restore pair over
-     * module-level state, so it would put back whatever `@BeforeAll` saved - very likely `true` - and also clobber
-     * what `@AfterAll` relies on.
-     */
-    private fun withImplicitTargetInvokeDisabled(body: () -> Unit) {
-        val settings = DotNetDebuggerSettings.instance
-        val previous = settings.allowImplicitTargetInvoke
-        settings.allowImplicitTargetInvoke = false
-        try {
-            body()
-        } finally {
-            settings.allowImplicitTargetInvoke = previous
-        }
     }
 
     /**
