@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.createNestedDisposable
 import com.intellij.openapi.util.Version
 import com.intellij.openapi.vfs.AsyncFileListener
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.events.VFileCopyEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent
@@ -96,15 +97,13 @@ class GdProjectGodotService(project: Project) {
             // A move or a rename also counts when project.godot is the old path, because the file then disappears.
             val hasChange = events.any { event ->
                 when (event) {
-                    is VFileCopyEvent -> event.newParent.isInLocalFileSystem &&
-                        event.newParent.toNioPath().resolve(event.newChildName) == projectGodotPath
-                    is VFileCreateEvent -> event.parent.isInLocalFileSystem &&
-                        event.parent.toNioPath().resolve(event.childName) == projectGodotPath
-                    is VFileMoveEvent -> event.file.isInLocalFileSystem &&
+                    is VFileCopyEvent -> event.newParent.localNioPathOrNull()?.resolve(event.newChildName) == projectGodotPath
+                    is VFileCreateEvent -> event.parent.localNioPathOrNull()?.resolve(event.childName) == projectGodotPath
+                    is VFileMoveEvent -> event.file.localNioPathOrNull() != null &&
                         (Path.of(event.newPath) == projectGodotPath || Path.of(event.oldPath) == projectGodotPath)
-                    is VFilePropertyChangeEvent -> event.file.isInLocalFileSystem &&
+                    is VFilePropertyChangeEvent -> event.file.localNioPathOrNull() != null &&
                         (Path.of(event.newPath) == projectGodotPath || Path.of(event.oldPath) == projectGodotPath)
-                    else -> event.file?.let { it.isInLocalFileSystem && it.toNioPath() == projectGodotPath } == true
+                    else -> event.file?.localNioPathOrNull() == projectGodotPath
                 }
             }
             if (!hasChange) null
@@ -119,6 +118,10 @@ class GdProjectGodotService(project: Project) {
         }
         VirtualFileManager.getInstance().addAsyncFileListener(listener, lifetime.lifetime.createNestedDisposable())
     }
+
+    // A temporary file can report it being in a local file system without actually having path on disk.
+    private fun VirtualFile.localNioPathOrNull(): Path? =
+        if (isInLocalFileSystem) fileSystem.getNioPath(this) else null
 
     private fun parseProjectGodot(basePath: Path): GodotProjectInfo? {
         val projectFile = basePath.resolve("project.godot")
