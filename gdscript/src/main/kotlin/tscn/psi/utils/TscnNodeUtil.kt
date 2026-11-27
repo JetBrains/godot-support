@@ -2,7 +2,10 @@ package tscn.psi.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.descendantsOfType
+import gdscript.index.impl.GdFileResIndex
 import tscn.index.impl.TscnNodeIndex
 import tscn.psi.TscnDataLine
 import tscn.psi.TscnNodeHeader
@@ -33,6 +36,25 @@ object TscnNodeUtil {
             }
         }
         return null
+    }
+
+    internal fun findNodeInSceneOrBase(scene: PsiFile, nodePath: String): TscnNodeHeader? {
+        var currentScene = scene
+        val visitedScenes = HashSet<PsiFile>()
+        while (visitedScenes.add(currentScene)) {
+            val nodes = currentScene.descendantsOfType<TscnNodeHeader>()
+            findNode(nodes, nodePath)?.let { return it }
+            val root = findNode(nodes, ".") ?: return null
+            currentScene = findInstancedSceneRoot(root)?.containingFile ?: return null
+        }
+        return null
+    }
+
+    internal fun findInstancedSceneRoot(node: TscnNodeHeader): TscnNodeHeader? {
+        val instance = node.instanceResource.takeIf { it.isNotBlank() } ?: return null
+        val sceneFile = GdFileResIndex.getFiles(instance, node.project).firstOrNull() ?: return null
+        val scene = node.manager.findFile(sceneFile) ?: return null
+        return findNode(scene.descendantsOfType<TscnNodeHeader>(), ".")
     }
 
     fun getName(element: TscnNodeHeader): String {
