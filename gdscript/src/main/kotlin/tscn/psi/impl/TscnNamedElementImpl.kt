@@ -9,21 +9,23 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.references.polySymbolOwnReferences
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReference
 import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistryImpl
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childrenOfType
-import com.intellij.psi.util.descendantsOfType
 import com.intellij.psi.util.parentOfType
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import gdscript.index.impl.GdFileResIndex
+import gdscript.polySymbols.GdClassSymbol
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.psi.GdPsiClassSymbolFactory
 import gdscript.polySymbols.psi.GdPsiMethodSymbol
 import gdscript.polySymbols.psi.GdPsiPropertySymbol
 import gdscript.polySymbols.psi.GdPsiSignalSymbol
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.psi.GdClassNameNmi
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdClassVarDeclTl
@@ -86,16 +88,14 @@ abstract class TscnNamedElementImpl(node: @NotNull ASTNode) : ASTWrapperPsiEleme
         }
         LOG.trace {
             "getOwnReferences: ${describeForTrace()} -> ${references.size} reference(s) " +
-            references.joinToString { it.rangeInElement.toString() }
+                references.joinToString { it.rangeInElement.toString() }
         }
         return references
     }
-
 }
 
 /**
- * Dispatches a header value to the resolve walk of its key - see [scriptClassOwnReferences] and
- * [connectionOwnReferences]. A key with no walk keeps the classic mechanism, for example the plain
+ * A key with no walk keeps the classic mechanism, for example the plain
  * `res://` path on `tscn.reference.TscnResourceReference`.
  */
 private fun headerValueOwnReferences(element: TscnHeaderValueVal): List<PsiSymbolReference> {
@@ -103,12 +103,28 @@ private fun headerValueOwnReferences(element: TscnHeaderValueVal): List<PsiSymbo
     val key = PsiTreeUtil.getChildOfType(parent, TscnHeaderValueNm::class.java)?.text
     LOG.trace { "headerValueOwnReferences: key=$key, value=${element.text}" }
     return when (key) {
+        TscnHeaderUtils.HL_TYPE -> nodeTypeOwnReferences(element)
         SCRIPT_CLASS_KEY -> scriptClassOwnReferences(element)
         TscnHeaderUtils.HL_SIGNAL -> connectionOwnReferences(element, signal = true)
         TscnHeaderUtils.HL_METHOD -> connectionOwnReferences(element, signal = false)
         else -> emptyList()
     }
 }
+
+private fun nodeTypeOwnReferences(element: TscnHeaderValueVal): List<PsiSymbolReference> {
+    val node = element.parentOfType<TscnNodeHeader>() ?: return emptyList()
+    val symbol = resolveClass(node) ?: return emptyList()
+    return polySymbolOwnReferences(element) {
+        reference(stringContentRange(element.text), GdPolySymbolKind.CLASS) { listOf(symbol) }
+    }
+}
+
+/** Resolves the class named by the `type` of [node]. */
+private fun resolveClass(node: TscnNodeHeader): GdClassSymbol? {
+    val className = node.type.takeIf { it.isNotBlank() } ?: return null
+    return GdSymbolResolverUtil.resolveCanonicalClassSymbol(node.project, className, node)
+}
+
 
 /**
  * `script_class="MyClass"` header values resolved as a PolySymbol reference to the GDScript class -
@@ -133,6 +149,22 @@ private fun scriptClassOwnReferences(element: TscnHeaderValueVal): List<PsiSymbo
     }
 }
 
+/** Resolves the signal on the SDK class of the `from` node. */
+private fun sdkSignalOwnReferences(element: TscnHeaderValueVal, header: TscnConnectionHeader): List<PsiSymbolReference> {
+    var node = TscnNodeUtil.findNodeInSceneOrBase(element.containingFile, header.from) ?: return emptyList()
+    val visitedScenes = HashSet<PsiFile>()
+    while (node.type.isBlank()) {
+        if (!visitedScenes.add(node.containingFile)) return emptyList()
+        node = TscnNodeUtil.findInstancedSceneRoot(node) ?: return emptyList()
+    }
+    val classSymbol = resolveClass(node) ?: return emptyList()
+    val symbol = GdSymbolResolverUtil.findSignalSymbol(classSymbol, header.signal) ?: return emptyList()
+
+    return polySymbolOwnReferences(element) {
+        reference(stringContentRange(element.text), GdPolySymbolKind.SIGNAL) { listOf(symbol) }
+    }
+}
+
 /**
  * `[connection signal="my_signal" from="." to="." method="_on_my_signal"]` values resolved as
  * PolySymbol references to the GDScript declarations. The signal belongs to the script of the
@@ -150,25 +182,22 @@ private fun connectionOwnReferences(element: TscnHeaderValueVal, signal: Boolean
     val scriptFile = resolveNodeScript(element, nodePath)
     LOG.trace {
         "connectionOwnReferences: name=$name, signal=$signal, nodePath=$nodePath, " +
-        "script=${scriptFile?.name}"
+            "script=${scriptFile?.name}"
     }
-    if (scriptFile == null) return emptyList()
-
-    // Resolved eagerly for the same reason as scriptClassOwnReferences: an engine signal, for
-    // example "pressed", is declared by no script in the project and must stay silent.
-    val declaration = GdClassMemberUtil.listDeclarations(scriptFile, name)
-        .firstOrNull {
-            if (signal) it is GdSignalDeclTl && it.getName() == name
-            else it is GdMethodDeclTl && it.getName() == name
-        }
+    val declaration = scriptFile?.let { file ->
+        GdClassMemberUtil.listDeclarations(file, name)
+            .firstOrNull {
+                if (signal) it is GdSignalDeclTl && it.getName() == name
+                else it is GdMethodDeclTl && it.getName() == name
+            }
+    }
     LOG.trace { "connectionOwnReferences: declaration=${(declaration as? PsiElement).describeForTrace()}" }
-    if (declaration == null) return emptyList()
 
     val symbol = when (declaration) {
         is GdSignalDeclTl -> declaration.signalIdNmi?.let { GdPsiSignalSymbol(it) }
         is GdMethodDeclTl -> declaration.methodIdNmi?.let { GdPsiMethodSymbol(it) }
         else -> null
-    } ?: return emptyList()
+    } ?: return if (signal) sdkSignalOwnReferences(element, header) else emptyList()
 
     val kind = if (signal) GdPolySymbolKind.SIGNAL else GdPolySymbolKind.METHOD
 
@@ -247,13 +276,12 @@ private fun trackField(paragraph: TscnParagraph, key: String): String? =
 /** The script attached to the node that [nodePath] points to, in the scene of [element]. */
 private fun resolveNodeScript(element: PsiElement, nodePath: String): GdFile? {
     if (nodePath.isEmpty()) return null
-    val nodeHeaders = element.containingFile.descendantsOfType<TscnNodeHeader>()
-    val node = TscnNodeUtil.findNode(nodeHeaders, nodePath)
+    val node = TscnNodeUtil.findNodeInSceneOrBase(element.containingFile, nodePath)
     if (node == null) {
         LOG.trace { "resolveNodeScript: no node at '$nodePath' in ${element.containingFile.name}" }
         return null
     }
-    val resource = nodeScriptResource(element, node)
+    val resource = nodeScriptResource(node)
     if (resource == null) {
         LOG.trace { "resolveNodeScript: node '$nodePath' carries no script resource" }
         return null
@@ -270,15 +298,9 @@ private fun resolveNodeScript(element: PsiElement, nodePath: String): GdFile? {
  * The script resource of [node]. A node that instances another scene carries no script of its own,
  * so the script of the root node of that scene applies.
  */
-private fun nodeScriptResource(element: PsiElement, node: TscnNodeHeader): String? {
-    node.scriptResource.takeIf { it.isNotBlank() }?.let { return it }
-
-    val instance = node.instanceResource.takeIf { it.isNotBlank() } ?: return null
-    val sceneFile = GdFileResIndex.getFiles(instance, element.project).firstOrNull() ?: return null
-    val scene = element.manager.findFile(sceneFile) ?: return null
-    val root = scene.descendantsOfType<TscnNodeHeader>().firstOrNull { it.parentPath.isEmpty() } ?: return null
-    return root.scriptResource.takeIf { it.isNotBlank() }
-}
+private fun nodeScriptResource(node: TscnNodeHeader): String? =
+    node.scriptResource.takeIf { it.isNotBlank() }
+        ?: TscnNodeUtil.findInstancedSceneRoot(node)?.scriptResource?.takeIf { it.isNotBlank() }
 
 /**
  * `.tres` data line keys resolved as a PolySymbol reference to the matching `@export var` in the
