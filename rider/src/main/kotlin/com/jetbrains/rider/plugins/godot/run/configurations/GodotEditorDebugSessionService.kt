@@ -231,7 +231,7 @@ private suspend fun startGodotDebugSession(
     try {
         withContext(Dispatchers.EDT) {
             val profile = GodotEditorAttachProfile(processInfo, targetPlatform, port::resume, cleanupLifetime::terminate)
-            val settings = RunManager.getInstance(project).createConfiguration(profile.name, RiderAttachConfigurationType.FACTORY)
+            val settings = RunManager.getInstanceAsync(project).createConfiguration(profile.name, RiderAttachConfigurationType.FACTORY)
             val attachConfiguration = settings.configuration as? RiderAttachConfiguration
                 ?: throw IllegalStateException("Created synthetic configuration is not ${RiderAttachConfiguration::class.java.simpleName}")
             attachConfiguration.attachProfile = profile
