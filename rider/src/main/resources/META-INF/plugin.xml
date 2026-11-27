@@ -99,10 +99,14 @@
                              id="preferences.build.godotPlugin"
                              instance="com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage"
                              displayName="Godot.NET"/>
-    <projectConfigurable parentId="FileTemplatesSettingsId"
-                         instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotFileTemplatesOptionPage" groupWeight="-120"/>
-    <projectConfigurable parentId="LiveTemplatesSettingsId"
-                         instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotLiveTemplatesOptionPage" groupWeight="-120"/>
+    <!--suppress PluginXmlI18n The page uses the same fixed label. -->
+    <projectConfigurable id="RiderGodotFileTemplatesSettings" parentId="FileTemplatesSettingsId"
+                         instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotFileTemplatesOptionPage"
+                         displayName="Godot C#" groupWeight="-120"/>
+    <!--suppress PluginXmlI18n The page uses the same fixed label. -->
+    <projectConfigurable id="RiderGodotLiveTemplatesSettings" parentId="LiveTemplatesSettingsId"
+                         instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotLiveTemplatesOptionPage"
+                         displayName="Godot C#" groupWeight="-120"/>
 
     <rider.godot.community.godotProjectProvider implementation="com.jetbrains.rider.plugins.godot.project.RiderGodotProjectProvider"
                                                 order="first"/>
